@@ -441,6 +441,10 @@ export function Slide04({ scaleX, scaleY }: Props) {
                   transition: "fill 0.15s ease",
                 }}
                 onMouseEnter={() => setHoveredLayer(i)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setHoveredLayer(i);
+                }}
               />
             );
             return (
