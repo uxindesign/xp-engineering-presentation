@@ -1,22 +1,47 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Manrope:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap');
 
 @font-face {
   font-family: 'Bronkoh-Regular';
   font-weight: 400;
   font-style: normal;
-  src: local('Barlow Condensed');
+  font-display: swap;
+  src:
+    url('../assets/fonts/Bronkoh-Regular.woff2') format('woff2'),
+    url('../assets/fonts/Bronkoh-Regular.woff') format('woff');
 }
 
 @font-face {
   font-family: 'Bronkoh-SemiBold';
   font-weight: 600;
   font-style: normal;
-  src: local('Barlow Condensed');
+  font-display: swap;
+  src:
+    url('../assets/fonts/Bronkoh-SemiBold.woff2') format('woff2'),
+    url('../assets/fonts/Bronkoh-SemiBold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Bronkoh-Bold';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('../assets/fonts/Bronkoh-Bold.woff') format('woff');
 }
 
 @font-face {
   font-family: 'Bronkoh-Heavy';
   font-weight: 900;
   font-style: normal;
-  src: local('Bebas Neue');
+  font-display: swap;
+  src:
+    url('../assets/fonts/Bronkoh-Heavy.woff2') format('woff2'),
+    url('../assets/fonts/Bronkoh-Heavy.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Bronkoh-lightItalic';
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+  src: url('../assets/fonts/Bronkoh-lightItalic.woff') format('woff');
 }
