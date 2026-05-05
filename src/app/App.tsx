@@ -435,8 +435,8 @@ export default function App() {
             type: (!isInteractiveSuppressingCursor && !isTapping) || isInfographicActionCursor ? "spring" : "tween",
             stiffness: 300,
           },
-          width: { duration: 0.25, ease: "easeInOut" },
-          height: { duration: 0.25, ease: "easeInOut" },
+          width: { duration: 0.42, ease: [0.16, 1, 0.3, 1] },
+          height: { duration: 0.42, ease: [0.16, 1, 0.3, 1] },
         }}
         className="flex items-center justify-center bg-[#036ef2] rounded-full"
       >
@@ -497,7 +497,10 @@ export default function App() {
                   rotate: showBackCursor ? 180 : 0,
                   scale: showBackCursor ? 0.67 : 1,
                 }}
-                transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  rotate: { duration: 0.48, ease: [0.16, 1, 0.3, 1] },
+                  scale: { duration: 0.42, ease: [0.16, 1, 0.3, 1] },
+                }}
                 style={{ originX: 0.5, originY: 0.5 }}
               >
                 <mask id="cursor-nav-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48" style={{ maskType: "alpha" }}>
