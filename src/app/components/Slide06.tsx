@@ -186,16 +186,6 @@ function ExpandButton({ sc, onClick }: { sc: (n: number) => number; onClick: (ev
         zIndex: 4,
       }}
     >
-      <CloseButton
-        sc={vs}
-        sx={vx}
-        sy={vy}
-        onClick={(event) => {
-          event.stopPropagation();
-          onClose();
-        }}
-      />
-
       <motion.div
         variants={{
           rest: { width: sc(32), height: sc(32), padding: sc(4) },
@@ -298,6 +288,8 @@ function ExpandedInfographic({
   tags: string[];
 }) {
   const s = Math.min(scaleX, scaleY);
+  const vx = (n: number) => n * scaleX;
+  const vy = (n: number) => n * scaleY;
   const vs = (n: number) => n * s;
 
   const ROW_W = 1360;
@@ -318,6 +310,16 @@ function ExpandedInfographic({
         onClose();
       }}
     >
+      <CloseButton
+        sc={vs}
+        sx={vx}
+        sy={vy}
+        onClick={(event) => {
+          event.stopPropagation();
+          onClose();
+        }}
+      />
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
