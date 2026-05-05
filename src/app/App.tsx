@@ -12,6 +12,8 @@ import { Slide06 } from "./components/Slide06";
 
 const TOTAL_SLIDES = 6;
 const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
+const INFOGRAPHIC_CURSOR_SIZE = 64;
+const INFOGRAPHIC_CURSOR_ICON_SIZE = 40;
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -404,8 +406,8 @@ export default function App() {
         animate={{
           opacity: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0),
           scale: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0.4) : (isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
-          width: isInfographicActionCursor ? vs(80) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
-          height: isInfographicActionCursor ? vs(80) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
+          width: isInfographicActionCursor ? vs(INFOGRAPHIC_CURSOR_SIZE) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
+          height: isInfographicActionCursor ? vs(INFOGRAPHIC_CURSOR_SIZE) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
         }}
         transition={{
           opacity: { duration: isNearInteractive && !isInfographicActionCursor ? 0.18 : 0.3, ease: "easeInOut" },
@@ -430,7 +432,7 @@ export default function App() {
               transition={{ duration: 0.2, ease: "easeOut" }}
               className="flex items-center justify-center"
             >
-              <svg width={vs(48)} height={vs(48)} viewBox="0 0 32 32" fill="none">
+              <svg width={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} height={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} viewBox="0 0 32 32" fill="none">
                 <path d={CLOSE_ICON_PATH} fill="white" />
               </svg>
             </motion.div>
@@ -443,7 +445,7 @@ export default function App() {
               transition={{ duration: 0.12, ease: "easeOut" }}
               className="flex items-center justify-center"
             >
-              <svg width={vs(48)} height={vs(48)} viewBox="0 0 24 24" fill="none">
+              <svg width={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} height={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} viewBox="0 0 24 24" fill="none">
                 <mask id="cursor-expand-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
                   <rect width="24" height="24" fill="#D9D9D9" />
                 </mask>
