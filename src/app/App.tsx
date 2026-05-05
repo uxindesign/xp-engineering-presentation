@@ -104,6 +104,13 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Reset per-slide cursor flags when navigating away — slide-scoped onPointerLeave
+  // doesn't fire on unmount, so the drag/expand cursors can get stuck otherwise.
+  useEffect(() => {
+    setIsDragAreaActive(false);
+    setIsExpandHover(false);
+  }, [currentSlide]);
+
   const goToSlide = (n: number) => setCurrentSlide(Math.max(0, Math.min(TOTAL_SLIDES - 1, n)));
   const goNext = () => goToSlide(currentSlide + 1);
   const goPrev = () => goToSlide(currentSlide - 1);
@@ -422,28 +429,33 @@ export default function App() {
         }}
         className="flex items-center justify-center bg-[#036ef2] rounded-full"
       >
-        <AnimatePresence initial={false}>
-          {isInfographicExpanded ? (
+        {isInfographicActionCursor ? (
+          <div
+            style={{
+              position: "relative",
+              width: vs(INFOGRAPHIC_CURSOR_ICON_SIZE),
+              height: vs(INFOGRAPHIC_CURSOR_ICON_SIZE),
+            }}
+          >
             <motion.div
-              key="close-infographic"
-              initial={{ opacity: 0, rotate: -45 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: 45 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="flex items-center justify-center"
+              animate={{
+                opacity: isInfographicExpanded ? 1 : 0,
+                rotate: isInfographicExpanded ? 0 : -32,
+              }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 flex items-center justify-center"
             >
               <svg width={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} height={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} viewBox="0 0 32 32" fill="none">
                 <path d={CLOSE_ICON_PATH} fill="white" />
               </svg>
             </motion.div>
-          ) : isExpandHover ? (
             <motion.div
-              key="expand"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.12, ease: "easeOut" }}
-              className="flex items-center justify-center"
+              animate={{
+                opacity: isInfographicExpanded ? 0 : 1,
+                rotate: isInfographicExpanded ? 32 : 0,
+              }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 flex items-center justify-center"
             >
               <svg width={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} height={vs(INFOGRAPHIC_CURSOR_ICON_SIZE)} viewBox="0 0 24 24" fill="none">
                 <mask id="cursor-expand-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
@@ -454,7 +466,10 @@ export default function App() {
                 </g>
               </svg>
             </motion.div>
-          ) : isDragAreaActive ? (
+          </div>
+        ) : (
+          <AnimatePresence initial={false}>
+            {isDragAreaActive ? (
             <motion.div
               key="drag"
               initial={{ opacity: 0, scale: 0.6 }}
@@ -518,7 +533,8 @@ export default function App() {
               </svg>
             </motion.div>
           )}
-        </AnimatePresence>
+          </AnimatePresence>
+        )}
       </motion.div>
     </div>
   );
