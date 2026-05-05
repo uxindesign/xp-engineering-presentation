@@ -9,6 +9,7 @@ interface Props {
   onPrev: () => void;
   onNext: () => void;
   onExpandedChange?: (expanded: boolean) => void;
+  onExpandHoverChange?: (hovering: boolean) => void;
 }
 
 const ease = "easeOut" as const;
@@ -192,6 +193,40 @@ function ExpandButton({ sc, onClick }: { sc: (n: number) => number; onClick: (ev
         <ExpandIcon />
       </motion.div>
     </motion.button>
+  );
+}
+
+function ExpandHotspot({
+  sc,
+  onHoverChange,
+  onClick,
+}: {
+  sc: (n: number) => number;
+  onHoverChange?: (hovering: boolean) => void;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label="Expandir infográfico em tela cheia"
+      onMouseEnter={() => onHoverChange?.(true)}
+      onMouseLeave={() => onHoverChange?.(false)}
+      onFocus={() => onHoverChange?.(true)}
+      onBlur={() => onHoverChange?.(false)}
+      onClick={onClick}
+      style={{
+        position: "absolute",
+        left: sc(130),
+        top: sc(16),
+        width: sc(1100),
+        height: sc(430),
+        border: 0,
+        background: "transparent",
+        padding: 0,
+        cursor: "none",
+        zIndex: 3,
+      }}
+    />
   );
 }
 
@@ -453,7 +488,7 @@ function ExpandedInfographic({
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
-export function Slide06({ scaleX, scaleY, onExpandedChange }: Props) {
+export function Slide06({ scaleX, scaleY, onExpandedChange, onExpandHoverChange }: Props) {
   const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
   const s = Math.min(scaleX, scaleY);
   const vx = (n: number) => n * scaleX;
@@ -464,6 +499,10 @@ export function Slide06({ scaleX, scaleY, onExpandedChange }: Props) {
     onExpandedChange?.(isInfographicExpanded);
     return () => onExpandedChange?.(false);
   }, [isInfographicExpanded, onExpandedChange]);
+
+  useEffect(() => {
+    return () => onExpandHoverChange?.(false);
+  }, [onExpandHoverChange]);
 
   useEffect(() => {
     if (!isInfographicExpanded) return undefined;
@@ -625,7 +664,16 @@ export function Slide06({ scaleX, scaleY, onExpandedChange }: Props) {
           </div>
 
           {/* ── CENTER: Row ──────────────────────────────────────────────── */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: vs(ROW_W) }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: vs(ROW_W), position: "relative" }}>
+            <ExpandHotspot
+              sc={vs}
+              onHoverChange={onExpandHoverChange}
+              onClick={(event) => {
+                event.stopPropagation();
+                onExpandHoverChange?.(false);
+                openInfographic();
+              }}
+            />
 
             {/* IA apoio transversal */}
             <div style={{ position: "relative", borderRadius: vs(28), width: "100%", flexShrink: 0 }}>

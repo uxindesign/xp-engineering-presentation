@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import svgPaths from "../imports/01Capa/svg-9xym7sn689";
 import backSvgPaths from "../imports/Back/svg-v4jzanzdmi";
 import dragSvgPaths from "../imports/Drag/svg-nfjmokf13z";
+import slide06SvgPaths from "../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { Slide02 } from "./components/Slide02";
 import { Slide03 } from "./components/Slide03";
 import { Slide04 } from "./components/Slide04";
@@ -30,6 +31,7 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
   const [isDragAreaActive, setIsDragAreaActive] = useState(false);
+  const [isExpandHover, setIsExpandHover] = useState(false);
 
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
@@ -367,6 +369,7 @@ export default function App() {
             onPrev={goPrev}
             onNext={goNext}
             onExpandedChange={setIsInfographicExpanded}
+            onExpandHoverChange={setIsExpandHover}
           />
         )}
       </AnimatePresence>
@@ -384,8 +387,8 @@ export default function App() {
           zIndex: 9999,
         }}
         animate={{
-          opacity: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0),
-          scale: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0.4) : (isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
+          opacity: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && (!isNearInteractive || isExpandHover) ? 1 : 0),
+          scale: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0.4) : ((isNearInteractive && !isExpandHover) ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
           width: isInfographicExpanded ? vs(80) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
           height: isInfographicExpanded ? vs(80) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
         }}
@@ -414,6 +417,24 @@ export default function App() {
             >
               <svg width={vs(48)} height={vs(48)} viewBox="0 0 32 32" fill="none">
                 <path d={CLOSE_ICON_PATH} fill="white" />
+              </svg>
+            </motion.div>
+          ) : isExpandHover ? (
+            <motion.div
+              key="expand"
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.6 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="flex items-center justify-center"
+            >
+              <svg width={vs(48)} height={vs(48)} viewBox="0 0 24 24" fill="none">
+                <mask id="cursor-expand-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+                  <rect width="24" height="24" fill="#D9D9D9" />
+                </mask>
+                <g mask="url(#cursor-expand-mask)">
+                  <path d={slide06SvgPaths.p2e4a3200} fill="white" />
+                </g>
               </svg>
             </motion.div>
           ) : isDragAreaActive ? (
