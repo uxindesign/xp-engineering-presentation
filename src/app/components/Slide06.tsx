@@ -81,9 +81,9 @@ function StepCircle() {
 function ConectionLeft({ sc, height = 354, length = 291, top = 8 }: { sc: (n: number) => number; height?: number; length?: number; top?: number }) {
   const x = 90;
   const radius = 48;
-  const arrowY = top + 18;
+  const arrowY = top;
   const bottomY = top + length;
-  const rightX = 180;
+  const rightX = 192;
   const path = `M${rightX} ${bottomY}H${x + radius}C${x + radius * 0.45} ${bottomY} ${x} ${bottomY - radius * 0.45} ${x} ${bottomY - radius}V${arrowY}`;
 
   return (
