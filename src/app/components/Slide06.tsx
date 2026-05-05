@@ -77,7 +77,7 @@ function StepCircle() {
 
 // ── Connection arrows (curved paths) ─────────────────────────────────────────
 
-function ConectionLeft({ sc, height = 354, length = 291 }: { sc: (n: number) => number; height?: number; length?: number }) {
+function ConectionLeft({ sc, height = 354, length = 291, top = 8 }: { sc: (n: number) => number; height?: number; length?: number; top?: number }) {
   const pathW = length + 4.828;
   const startX = pathW - 2;
   const curveX = pathW - 50;
@@ -85,7 +85,7 @@ function ConectionLeft({ sc, height = 354, length = 291 }: { sc: (n: number) => 
 
   return (
     <div style={{ height: sc(height), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
-      <div style={{ position: "absolute", left: sc(74), top: sc(2), width: sc(118.005), height: sc(length), display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "absolute", left: sc(74), top: sc(top), width: sc(118.005), height: sc(length), display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ transform: "rotate(90deg)", transformOrigin: "center", flexShrink: 0 }}>
           <div style={{ width: sc(length), height: sc(118.005), position: "relative" }}>
             <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} fill="none" preserveAspectRatio="none" viewBox={`0 0 ${pathW} 122.005`}>
@@ -98,15 +98,15 @@ function ConectionLeft({ sc, height = 354, length = 291 }: { sc: (n: number) => 
   );
 }
 
-function ConectionRight({ sc, height = 354, length = 325 }: { sc: (n: number) => number; height?: number; length?: number }) {
-  const finalY = length - 15;
+function ConectionRight({ sc, height = 354, length = 325, top = 8 }: { sc: (n: number) => number; height?: number; length?: number; top?: number }) {
+  const finalY = length - 11;
   const verticalY = finalY - 48;
   const pathH = length + 4.005;
   const path = `M113.828 2V${verticalY}C113.828 ${verticalY + 26.51} 92.3381 ${finalY} 65.8284 ${finalY}L2.82843 ${finalY}M2.82843 ${finalY}L15.8284 ${finalY - 13}M2.82843 ${finalY}L15.8284 ${finalY + 13}`;
 
   return (
     <div style={{ height: sc(height), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
-      <div style={{ position: "absolute", left: sc(-20), top: sc(2), width: sc(111), height: sc(length) }}>
+      <div style={{ position: "absolute", left: sc(-20), top: sc(top), width: sc(111), height: sc(length) }}>
         <svg style={{ position: "absolute", inset: "-0.41% -1.8% -0.41% -2.55%", width: "103.6%", height: "100.82%" }} fill="none" preserveAspectRatio="none" viewBox={`0 0 115.828 ${pathH}`}>
           <path d={path} stroke="#04165D" strokeLinecap="round" strokeWidth={sc(4)} />
         </svg>
@@ -128,16 +128,6 @@ function ExpandIcon() {
   );
 }
 
-const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
-
-function CloseIcon() {
-  return (
-    <svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <path d={CLOSE_ICON_PATH} fill="white" />
-    </svg>
-  );
-}
-
 function MaterialSymbol({ name, sc, color = "#036EF2" }: { name: string; sc: (n: number) => number; color?: string }) {
   return (
     <span
@@ -150,7 +140,7 @@ function MaterialSymbol({ name, sc, color = "#036EF2" }: { name: string; sc: (n:
         flexShrink: 0,
         fontFamily: "'Material Symbols Rounded'",
         fontSize: sc(32),
-        fontVariationSettings: "'FILL' 0, 'wght' 700, 'GRAD' 0, 'opsz' 32",
+        fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 32",
         lineHeight: `${sc(32)}px`,
         overflow: "hidden",
         textAlign: "center",
@@ -208,53 +198,6 @@ function ExpandButton({ sc, onClick }: { sc: (n: number) => number; onClick: (ev
   );
 }
 
-function CloseButton({ sc, sx, sy, onClick }: { sc: (n: number) => number; sx: (n: number) => number; sy: (n: number) => number; onClick: (event: MouseEvent<HTMLButtonElement>) => void }) {
-  return (
-    <motion.button
-      type="button"
-      aria-label="Fechar infográfico em tela cheia"
-      initial="rest"
-      animate="rest"
-      whileHover="hover"
-      onClick={onClick}
-      style={{
-        position: "absolute",
-        right: sx(24),
-        top: sy(24),
-        width: sc(56),
-        height: sc(56),
-        border: 0,
-        background: "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 0,
-        cursor: "pointer",
-        zIndex: 2,
-      }}
-    >
-      <motion.div
-        variants={{
-          rest: { width: sc(40), height: sc(40), padding: sc(8) },
-          hover: { width: sc(56), height: sc(56), padding: sc(12) },
-        }}
-        transition={{ duration: 0.18, ease }}
-        style={{
-          borderRadius: sc(999),
-          background: "#036ef2",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          overflow: "hidden",
-        }}
-      >
-        <CloseIcon />
-      </motion.div>
-    </motion.button>
-  );
-}
-
 const EXPANDED_STEP_DETAILS = [
   ["Pesquisas", "Entrevistas", "Matriz CSD", "Benchmark", "Análises", "Testes de usabilidade"],
   ["Personas", "Mapa de empatia", "Jornadas/blueprints", "Fluxos de navegação", "Card sorting", "Matriz de priorização"],
@@ -288,8 +231,6 @@ function ExpandedInfographic({
   tags: string[];
 }) {
   const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
   const vs = (n: number) => n * s;
 
   const ROW_W = 1360;
@@ -310,16 +251,6 @@ function ExpandedInfographic({
         onClose();
       }}
     >
-      <CloseButton
-        sc={vs}
-        sx={vx}
-        sy={vy}
-        onClick={(event) => {
-          event.stopPropagation();
-          onClose();
-        }}
-      />
-
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -348,7 +279,7 @@ function ExpandedInfographic({
               Negócio, Utilizadores, Dados, Tecnologia, Restrições
             </p>
           </div>
-          <ConectionLeft sc={vs} height={520} length={457} />
+          <ConectionLeft sc={vs} height={520} length={457} top={2} />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: vs(8), alignItems: "flex-start", justifyContent: "center", paddingTop: vs(124), flexShrink: 0, width: vs(COL_W) }}>
@@ -393,7 +324,7 @@ function ExpandedInfographic({
           <div style={{ background: "rgba(3,110,242,0.06)", position: "relative", borderRadius: vs(28), width: "100%", flexShrink: 0 }}>
             <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid #036ef2`, borderRadius: vs(28), pointerEvents: "none" }} />
             <div style={{ position: "absolute", background: "#036ef2", height: vs(4), left: vs(130), right: vs(130), top: vs(100), zIndex: 1 }} />
-            <div style={{ display: "flex", flexDirection: "column", gap: vs(32), padding: `${vs(32)}px ${vs(20)}px ${vs(20)}px`, position: "relative" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: vs(16), padding: `${vs(32)}px ${vs(20)}px ${vs(20)}px`, position: "relative" }}>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "center", width: "100%" }}>
                 {steps.map((step, i) => (
                   <div key={`expanded-step-${step.title}`} style={{ display: "flex", flexDirection: "column", gap: vs(16), alignItems: "center", overflow: "visible", width: vs(220), flexShrink: 0 }}>
@@ -516,7 +447,7 @@ function ExpandedInfographic({
               Valor gerado para os utilizadores e o negócio
             </p>
           </div>
-          <ConectionRight sc={vs} height={520} length={491} />
+          <ConectionRight sc={vs} height={520} length={491} top={2} />
         </div>
       </motion.div>
     </motion.div>

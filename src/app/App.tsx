@@ -386,8 +386,8 @@ export default function App() {
         animate={{
           opacity: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0),
           scale: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0.4) : (isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
-          width: isInfographicExpanded ? vs(56) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
-          height: isInfographicExpanded ? vs(56) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
+          width: isInfographicExpanded ? vs(80) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
+          height: isInfographicExpanded ? vs(80) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
         }}
         transition={{
           opacity: { duration: isNearInteractive && !isInfographicExpanded ? 0.18 : 0.3, ease: "easeInOut" },
@@ -412,7 +412,7 @@ export default function App() {
               transition={{ duration: 0.2, ease: "easeOut" }}
               className="flex items-center justify-center"
             >
-              <svg width={vs(32)} height={vs(32)} viewBox="0 0 32 32" fill="none">
+              <svg width={vs(48)} height={vs(48)} viewBox="0 0 32 32" fill="none">
                 <path d={CLOSE_ICON_PATH} fill="white" />
               </svg>
             </motion.div>
