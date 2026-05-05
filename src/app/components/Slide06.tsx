@@ -77,13 +77,13 @@ function StepCircle() {
 
 // ── Connection arrows (curved paths) ─────────────────────────────────────────
 
-function ConectionLeft({ sc, height = 354 }: { sc: (n: number) => number; height?: number; length?: number; top?: number }) {
+function ConectionLeft({ sc, height = 354, length = 291, top = 8 }: { sc: (n: number) => number; height?: number; length?: number; top?: number }) {
   const x = 90;
   const radius = 48;
-  const arrowY = 18;
-  const bottomY = height - 10;
-  const rightX = 165;
-  const path = `M${rightX} ${bottomY}H${x + radius}A${radius} ${radius} 0 0 0 ${x} ${bottomY - radius}V${arrowY}`;
+  const arrowY = top + 18;
+  const bottomY = top + length;
+  const rightX = 180;
+  const path = `M${rightX} ${bottomY}H${x + radius}C${x + radius * 0.45} ${bottomY} ${x} ${bottomY - radius * 0.45} ${x} ${bottomY - radius}V${arrowY}`;
 
   return (
     <div style={{ height: sc(height), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
