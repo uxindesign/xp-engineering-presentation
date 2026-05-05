@@ -10,28 +10,11 @@ import { Slide05 } from "./components/Slide05";
 import { Slide06 } from "./components/Slide06";
 
 const TOTAL_SLIDES = 6;
-const DESIGN_WIDTH = 1920;
-const DESIGN_HEIGHT = 1080;
-
-function getStageMetrics() {
-  if (typeof window === "undefined") {
-    return { scale: 1, width: DESIGN_WIDTH, height: DESIGN_HEIGHT };
-  }
-
-  const scale = Math.min(window.innerWidth / DESIGN_WIDTH, window.innerHeight / DESIGN_HEIGHT);
-  return {
-    scale,
-    width: DESIGN_WIDTH * scale,
-    height: DESIGN_HEIGHT * scale,
-  };
-}
 
 export default function App() {
-  const stageRef = useRef<HTMLDivElement>(null);
-  const initialStage = getStageMetrics();
-  const [scaleX, setScaleX] = useState(initialStage.scale);
-  const [scaleY, setScaleY] = useState(initialStage.scale);
-  const [stageSize, setStageSize] = useState({ width: initialStage.width, height: initialStage.height });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scaleX, setScaleX] = useState(1);
+  const [scaleY, setScaleY] = useState(1);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [cursorVisible, setCursorVisible] = useState(false);
   const [cursorReady, setCursorReady] = useState(false);
@@ -41,7 +24,6 @@ export default function App() {
   const [isOnInteractive, setIsOnInteractive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDragAreaActive, setIsDragAreaActive] = useState(false);
-  const [isCoarsePointer, setIsCoarsePointer] = useState(false);
 
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
@@ -57,7 +39,6 @@ export default function App() {
   const logoSpringY = useSpring(logoY, logoSpringConfig);
   const logoRotateX = useTransform(logoSpringY, [-0.5, 0.5], [15, -15]);
   const logoRotateY = useTransform(logoSpringX, [-0.5, 0.5], [-15, 15]);
-  const useCustomCursor = !isCoarsePointer;
 
   const handleLogoMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -80,25 +61,12 @@ export default function App() {
 
   useEffect(() => {
     const update = () => {
-      const nextStage = getStageMetrics();
-      setScaleX(nextStage.scale);
-      setScaleY(nextStage.scale);
-      setStageSize({
-        width: nextStage.width,
-        height: nextStage.height,
-      });
+      setScaleX(window.innerWidth / 1920);
+      setScaleY(window.innerHeight / 1080);
     };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, []);
-
-  useEffect(() => {
-    const query = window.matchMedia("(pointer: coarse)");
-    const update = () => setIsCoarsePointer(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
   }, []);
 
   // Custom cursor ready after cover animations finish
@@ -128,23 +96,18 @@ export default function App() {
   const handleMouseMove = (e: React.MouseEvent) => {
     mouseX.set(e.clientX);
     mouseY.set(e.clientY);
-    const stageRect = stageRef.current?.getBoundingClientRect();
-    const stageMidX = stageRect ? stageRect.left + stageRect.width / 2 : window.innerWidth / 2;
-    setIsLeftHalf(e.clientX < stageMidX);
+    setIsLeftHalf(e.clientX < window.innerWidth / 2);
     if (!cursorVisible) setCursorVisible(true);
 
     // Calculate rotation regardless of current slide, though only slide 0 shows the logo
     const { clientX, clientY } = e;
-    const xRatio = stageRect
-      ? (clientX - stageRect.left) / stageRect.width - 0.5
-      : clientX / window.innerWidth - 0.5;
-    const yRatio = stageRect
-      ? (clientY - stageRect.top) / stageRect.height - 0.5
-      : clientY / window.innerHeight - 0.5;
+    const { innerWidth, innerHeight } = window;
+    const xRatio = (clientX / innerWidth) - 0.5; // -0.5 to 0.5
+    const yRatio = (clientY / innerHeight) - 0.5; // -0.5 to 0.5
     
     // Set values within the expected [-0.5, 0.5] range for useTransform
-    logoX.set(Math.max(-0.5, Math.min(0.5, xRatio)));
-    logoY.set(Math.max(-0.5, Math.min(0.5, yRatio)));
+    logoX.set(xRatio);
+    logoY.set(yRatio);
 
     const els = document.querySelectorAll('button, a, input, select, textarea, [role="button"]');
     let near = false;
@@ -186,198 +149,189 @@ export default function App() {
 
   return (
     <div
+      ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => { setCursorVisible(false); setIsNearInteractive(false); setIsOnInteractive(false); logoX.set(0); logoY.set(0); }}
       onMouseEnter={() => setCursorVisible(true)}
       onClick={handleClick}
       style={{ backgroundColor: isSlide0 ? "#04165d" : "#ffffff" }}
-      className={`w-screen h-screen overflow-hidden relative select-none flex items-center justify-center transition-colors duration-500 ${isModalOpen || !useCustomCursor ? "cursor-auto" : (isNearInteractive ? "" : "cursor-none")}`}
+      className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isModalOpen ? "cursor-auto" : (isNearInteractive ? "" : "cursor-none")}`}
     >
-      <div
-        ref={stageRef}
-        style={{
-          width: stageSize.width,
-          height: stageSize.height,
-          backgroundColor: isSlide0 ? "#04165d" : "#ffffff",
-        }}
-        className="relative overflow-hidden shrink-0 transition-colors duration-500"
-      >
-        <AnimatePresence mode="wait">
-          {/* ─────────────── SLIDE 1 — Cover ─────────────── */}
-          {currentSlide === 0 && (
+      <AnimatePresence mode="wait">
+        {/* ─────────────── SLIDE 1 — Cover ─────────────── */}
+        {currentSlide === 0 && (
+          <motion.div
+            key="slide-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="absolute inset-0"
+          >
+            {/* Hero */}
             <motion.div
-              key="slide-1"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.35 }}
-              className="absolute inset-0"
+              initial={{ opacity: 0, x: -80 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              style={{
+                left: vx(120),
+                top: `calc(35% - ${vy(151)}px)`,
+                transform: "translateY(-50%)",
+              }}
+              className="absolute flex flex-col items-start"
             >
-              {/* Hero */}
-              <motion.div
-                initial={{ opacity: 0, x: -80 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.2 }}
-                style={{
-                  left: vx(120),
-                  top: `calc(35% - ${vy(151)}px)`,
-                  transform: "translateY(-50%)",
-                }}
-                className="absolute flex flex-col items-start"
-              >
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                  style={{ fontSize: vs(24), letterSpacing: vs(1) }}
-                  className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#036ef2] uppercase whitespace-nowrap"
-                >
-                  Planejamento da área
-                </motion.p>
-
-                <div style={{ height: vy(40) }} />
-
-                <div
-                  style={{ fontSize: vs(168), letterSpacing: vs(-5) }}
-                  className="font-['Bronkoh-Heavy',sans-serif] not-italic text-white whitespace-nowrap"
-                >
-                  <motion.p
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.7 }}
-                    style={{ lineHeight: 0.92 }}
-                  >
-                    Experience
-                  </motion.p>
-                  <motion.p
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.9 }}
-                    style={{ lineHeight: 0.92 }}
-                  >
-                    Engineering
-                  </motion.p>
-                </div>
-              </motion.div>
-
-              {/* Footer */}
-              <motion.div
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 1.2 }}
-                style={{ left: vx(120), bottom: vy(96), gap: vx(20) }}
-                className="absolute flex items-center"
+                transition={{ duration: 0.8, delay: 0.5 }}
+                style={{ fontSize: vs(24), letterSpacing: vs(1) }}
+                className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#036ef2] uppercase whitespace-nowrap"
               >
-                <p
-                  style={{ fontSize: vs(14), letterSpacing: vs(1.5) }}
-                  className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-[#036ef2] uppercase whitespace-nowrap"
-                >
-                  2026
-                </p>
-                <div style={{ width: vx(24), height: vy(2) }} className="overflow-clip relative shrink-0">
-                  <div className="absolute bg-[rgba(43,118,193,0.4)] h-px left-0 right-0 top-0" />
-                </div>
-                <p
-                  style={{ fontSize: vs(14), letterSpacing: vs(1.5) }}
-                  className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-white uppercase whitespace-nowrap"
-                >
-                  Kickoff
-                </p>
-              </motion.div>
+                Planejamento da área
+              </motion.p>
 
-              {/* Decorative SVG */}
-              <motion.div
-                style={{
-                  bottom: vy(80),
-                  right: vx(80),
-                  width: vs(540),
-                  height: vs(538),
-                  perspective: 1200,
-                }}
-                className="absolute pointer-events-none"
+              <div style={{ height: vy(40) }} />
+
+              <div
+                style={{ fontSize: vs(168), letterSpacing: vs(-5) }}
+                className="font-['Bronkoh-Heavy',sans-serif] not-italic text-white whitespace-nowrap"
               >
-                <motion.svg
-                  style={{
-                    rotateX: logoRotateX,
-                    rotateY: logoRotateY,
-                    transformStyle: "preserve-3d",
-                  }}
-                  initial={{ opacity: 0, x: vs(-80) }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-                  className="absolute block inset-0 size-full"
-                  fill="none"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 540 538.358"
+                <motion.p
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.7 }}
+                  style={{ lineHeight: 0.92 }}
                 >
-                  <g>
-                    <path d={svgPaths.p26e5dc80} fill="#036EF2" />
-                    <path d={svgPaths.p2da8a80} fill="#036EF2" />
-                    <path d={svgPaths.p21370b80} fill="#036EF2" />
-                  </g>
-                </motion.svg>
-              </motion.div>
+                  Experience
+                </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.9 }}
+                  style={{ lineHeight: 0.92 }}
+                >
+                  Engineering
+                </motion.p>
+              </div>
             </motion.div>
-          )}
 
-          {/* ─────────────── SLIDE 2 ─────────────── */}
-          {currentSlide === 1 && (
-            <Slide02
-              key="slide-2"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onPrev={goPrev}
-              onNext={goNext}
-              onModalChange={setIsModalOpen}
-            />
-          )}
+            {/* Footer */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 1.2 }}
+              style={{ left: vx(120), bottom: vy(96), gap: vx(20) }}
+              className="absolute flex items-center"
+            >
+              <p
+                style={{ fontSize: vs(14), letterSpacing: vs(1.5) }}
+                className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-[#036ef2] uppercase whitespace-nowrap"
+              >
+                2026
+              </p>
+              <div style={{ width: vx(24), height: vy(2) }} className="overflow-clip relative shrink-0">
+                <div className="absolute bg-[rgba(43,118,193,0.4)] h-px left-0 right-0 top-0" />
+              </div>
+              <p
+                style={{ fontSize: vs(14), letterSpacing: vs(1.5) }}
+                className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-white uppercase whitespace-nowrap"
+              >
+                Kickoff
+              </p>
+            </motion.div>
 
-          {/* ─────────────── SLIDE 3 ─────────────── */}
-          {currentSlide === 2 && (
-            <Slide03
-              key="slide-3"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onPrev={goPrev}
-              onNext={goNext}
-              onDragAreaHover={setIsDragAreaActive}
-            />
-          )}
+            {/* Decorative SVG */}
+            <motion.div
+              style={{
+                bottom: vy(80),
+                right: vx(80),
+                width: vs(540),
+                height: vs(538),
+                perspective: 1200,
+              }}
+              className="absolute pointer-events-none"
+            >
+              <motion.svg
+                style={{
+                  rotateX: logoRotateX,
+                  rotateY: logoRotateY,
+                  transformStyle: "preserve-3d",
+                }}
+                initial={{ opacity: 0, x: vs(-80) }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
+                className="absolute block inset-0 size-full"
+                fill="none"
+                preserveAspectRatio="none"
+                viewBox="0 0 540 538.358"
+              >
+                <g>
+                  <path d={svgPaths.p26e5dc80} fill="#036EF2" />
+                  <path d={svgPaths.p2da8a80} fill="#036EF2" />
+                  <path d={svgPaths.p21370b80} fill="#036EF2" />
+                </g>
+              </motion.svg>
+            </motion.div>
+          </motion.div>
+        )}
 
-          {/* ─────────────── SLIDE 4 ─────────────── */}
-          {currentSlide === 3 && (
-            <Slide04
-              key="slide-4"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onPrev={goPrev}
-              onNext={goNext}
-            />
-          )}
+        {/* ─────────────── SLIDE 2 ─────────────── */}
+        {currentSlide === 1 && (
+          <Slide02
+            key="slide-2"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onPrev={goPrev}
+            onNext={goNext}
+            onModalChange={setIsModalOpen}
+          />
+        )}
 
-          {/* ─────────────── SLIDE 5 ─────────────── */}
-          {currentSlide === 4 && (
-            <Slide05
-              key="slide-5"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onPrev={goPrev}
-              onNext={goNext}
-            />
-          )}
+        {/* ─────────────── SLIDE 3 ─────────────── */}
+        {currentSlide === 2 && (
+          <Slide03
+            key="slide-3"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onPrev={goPrev}
+            onNext={goNext}
+            onDragAreaHover={setIsDragAreaActive}
+          />
+        )}
 
-          {/* ─────────────── SLIDE 6 ─────────────── */}
-          {currentSlide === 5 && (
-            <Slide06
-              key="slide-6"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onPrev={goPrev}
-              onNext={goNext}
-            />
-          )}
-        </AnimatePresence>
-      </div>
+        {/* ─────────────── SLIDE 4 ─────────────── */}
+        {currentSlide === 3 && (
+          <Slide04
+            key="slide-4"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onPrev={goPrev}
+            onNext={goNext}
+          />
+        )}
+
+        {/* ─────────────── SLIDE 5 ─────────────── */}
+        {currentSlide === 4 && (
+          <Slide05
+            key="slide-5"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onPrev={goPrev}
+            onNext={goNext}
+          />
+        )}
+
+        {/* ─────────────── SLIDE 6 ─────────────── */}
+        {currentSlide === 5 && (
+          <Slide06
+            key="slide-6"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onPrev={goPrev}
+            onNext={goNext}
+          />
+        )}
+      </AnimatePresence>
 
       {/* ── Custom cursor ── */}
       <motion.div
@@ -391,7 +345,7 @@ export default function App() {
           zIndex: 9999,
         }}
         animate={{
-          opacity: useCustomCursor && !isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0,
+          opacity: !isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0,
           scale: isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4)),
           width: isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80)),
           height: isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80)),
