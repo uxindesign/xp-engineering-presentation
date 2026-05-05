@@ -1,4 +1,5 @@
-import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 
@@ -75,12 +76,12 @@ function StepCircle() {
 
 // ── Connection arrows (curved paths) ─────────────────────────────────────────
 
-function ConectionLeft({ sc }: { sc: (n: number) => number }) {
+function ConectionLeft({ sc, height = 354, length = 291 }: { sc: (n: number) => number; height?: number; length?: number }) {
   return (
-    <div style={{ height: sc(354), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
-      <div style={{ position: "absolute", left: sc(74), top: sc(8), width: sc(118), height: sc(291), display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ height: sc(height), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
+      <div style={{ position: "absolute", left: sc(74), top: sc(8), width: sc(118), height: sc(length), display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ transform: "rotate(90deg)", transformOrigin: "center", flexShrink: 0 }}>
-          <div style={{ width: sc(291), height: sc(118), position: "relative" }}>
+          <div style={{ width: sc(length), height: sc(118), position: "relative" }}>
             <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} fill="none" preserveAspectRatio="none" viewBox="0 0 295.828 122.005">
               <path d={svgPaths.p11bb4800} stroke="#04165D" strokeLinecap="round" strokeWidth={sc(4)} />
             </svg>
@@ -91,10 +92,10 @@ function ConectionLeft({ sc }: { sc: (n: number) => number }) {
   );
 }
 
-function ConectionRight({ sc }: { sc: (n: number) => number }) {
+function ConectionRight({ sc, height = 354, length = 325 }: { sc: (n: number) => number; height?: number; length?: number }) {
   return (
-    <div style={{ height: sc(354), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
-      <div style={{ position: "absolute", left: sc(-20), top: sc(8), width: sc(111), height: sc(325) }}>
+    <div style={{ height: sc(height), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
+      <div style={{ position: "absolute", left: sc(-20), top: sc(8), width: sc(111), height: sc(length) }}>
         <svg style={{ position: "absolute", inset: "-0.62% -1.8% -0.62% -2.55%", width: "103.6%", height: "101.24%" }} fill="none" preserveAspectRatio="none" viewBox="0 0 115.828 329.005">
           <path d={svgPaths.p29e92690} stroke="#04165D" strokeLinecap="round" strokeWidth={sc(4)} />
         </svg>
@@ -103,13 +104,338 @@ function ConectionRight({ sc }: { sc: (n: number) => number }) {
   );
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
+function ExpandIcon() {
+  return (
+    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none">
+      <mask id="s06-expand-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" as const }}>
+        <rect width="24" height="24" fill="#D9D9D9" />
+      </mask>
+      <g mask="url(#s06-expand-mask)">
+        <path d={svgPaths.p2e4a3200} fill="white" />
+      </g>
+    </svg>
+  );
+}
 
-export function Slide06({ scaleX, scaleY }: Props) {
+function CloseIcon() {
+  return (
+    <svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M9 9L23 23M23 9L9 23" stroke="white" strokeWidth="3.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const EXPANDED_STEP_DETAILS = [
+  ["Pesquisas", "Entrevistas", "Matriz CSD", "Benchmark", "Análises", "Testes de usabilidade"],
+  ["Personas", "Mapa de empatia", "Jornadas/blueprints", "Fluxos de navegação", "Card sorting", "Matriz de priorização"],
+  ["Wireframes", "Protótipos navegáveis", "Design visual", "Criação de componentes", "Alinhamento técnico"],
+  ["Testes de usabilidade", "Focus group", "Teste A/B", "Avaliação heurística", "Testes de acessibilidade"],
+  ["Refinamento do protótipo", "Atualização do Design System", "Handoff para os DEVs", "Documentação"],
+  ["Coleta e análise de dados e feedbacks", "Observar utilizadores", "Análise de heatmaps", "Síntese dos resultados", "Alimentar backlog"],
+];
+
+const AI_PRINCIPLES = [
+  { title: "Centrado em pessoas", desc: "Empatia, contexto e valor continuam no centro", path: svgPaths.p138e2c00 },
+  { title: "Evidências antes de soluções", desc: "Decisões guiadas por evidências, não suposições", path: svgPaths.p22ba1e00 },
+  { title: "Julgamento Humano", desc: "IA amplia possibilidades, mas não substitui decisão", path: svgPaths.p24a727c0 },
+  { title: "Menos ainda é mais", desc: "Focar no que gera mais valor, não no que é mais fácil de gerar", path: svgPaths.p29031600 },
+  { title: "Iterar e evoluir sempre", desc: "Aprendizado contínuo gera vantagem sustentável", path: svgPaths.p37063700, viewBox: 28 },
+];
+
+function ExpandedInfographic({
+  scaleX,
+  scaleY,
+  onClose,
+  iaItems,
+  steps,
+  tags,
+}: {
+  scaleX: number;
+  scaleY: number;
+  onClose: () => void;
+  iaItems: Array<{ maskId: string; path: string; fill: string; label: string }>;
+  steps: Array<{ title: string; desc: string }>;
+  tags: string[];
+}) {
   const s = Math.min(scaleX, scaleY);
   const vx = (n: number) => n * scaleX;
   const vy = (n: number) => n * scaleY;
   const vs = (n: number) => n * s;
+
+  const ROW_W = 1360;
+  const SIDE_STEP_W = 180;
+  const COL_W = 32;
+  const COL1_W = 40;
+  const DIAGRAM_W = ROW_W + SIDE_STEP_W * 2 + COL_W + COL1_W;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18, ease }}
+      style={{ position: "fixed", inset: 0, zIndex: 200, background: "#fff", overflow: "hidden" }}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <button
+        type="button"
+        aria-label="Fechar infográfico em tela cheia"
+        onClick={(event) => {
+          event.stopPropagation();
+          onClose();
+        }}
+        style={{
+          position: "absolute",
+          right: vx(40),
+          top: vy(40),
+          width: vs(56),
+          height: vs(56),
+          border: 0,
+          borderRadius: vs(999),
+          background: "#036ef2",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: vs(12),
+          cursor: "pointer",
+          zIndex: 2,
+        }}
+      >
+        <CloseIcon />
+      </button>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22, ease }}
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          display: "flex",
+          alignItems: "flex-start",
+          width: vs(DIAGRAM_W),
+          overflow: "visible",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: vs(16), alignItems: "center", paddingTop: vs(88), flexShrink: 0, width: vs(SIDE_STEP_W), overflow: "visible" }}>
+          <div style={{ background: "#036ef2", borderRadius: vs(999), width: vs(48), height: vs(48), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div style={{ width: vs(32), height: vs(32) }}>
+              <SvgIcon32 maskId="s06-exp-subject" path={svgPaths.p138e2c00} fill="white" />
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: vs(8), alignItems: "center", textAlign: "center", width: "100%" }}>
+            <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), color: "#04165d", lineHeight: "normal", fontStyle: "normal", whiteSpace: "nowrap" }}>Contexto</p>
+            <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(14), color: "#2f3237", lineHeight: 1.4, letterSpacing: vs(0.25) }}>
+              Negócio, Utilizadores, Dados, Tecnologia, Restrições
+            </p>
+          </div>
+          <ConectionLeft sc={vs} height={642} length={579} />
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: vs(8), alignItems: "flex-start", justifyContent: "center", paddingTop: vs(124), flexShrink: 0, width: vs(COL_W) }}>
+          <div style={{ width: vs(32), height: vs(32) }}>
+            <SvgIcon32 maskId="s06-exp-ne" path={svgPaths.p2b38b00} fill="#04165D" />
+          </div>
+          <div style={{ width: vs(32), height: vs(32) }}>
+            <SvgIcon32 maskId="s06-exp-se" path={svgPaths.p35a70680} fill="#04165D" />
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: vs(ROW_W) }}>
+          <div style={{ position: "relative", borderRadius: vs(28), width: "100%", flexShrink: 0 }}>
+            <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid #6e7587`, borderRadius: vs(28), pointerEvents: "none" }} />
+            <div style={{ display: "flex", flexDirection: "column", gap: vs(20), alignItems: "center", padding: `${vs(24)}px ${vs(56)}px`, position: "relative" }}>
+              <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), lineHeight: `${vs(32)}px`, color: "#04165d", textAlign: "center", fontStyle: "normal" }}>
+                IA como camada de apoio transversal
+              </p>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                {iaItems.map((item) => (
+                  <div key={`expanded-${item.maskId}`} style={{ display: "flex", gap: vs(8), alignItems: "center", justifyContent: "center", width: vs(160), flexShrink: 0 }}>
+                    <div style={{ width: vs(32), height: vs(32), flexShrink: 0 }}>
+                      <SvgIcon32 maskId={`expanded-${item.maskId}`} path={item.path} fill={item.fill} />
+                    </div>
+                    <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: vs(15), color: "#2f3237", letterSpacing: vs(-0.25), lineHeight: "normal" }}>
+                      {item.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: vs(190), alignItems: "center", justifyContent: "center", padding: `${vs(2)}px 0`, width: "100%" }}>
+            {steps.map((_, i) => (
+              <div key={`expanded-swap-${i}`} style={{ width: vs(32), height: vs(32), flexShrink: 0 }}>
+                <SvgIcon32 maskId={`s06-exp-sv-${i}`} path={svgPaths.p15dcc200} fill="#04165D" />
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: "rgba(3,110,242,0.06)", position: "relative", borderRadius: vs(28), width: "100%", flexShrink: 0 }}>
+            <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid #036ef2`, borderRadius: vs(28), pointerEvents: "none" }} />
+            <div style={{ position: "absolute", background: "#036ef2", height: vs(4), left: vs(130), right: vs(130), top: vs(100), zIndex: 1 }} />
+            <div style={{ display: "flex", flexDirection: "column", gap: vs(32), padding: `${vs(32)}px ${vs(20)}px ${vs(20)}px`, position: "relative" }}>
+              <div style={{ display: "flex", alignItems: "stretch", width: "100%" }}>
+                {steps.map((step, i) => (
+                  <div key={`expanded-step-${step.title}`} style={{ display: "flex", flexDirection: "column", gap: vs(16), alignItems: "center", overflow: "visible", width: vs(220), flexShrink: 0 }}>
+                    <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), lineHeight: `${vs(32)}px`, color: "#04165d", textAlign: "center", fontStyle: "normal", width: "100%" }}>
+                      {step.title}
+                    </p>
+                    <div style={{ width: vs(44), height: vs(44), flexShrink: 0, position: "relative", zIndex: 2 }}>
+                      <StepCircle />
+                    </div>
+                    <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(14), color: "#2f3237", textAlign: "center", letterSpacing: vs(0.25), lineHeight: 1.4, width: vs(190), minHeight: vs(40) }}>
+                      {step.desc}
+                    </p>
+                    <div style={{ background: "#fff", borderRadius: vs(16), position: "relative", width: vs(190), minHeight: vs(174), padding: `${vs(16)}px ${vs(16)}px ${vs(16)}px ${vs(20)}px` }}>
+                      <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid rgba(43,118,193,0.4)`, borderRadius: vs(16), pointerEvents: "none" }} />
+                      <ul style={{ margin: 0, paddingLeft: vs(14), fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: vs(13.5), color: "#2f3237", lineHeight: 1.35, letterSpacing: vs(-0.15) }}>
+                        {EXPANDED_STEP_DETAILS[i].map((detail) => (
+                          <li key={detail} style={{ marginBottom: vs(4) }}>{detail}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ background: "rgba(3,110,242,0.06)", position: "relative", borderRadius: vs(16), width: "100%", flexShrink: 0 }}>
+                <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid rgba(43,118,193,0.4)`, borderRadius: vs(16), pointerEvents: "none" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: vs(8), alignItems: "center", padding: `${vs(16)}px ${vs(32)}px` }}>
+                  <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(18), lineHeight: `${vs(24)}px`, color: "#04165d", textAlign: "center", fontStyle: "normal", whiteSpace: "nowrap" }}>
+                    Decidir o quanto investir, acelerar ou aprofundar em cada fase com base em:
+                  </p>
+                  <div style={{ display: "flex", gap: vs(8), alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
+                    {tags.map((tag) => (
+                      <div key={`expanded-${tag}`} style={{ background: "#fff", position: "relative", borderRadius: vs(999), flexShrink: 0, padding: `${vs(6)}px ${vs(16)}px` }}>
+                        <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid rgba(43,118,193,0.4)`, borderRadius: vs(999), pointerEvents: "none" }} />
+                        <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800, fontSize: vs(14), color: "#2f3237", letterSpacing: vs(-0.25), lineHeight: "normal", whiteSpace: "nowrap" }}>
+                          {tag}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ paddingTop: vs(8), width: "100%" }}>
+            <div style={{ background: "rgba(44,201,44,0.06)", position: "relative", borderRadius: vs(28), width: "100%", display: "flex", gap: vs(16), alignItems: "center", justifyContent: "center", padding: `${vs(24)}px ${vs(56)}px` }}>
+              <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid #3b953b`, borderRadius: vs(28), pointerEvents: "none" }} />
+              <div style={{ background: "#078207", borderRadius: vs(999), width: vs(44), height: vs(44), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: vs(28), height: vs(28) }}>
+                  <svg width="100%" height="100%" viewBox="0 0 28 28" fill="none">
+                    <mask id="s06-exp-renew" maskUnits="userSpaceOnUse" x="0" y="0" width="28" height="28" style={{ maskType: "alpha" as const }}>
+                      <rect width="28" height="28" fill="#D9D9D9" />
+                    </mask>
+                    <g mask="url(#s06-exp-renew)">
+                      <path d={svgPaths.p37063700} fill="white" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(22), lineHeight: `${vs(28)}px`, color: "#078207", fontStyle: "normal", whiteSpace: "nowrap" }}>
+                  Processo contínuo de aprendizado e iteração
+                </p>
+                <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(14), color: "#2f3237", letterSpacing: vs(0.25), lineHeight: 1.4, whiteSpace: "nowrap" }}>
+                  Cada ciclo gera evidências que realimentam o contexto e melhoram as próximas decisões
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ paddingTop: vs(20), width: "100%" }}>
+            <div style={{ borderRadius: vs(28), border: `${vs(1)}px solid #6e7587`, padding: `${vs(24)}px ${vs(28)}px`, display: "flex", flexDirection: "column", gap: vs(18), width: "100%" }}>
+              <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), lineHeight: `${vs(32)}px`, color: "#04165d", textAlign: "center", fontStyle: "normal" }}>
+                Princípios do Design da era da IA
+              </p>
+              <div style={{ display: "flex", gap: vs(20), alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+                {AI_PRINCIPLES.map((principle, index) => (
+                  <div key={principle.title} style={{ display: "flex", gap: vs(12), alignItems: "flex-start", width: vs(244), minWidth: 0 }}>
+                    <div style={{ width: vs(32), height: vs(32), flexShrink: 0 }}>
+                      <svg width="100%" height="100%" viewBox={`0 0 ${principle.viewBox ?? 32} ${principle.viewBox ?? 32}`} fill="none">
+                        <mask id={`s06-principle-${index}`} maskUnits="userSpaceOnUse" x="0" y="0" width={principle.viewBox ?? 32} height={principle.viewBox ?? 32} style={{ maskType: "alpha" as const }}>
+                          <rect width={principle.viewBox ?? 32} height={principle.viewBox ?? 32} fill="#D9D9D9" />
+                        </mask>
+                        <g mask={`url(#s06-principle-${index})`}>
+                          <path d={principle.path} fill="#036EF2" />
+                        </g>
+                      </svg>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: vs(6), minWidth: 0 }}>
+                      <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(16), color: "#04165d", lineHeight: 1.15, fontStyle: "normal" }}>
+                        {principle.title}
+                      </p>
+                      <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(13.5), color: "#2f3237", lineHeight: 1.35, letterSpacing: vs(0.15) }}>
+                        {principle.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", paddingTop: vs(142), flexShrink: 0, width: vs(COL1_W) }}>
+          <div style={{ width: vs(40), height: vs(40), display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="100%" height="100%" viewBox="0 0 40 40" fill="none" style={{ transform: "rotate(-90deg)" }}>
+              <mask id="s06-exp-arrow-right" maskUnits="userSpaceOnUse" x="0" y="0" width="40" height="40" style={{ maskType: "alpha" as const }}>
+                <rect width="40" height="40" fill="#D9D9D9" />
+              </mask>
+              <g mask="url(#s06-exp-arrow-right)">
+                <path d={svgPaths.p3a327f1} fill="#04165D" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: vs(16), alignItems: "center", paddingTop: vs(88), flexShrink: 0, width: vs(SIDE_STEP_W), overflow: "visible" }}>
+          <div style={{ background: "#078207", borderRadius: vs(999), width: vs(48), height: vs(48), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div style={{ width: vs(32), height: vs(32) }}>
+              <SvgIcon32 maskId="s06-exp-star" path={svgPaths.p12090600} fill="white" />
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: vs(8), alignItems: "center", textAlign: "center", width: "100%" }}>
+            <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), color: "#078207", lineHeight: "normal", fontStyle: "normal", whiteSpace: "nowrap" }}>Valor</p>
+            <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(14), color: "#2f3237", lineHeight: 1.4, letterSpacing: vs(0.25) }}>
+              Valor gerado para os utilizadores e o negócio
+            </p>
+          </div>
+          <ConectionRight sc={vs} height={642} length={579} />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ── Main export ───────────────────────────────────────────────────────────────
+
+export function Slide06({ scaleX, scaleY }: Props) {
+  const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
+  const s = Math.min(scaleX, scaleY);
+  const vx = (n: number) => n * scaleX;
+  const vy = (n: number) => n * scaleY;
+  const vs = (n: number) => n * s;
+
+  useEffect(() => {
+    if (!isInfographicExpanded) return undefined;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      event.stopPropagation();
+      if (event.key === "Escape") {
+        setIsInfographicExpanded(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
+  }, [isInfographicExpanded]);
 
   // Design-space layout constants (px at 1920×1080)
   const ROW_W      = 1360;
@@ -259,6 +585,32 @@ export function Slide06({ scaleX, scaleY }: Props) {
             {/* IA apoio transversal */}
             <div style={{ position: "relative", borderRadius: vs(28), width: "100%", flexShrink: 0 }}>
               <div style={{ position: "absolute", inset: 0, border: `${vs(1)}px solid #6e7587`, borderRadius: vs(28), pointerEvents: "none" }} />
+              <button
+                type="button"
+                aria-label="Expandir infográfico em tela cheia"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setIsInfographicExpanded(true);
+                }}
+                style={{
+                  position: "absolute",
+                  right: vs(8),
+                  top: vs(8),
+                  width: vs(32),
+                  height: vs(32),
+                  border: 0,
+                  borderRadius: vs(999),
+                  background: "#036ef2",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: vs(4),
+                  cursor: "pointer",
+                  zIndex: 4,
+                }}
+              >
+                <ExpandIcon />
+              </button>
               <div style={{ display: "flex", flexDirection: "column", gap: vs(20), alignItems: "center", padding: `${vs(24)}px ${vs(56)}px`, position: "relative" }}>
                 <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), lineHeight: `${vs(32)}px`, color: "#04165d", textAlign: "center", fontStyle: "normal" }}>
                   IA como camada de apoio transversal
@@ -406,6 +758,19 @@ export function Slide06({ scaleX, scaleY }: Props) {
 
         </div>{/* /inner wrapper */}
       </motion.div>
+
+      <AnimatePresence>
+        {isInfographicExpanded && (
+          <ExpandedInfographic
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onClose={() => setIsInfographicExpanded(false)}
+            iaItems={IA_ITEMS}
+            steps={STEPS}
+            tags={TAGS}
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
