@@ -15,6 +15,10 @@ export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scaleX, setScaleX] = useState(1);
   const [scaleY, setScaleY] = useState(1);
+  const [stageOffsetX, setStageOffsetX] = useState(0);
+  const [stageOffsetY, setStageOffsetY] = useState(0);
+  const [stageW, setStageW] = useState<number | string>("100%");
+  const [stageH, setStageH] = useState<number | string>("100%");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [cursorVisible, setCursorVisible] = useState(false);
   const [cursorReady, setCursorReady] = useState(false);
@@ -59,10 +63,29 @@ export default function App() {
   const vy = (n: number) => n * scaleY;
   const vs = (n: number) => n * s;
 
+  // Below 1440px width, switch to uniform-scale + letterbox so layout doesn't
+  // distort on non-16:9 viewports. At ≥1440 we keep the original behavior
+  // (independent X/Y scale filling the whole viewport).
   useEffect(() => {
     const update = () => {
-      setScaleX(window.innerWidth / 1920);
-      setScaleY(window.innerHeight / 1080);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      if (w >= 1440) {
+        setScaleX(w / 1920);
+        setScaleY(h / 1080);
+        setStageOffsetX(0);
+        setStageOffsetY(0);
+        setStageW("100%");
+        setStageH("100%");
+      } else {
+        const scale = Math.min(w / 1920, h / 1080);
+        setScaleX(scale);
+        setScaleY(scale);
+        setStageOffsetX((w - 1920 * scale) / 2);
+        setStageOffsetY((h - 1080 * scale) / 2);
+        setStageW(1920 * scale);
+        setStageH(1080 * scale);
+      }
     };
     update();
     window.addEventListener("resize", update);
@@ -157,6 +180,16 @@ export default function App() {
       style={{ backgroundColor: isSlide0 ? "#04165d" : "#ffffff" }}
       className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isModalOpen ? "cursor-auto" : (isNearInteractive ? "" : "cursor-none")}`}
     >
+      <div
+        style={{
+          position: "absolute",
+          left: stageOffsetX,
+          top: stageOffsetY,
+          width: stageW,
+          height: stageH,
+          overflow: "hidden",
+        }}
+      >
       <AnimatePresence mode="wait">
         {/* ─────────────── SLIDE 1 — Cover ─────────────── */}
         {currentSlide === 0 && (
@@ -332,6 +365,7 @@ export default function App() {
           />
         )}
       </AnimatePresence>
+      </div>
 
       {/* ── Custom cursor ── */}
       <motion.div
