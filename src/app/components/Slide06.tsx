@@ -77,23 +77,20 @@ function StepCircle() {
 
 // ── Connection arrows (curved paths) ─────────────────────────────────────────
 
-function ConectionLeft({ sc, height = 354, length = 291, top = 8 }: { sc: (n: number) => number; height?: number; length?: number; top?: number }) {
-  const pathW = length + 4.828;
-  const startX = pathW - 2;
-  const curveX = pathW - 50;
-  const path = `M${startX} 2V59.0052C${startX} 85.5148 ${curveX} 107.005 ${curveX} 107.005L2.82843 107.005M2.82843 107.005L15.8284 94.0051M2.82843 107.005L15.8284 120.005`;
+function ConectionLeft({ sc, height = 354 }: { sc: (n: number) => number; height?: number; length?: number; top?: number }) {
+  const x = 90;
+  const radius = 48;
+  const arrowY = 18;
+  const bottomY = height - 10;
+  const rightX = 165;
+  const path = `M${rightX} ${bottomY}H${x + radius}A${radius} ${radius} 0 0 0 ${x} ${bottomY - radius}V${arrowY}`;
 
   return (
     <div style={{ height: sc(height), position: "relative", width: "100%", flexShrink: 0, overflow: "visible" }}>
-      <div style={{ position: "absolute", left: sc(74), top: sc(top), width: sc(118.005), height: sc(length), display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ transform: "rotate(90deg)", transformOrigin: "center", flexShrink: 0 }}>
-          <div style={{ width: sc(length), height: sc(118.005), position: "relative" }}>
-            <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} fill="none" preserveAspectRatio="none" viewBox={`0 0 ${pathW} 122.005`}>
-              <path d={path} stroke="#04165D" strokeLinecap="round" strokeWidth={sc(4)} />
-            </svg>
-          </div>
-        </div>
-      </div>
+      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }} fill="none" preserveAspectRatio="none" viewBox={`0 0 180 ${height}`}>
+        <path d={path} stroke="#04165D" strokeLinecap="round" strokeLinejoin="round" strokeWidth={sc(4)} />
+        <path d={`M${x - 13} ${arrowY + 13}L${x} ${arrowY}L${x + 13} ${arrowY + 13}`} stroke="#04165D" strokeLinecap="round" strokeLinejoin="round" strokeWidth={sc(4)} />
+      </svg>
     </div>
   );
 }
