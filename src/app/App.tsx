@@ -8,22 +8,13 @@ import { Slide03 } from "./components/Slide03";
 import { Slide04 } from "./components/Slide04";
 import { Slide05 } from "./components/Slide05";
 import { Slide06 } from "./components/Slide06";
-import { ResponsivePresentation } from "./components/ResponsivePresentation";
 
 const TOTAL_SLIDES = 6;
-const RESPONSIVE_WIDTH = 1440;
-const RESPONSIVE_HEIGHT = 900;
-
-function getViewportMode() {
-  if (typeof window === "undefined") return false;
-  return window.innerWidth < RESPONSIVE_WIDTH || window.innerHeight < RESPONSIVE_HEIGHT;
-}
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scaleX, setScaleX] = useState(1);
   const [scaleY, setScaleY] = useState(1);
-  const [isResponsiveMode, setIsResponsiveMode] = useState(getViewportMode);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [cursorVisible, setCursorVisible] = useState(false);
   const [cursorReady, setCursorReady] = useState(false);
@@ -72,7 +63,6 @@ export default function App() {
     const update = () => {
       setScaleX(window.innerWidth / 1920);
       setScaleY(window.innerHeight / 1080);
-      setIsResponsiveMode(getViewportMode());
     };
     update();
     window.addEventListener("resize", update);
@@ -156,18 +146,6 @@ export default function App() {
 
   const isSlide0 = currentSlide === 0;
   const showBackCursor = currentSlide > 0 && isLeftHalf;
-
-  if (isResponsiveMode) {
-    return (
-      <ResponsivePresentation
-        currentSlide={currentSlide}
-        totalSlides={TOTAL_SLIDES}
-        onNext={goNext}
-        onPrev={goPrev}
-        onGoTo={goToSlide}
-      />
-    );
-  }
 
   return (
     <div
