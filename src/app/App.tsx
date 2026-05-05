@@ -344,7 +344,6 @@ export default function App() {
             scaleY={scaleY}
             onPrev={goPrev}
             onNext={goNext}
-            onExpandedChange={setIsInfographicExpanded}
           />
         )}
 
