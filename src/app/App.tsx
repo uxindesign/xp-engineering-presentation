@@ -34,6 +34,7 @@ export default function App() {
   const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
   const [isDragAreaActive, setIsDragAreaActive] = useState(false);
   const [isExpandHover, setIsExpandHover] = useState(false);
+  const [isNearCustomCursorTarget, setIsNearCustomCursorTarget] = useState(false);
 
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
@@ -109,6 +110,7 @@ export default function App() {
   useEffect(() => {
     setIsDragAreaActive(false);
     setIsExpandHover(false);
+    setIsNearCustomCursorTarget(false);
   }, [currentSlide]);
 
   const goToSlide = (n: number) => setCurrentSlide(Math.max(0, Math.min(TOTAL_SLIDES - 1, n)));
@@ -149,22 +151,31 @@ export default function App() {
     const els = document.querySelectorAll('button, a, input, select, textarea, [role="button"]');
     let near = false;
     let on = false;
+    let nearCustomCursorTarget = false;
     for (const el of els) {
       const r = el.getBoundingClientRect();
-      if (
+      const isNearElement =
         e.clientX >= r.left - PROXIMITY_BUFFER &&
         e.clientX <= r.right + PROXIMITY_BUFFER &&
         e.clientY >= r.top - PROXIMITY_BUFFER &&
-        e.clientY <= r.bottom + PROXIMITY_BUFFER
-      ) near = true;
+        e.clientY <= r.bottom + PROXIMITY_BUFFER;
+
+      if (isNearElement) {
+        near = true;
+        if (el instanceof HTMLElement && el.dataset.expandHotspot === "slide-6") {
+          nearCustomCursorTarget = true;
+        }
+      }
+
       if (
         e.clientX >= r.left && e.clientX <= r.right &&
         e.clientY >= r.top  && e.clientY <= r.bottom
       ) { on = true; near = true; }
-      if (near && on) break;
+      if (near && on && nearCustomCursorTarget) break;
     }
     setIsNearInteractive(near);
     setIsOnInteractive(on);
+    setIsNearCustomCursorTarget(nearCustomCursorTarget);
   };
 
   const handleClick = () => {
@@ -185,6 +196,7 @@ export default function App() {
   const isSlide0 = currentSlide === 0;
   const showBackCursor = currentSlide > 0 && isLeftHalf;
   const isInfographicActionCursor = isInfographicExpanded || isExpandHover;
+  const isInteractiveSuppressingCursor = isNearInteractive && !isNearCustomCursorTarget;
 
   useEffect(() => {
     if (isInfographicExpanded || currentSlide !== 5) return undefined;
@@ -204,11 +216,11 @@ export default function App() {
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => { setCursorVisible(false); setIsNearInteractive(false); setIsOnInteractive(false); logoX.set(0); logoY.set(0); }}
+      onMouseLeave={() => { setCursorVisible(false); setIsNearInteractive(false); setIsOnInteractive(false); setIsNearCustomCursorTarget(false); logoX.set(0); logoY.set(0); }}
       onMouseEnter={() => setCursorVisible(true)}
       onClick={handleClick}
       style={{ backgroundColor: isSlide0 ? "#04165d" : "#ffffff" }}
-      className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isInfographicExpanded ? "cursor-none" : (isModalOpen ? "cursor-auto" : (isNearInteractive ? "" : "cursor-none"))}`}
+      className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isInfographicExpanded ? "cursor-none" : (isModalOpen ? "cursor-auto" : (isInteractiveSuppressingCursor ? "" : "cursor-none"))}`}
     >
       <div
         style={{
@@ -411,17 +423,17 @@ export default function App() {
           zIndex: 9999,
         }}
         animate={{
-          opacity: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0),
-          scale: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0.4) : (isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
+          opacity: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isInteractiveSuppressingCursor ? 1 : 0),
+          scale: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0.4) : (isInteractiveSuppressingCursor ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
           width: isInfographicActionCursor ? vs(INFOGRAPHIC_CURSOR_SIZE) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
           height: isInfographicActionCursor ? vs(INFOGRAPHIC_CURSOR_SIZE) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
         }}
         transition={{
-          opacity: { duration: isNearInteractive && !isInfographicActionCursor ? 0.18 : 0.3, ease: "easeInOut" },
+          opacity: { duration: isInteractiveSuppressingCursor && !isInfographicActionCursor ? 0.18 : 0.3, ease: "easeInOut" },
           scale: {
-            duration: isNearInteractive && !isInfographicActionCursor ? 0.22 : (isTapping ? 0.12 : 0.3),
-            ease: isNearInteractive && !isInfographicActionCursor ? "easeIn" : (isTapping ? "easeOut" : undefined),
-            type: (!isNearInteractive && !isTapping) || isInfographicActionCursor ? "spring" : "tween",
+            duration: isInteractiveSuppressingCursor && !isInfographicActionCursor ? 0.22 : (isTapping ? 0.12 : 0.3),
+            ease: isInteractiveSuppressingCursor && !isInfographicActionCursor ? "easeIn" : (isTapping ? "easeOut" : undefined),
+            type: (!isInteractiveSuppressingCursor && !isTapping) || isInfographicActionCursor ? "spring" : "tween",
             stiffness: 300,
           },
           width: { duration: 0.25, ease: "easeInOut" },
@@ -468,71 +480,72 @@ export default function App() {
             </motion.div>
           </div>
         ) : (
-          <div className="relative flex h-full w-full items-center justify-center">
-            <motion.div
-              animate={{
-                opacity: isDragAreaActive ? 1 : 0,
-                scale: isDragAreaActive ? 1 : 0.92,
-                y: isDragAreaActive ? 0 : vs(2),
-              }}
-              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ gap: vs(2) }}
-            >
-              <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
-                <mask id="cursor-drag-back" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
-                  <rect width="24" height="24" fill="#D9D9D9" />
-                </mask>
-                <g mask="url(#cursor-drag-back)">
-                  <path d={dragSvgPaths.p90d8b80} fill="white" />
-                </g>
-              </svg>
-              <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
-                <mask id="cursor-drag-fwd" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
-                  <rect width="24" height="24" fill="#D9D9D9" />
-                </mask>
-                <g mask="url(#cursor-drag-fwd)">
-                  <path d={dragSvgPaths.p23cbb200} fill="white" />
-                </g>
-              </svg>
-            </motion.div>
-            <motion.div
-              animate={{
-                opacity: !isDragAreaActive && showBackCursor ? 1 : 0,
-                rotate: !isDragAreaActive && showBackCursor ? 0 : 28,
-                scale: !isDragAreaActive && showBackCursor ? 1 : 0.9,
-              }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <svg width={vs(32)} height={vs(32)} viewBox="0 0 32 32" fill="none">
-                <mask id="cursor-back-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32" style={{ maskType: "alpha" }}>
-                  <rect width="32" height="32" fill="#D9D9D9" />
-                </mask>
-                <g mask="url(#cursor-back-mask)">
-                  <path d={backSvgPaths.p1cb876f0} fill="white" />
-                </g>
-              </svg>
-            </motion.div>
-            <motion.div
-              animate={{
-                opacity: !isDragAreaActive && !showBackCursor ? 1 : 0,
-                rotate: !isDragAreaActive && !showBackCursor ? 0 : -28,
-                scale: !isDragAreaActive && !showBackCursor ? 1 : 0.9,
-              }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <svg width={vs(48)} height={vs(48)} viewBox="0 0 48 48" fill="none">
-                <mask id="cursor-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48" style={{ maskType: "alpha" }}>
-                  <rect width="48" height="48" fill="#D9D9D9" />
-                </mask>
-                <g mask="url(#cursor-mask)">
-                  <path d={svgPaths.pa0c5900} fill="white" />
-                </g>
-              </svg>
-            </motion.div>
-          </div>
+          <AnimatePresence initial={false}>
+            {isDragAreaActive ? (
+              <motion.div
+                key="drag"
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.6 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
+                className="flex items-center justify-center"
+                style={{ gap: vs(2) }}
+              >
+                <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
+                  <mask id="cursor-drag-back" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+                    <rect width="24" height="24" fill="#D9D9D9" />
+                  </mask>
+                  <g mask="url(#cursor-drag-back)">
+                    <path d={dragSvgPaths.p90d8b80} fill="white" />
+                  </g>
+                </svg>
+                <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
+                  <mask id="cursor-drag-fwd" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+                    <rect width="24" height="24" fill="#D9D9D9" />
+                  </mask>
+                  <g mask="url(#cursor-drag-fwd)">
+                    <path d={dragSvgPaths.p23cbb200} fill="white" />
+                  </g>
+                </svg>
+              </motion.div>
+            ) : showBackCursor ? (
+              <motion.div
+                key="back"
+                initial={{ opacity: 0, rotate: 45, scale: 0.4 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: -45, scale: 0.4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="flex items-center justify-center"
+              >
+                <svg width={vs(32)} height={vs(32)} viewBox="0 0 32 32" fill="none">
+                  <mask id="cursor-back-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32" style={{ maskType: "alpha" }}>
+                    <rect width="32" height="32" fill="#D9D9D9" />
+                  </mask>
+                  <g mask="url(#cursor-back-mask)">
+                    <path d={backSvgPaths.p1cb876f0} fill="white" />
+                  </g>
+                </svg>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="forward"
+                initial={{ opacity: 0, rotate: -45, scale: 0.4 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 45, scale: 0.4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="flex items-center justify-center"
+              >
+                <svg width={vs(48)} height={vs(48)} viewBox="0 0 48 48" fill="none">
+                  <mask id="cursor-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48" style={{ maskType: "alpha" }}>
+                    <rect width="48" height="48" fill="#D9D9D9" />
+                  </mask>
+                  <g mask="url(#cursor-mask)">
+                    <path d={svgPaths.pa0c5900} fill="white" />
+                  </g>
+                </svg>
+              </motion.div>
+            )}
+          </AnimatePresence>
         )}
       </motion.div>
     </div>
