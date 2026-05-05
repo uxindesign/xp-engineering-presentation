@@ -175,6 +175,21 @@ export default function App() {
 
   const isSlide0 = currentSlide === 0;
   const showBackCursor = currentSlide > 0 && isLeftHalf;
+  const isInfographicActionCursor = isInfographicExpanded || isExpandHover;
+
+  useEffect(() => {
+    if (isInfographicExpanded || currentSlide !== 5) return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      const hotspot = document
+        .elementFromPoint(mouseX.get(), mouseY.get())
+        ?.closest('[data-expand-hotspot="slide-6"]');
+
+      setIsExpandHover(Boolean(hotspot));
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [currentSlide, isInfographicExpanded, mouseX]);
 
   return (
     <div
@@ -387,17 +402,17 @@ export default function App() {
           zIndex: 9999,
         }}
         animate={{
-          opacity: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && (!isNearInteractive || isExpandHover) ? 1 : 0),
-          scale: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0.4) : ((isNearInteractive && !isExpandHover) ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
-          width: isInfographicExpanded ? vs(80) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
-          height: isInfographicExpanded ? vs(80) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
+          opacity: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0),
+          scale: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0.4) : (isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
+          width: isInfographicActionCursor ? vs(80) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
+          height: isInfographicActionCursor ? vs(80) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
         }}
         transition={{
-          opacity: { duration: isNearInteractive && !isInfographicExpanded ? 0.18 : 0.3, ease: "easeInOut" },
+          opacity: { duration: isNearInteractive && !isInfographicActionCursor ? 0.18 : 0.3, ease: "easeInOut" },
           scale: {
-            duration: isNearInteractive && !isInfographicExpanded ? 0.22 : (isTapping ? 0.12 : 0.3),
-            ease: isNearInteractive && !isInfographicExpanded ? "easeIn" : (isTapping ? "easeOut" : undefined),
-            type: (!isNearInteractive && !isTapping) || isInfographicExpanded ? "spring" : "tween",
+            duration: isNearInteractive && !isInfographicActionCursor ? 0.22 : (isTapping ? 0.12 : 0.3),
+            ease: isNearInteractive && !isInfographicActionCursor ? "easeIn" : (isTapping ? "easeOut" : undefined),
+            type: (!isNearInteractive && !isTapping) || isInfographicActionCursor ? "spring" : "tween",
             stiffness: 300,
           },
           width: { duration: 0.25, ease: "easeInOut" },
@@ -405,13 +420,13 @@ export default function App() {
         }}
         className="flex items-center justify-center bg-[#036ef2] rounded-full"
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false}>
           {isInfographicExpanded ? (
             <motion.div
               key="close-infographic"
-              initial={{ opacity: 0, rotate: -45, scale: 0.4 }}
-              animate={{ opacity: 1, rotate: 0, scale: 1 }}
-              exit={{ opacity: 0, rotate: 45, scale: 0.4 }}
+              initial={{ opacity: 0, rotate: -45 }}
+              animate={{ opacity: 1, rotate: 0 }}
+              exit={{ opacity: 0, rotate: 45 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
               className="flex items-center justify-center"
             >
@@ -422,10 +437,10 @@ export default function App() {
           ) : isExpandHover ? (
             <motion.div
               key="expand"
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.6 }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.12, ease: "easeOut" }}
               className="flex items-center justify-center"
             >
               <svg width={vs(48)} height={vs(48)} viewBox="0 0 24 24" fill="none">

@@ -208,9 +208,11 @@ function ExpandHotspot({
   return (
     <button
       type="button"
+      data-expand-hotspot="slide-6"
       aria-label="Expandir infográfico em tela cheia"
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
+      onMouseMove={() => onHoverChange?.(true)}
       onFocus={() => onHoverChange?.(true)}
       onBlur={() => onHoverChange?.(false)}
       onClick={onClick}
@@ -670,7 +672,6 @@ export function Slide06({ scaleX, scaleY, onExpandedChange, onExpandHoverChange 
               onHoverChange={onExpandHoverChange}
               onClick={(event) => {
                 event.stopPropagation();
-                onExpandHoverChange?.(false);
                 openInfographic();
               }}
             />
