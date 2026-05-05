@@ -400,7 +400,7 @@ function ExpandedInfographic({
           <div style={{ paddingTop: vs(8), width: "100%" }}>
             <div style={{ borderRadius: vs(28), border: `${vs(1)}px solid #6e7587`, padding: `${vs(24)}px ${vs(40)}px`, display: "flex", flexDirection: "column", gap: vs(20), alignItems: "center", width: "100%" }}>
               <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), lineHeight: `${vs(32)}px`, color: "#04165d", textAlign: "center", fontStyle: "normal" }}>
-                Princípios do Design da era da IA
+                Princípios do Design na era da IA
               </p>
               <div style={{ display: "flex", gap: vs(40), alignItems: "flex-start", justifyContent: "center", width: "100%" }}>
                 {AI_PRINCIPLES.map((principle) => (
