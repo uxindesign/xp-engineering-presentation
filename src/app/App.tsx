@@ -10,6 +10,7 @@ import { Slide05 } from "./components/Slide05";
 import { Slide06 } from "./components/Slide06";
 
 const TOTAL_SLIDES = 6;
+const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,6 +28,7 @@ export default function App() {
   const [isNearInteractive, setIsNearInteractive] = useState(false);
   const [isOnInteractive, setIsOnInteractive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
   const [isDragAreaActive, setIsDragAreaActive] = useState(false);
 
   const mouseX = useMotionValue(-100);
@@ -105,13 +107,14 @@ export default function App() {
   // ── Navegação por teclado ──────────────────────────────────────────────
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isInfographicExpanded) return;
       if (isModalOpen) return;
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft")  goPrev();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSlide, isModalOpen]);
+  }, [currentSlide, isModalOpen, isInfographicExpanded]);
   // ──────────────────────────────────────────────────────────────────────
 
   const PROXIMITY_BUFFER = 32; // px — custom cursor starts hiding before reaching element
@@ -154,6 +157,7 @@ export default function App() {
   };
 
   const handleClick = () => {
+    if (isInfographicExpanded) return;
     if (isModalOpen) return;
     if (isDragAreaActive) return;
 
@@ -178,7 +182,7 @@ export default function App() {
       onMouseEnter={() => setCursorVisible(true)}
       onClick={handleClick}
       style={{ backgroundColor: isSlide0 ? "#04165d" : "#ffffff" }}
-      className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isModalOpen ? "cursor-auto" : (isNearInteractive ? "" : "cursor-none")}`}
+      className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isInfographicExpanded ? "cursor-none" : (isModalOpen ? "cursor-auto" : (isNearInteractive ? "" : "cursor-none"))}`}
     >
       <div
         style={{
@@ -340,6 +344,7 @@ export default function App() {
             scaleY={scaleY}
             onPrev={goPrev}
             onNext={goNext}
+            onExpandedChange={setIsInfographicExpanded}
           />
         )}
 
@@ -362,6 +367,7 @@ export default function App() {
             scaleY={scaleY}
             onPrev={goPrev}
             onNext={goNext}
+            onExpandedChange={setIsInfographicExpanded}
           />
         )}
       </AnimatePresence>
@@ -379,17 +385,17 @@ export default function App() {
           zIndex: 9999,
         }}
         animate={{
-          opacity: !isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0,
-          scale: isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4)),
-          width: isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80)),
-          height: isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80)),
+          opacity: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isNearInteractive ? 1 : 0),
+          scale: isInfographicExpanded ? (cursorReady && cursorVisible ? 1 : 0.4) : (isNearInteractive ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
+          width: isInfographicExpanded ? vs(56) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
+          height: isInfographicExpanded ? vs(56) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
         }}
         transition={{
-          opacity: { duration: isNearInteractive ? 0.18 : 0.3, ease: "easeInOut" },
+          opacity: { duration: isNearInteractive && !isInfographicExpanded ? 0.18 : 0.3, ease: "easeInOut" },
           scale: {
-            duration: isNearInteractive ? 0.22 : (isTapping ? 0.12 : 0.3),
-            ease: isNearInteractive ? "easeIn" : (isTapping ? "easeOut" : undefined),
-            type: (!isNearInteractive && !isTapping) ? "spring" : "tween",
+            duration: isNearInteractive && !isInfographicExpanded ? 0.22 : (isTapping ? 0.12 : 0.3),
+            ease: isNearInteractive && !isInfographicExpanded ? "easeIn" : (isTapping ? "easeOut" : undefined),
+            type: (!isNearInteractive && !isTapping) || isInfographicExpanded ? "spring" : "tween",
             stiffness: 300,
           },
           width: { duration: 0.25, ease: "easeInOut" },
@@ -398,7 +404,20 @@ export default function App() {
         className="flex items-center justify-center bg-[#036ef2] rounded-full"
       >
         <AnimatePresence mode="wait">
-          {isDragAreaActive ? (
+          {isInfographicExpanded ? (
+            <motion.div
+              key="close-infographic"
+              initial={{ opacity: 0, rotate: -45, scale: 0.4 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: 45, scale: 0.4 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="flex items-center justify-center"
+            >
+              <svg width={vs(32)} height={vs(32)} viewBox="0 0 32 32" fill="none">
+                <path d={CLOSE_ICON_PATH} fill="white" />
+              </svg>
+            </motion.div>
+          ) : isDragAreaActive ? (
             <motion.div
               key="drag"
               initial={{ opacity: 0, scale: 0.6 }}
