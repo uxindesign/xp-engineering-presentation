@@ -480,72 +480,82 @@ export default function App() {
             </motion.div>
           </div>
         ) : (
-          <AnimatePresence initial={false}>
-            {isDragAreaActive ? (
-              <motion.div
-                key="drag"
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.6 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
-                className="flex items-center justify-center"
-                style={{ gap: vs(2) }}
-              >
-                <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
-                  <mask id="cursor-drag-back" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
-                    <rect width="24" height="24" fill="#D9D9D9" />
-                  </mask>
-                  <g mask="url(#cursor-drag-back)">
-                    <path d={dragSvgPaths.p90d8b80} fill="white" />
-                  </g>
-                </svg>
-                <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
-                  <mask id="cursor-drag-fwd" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
-                    <rect width="24" height="24" fill="#D9D9D9" />
-                  </mask>
-                  <g mask="url(#cursor-drag-fwd)">
-                    <path d={dragSvgPaths.p23cbb200} fill="white" />
-                  </g>
-                </svg>
-              </motion.div>
-            ) : showBackCursor ? (
-              <motion.div
-                key="back"
-                initial={{ opacity: 0, rotate: 45, scale: 0.4 }}
-                animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                exit={{ opacity: 0, rotate: -45, scale: 0.4 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="flex items-center justify-center"
-              >
-                <svg width={vs(32)} height={vs(32)} viewBox="0 0 32 32" fill="none">
-                  <mask id="cursor-back-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32" style={{ maskType: "alpha" }}>
-                    <rect width="32" height="32" fill="#D9D9D9" />
-                  </mask>
-                  <g mask="url(#cursor-back-mask)">
-                    <path d={backSvgPaths.p1cb876f0} fill="white" />
-                  </g>
-                </svg>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="forward"
-                initial={{ opacity: 0, rotate: -45, scale: 0.4 }}
-                animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                exit={{ opacity: 0, rotate: 45, scale: 0.4 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="flex items-center justify-center"
-              >
-                <svg width={vs(48)} height={vs(48)} viewBox="0 0 48 48" fill="none">
-                  <mask id="cursor-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48" style={{ maskType: "alpha" }}>
-                    <rect width="48" height="48" fill="#D9D9D9" />
-                  </mask>
-                  <g mask="url(#cursor-mask)">
-                    <path d={svgPaths.pa0c5900} fill="white" />
-                  </g>
-                </svg>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="relative flex h-full w-full items-center justify-center">
+            <motion.div
+              animate={{
+                opacity: isDragAreaActive ? 0 : 1,
+                scale: isDragAreaActive ? 0.9 : 1,
+              }}
+              transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <AnimatePresence initial={false}>
+                {showBackCursor ? (
+                  <motion.div
+                    key="back"
+                    initial={{ opacity: 0, rotate: 45, scale: 0.4 }}
+                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                    exit={{ opacity: 0, rotate: -45, scale: 0.4 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="flex items-center justify-center"
+                  >
+                    <svg width={vs(32)} height={vs(32)} viewBox="0 0 32 32" fill="none">
+                      <mask id="cursor-back-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32" style={{ maskType: "alpha" }}>
+                        <rect width="32" height="32" fill="#D9D9D9" />
+                      </mask>
+                      <g mask="url(#cursor-back-mask)">
+                        <path d={backSvgPaths.p1cb876f0} fill="white" />
+                      </g>
+                    </svg>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="forward"
+                    initial={{ opacity: 0, rotate: -45, scale: 0.4 }}
+                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                    exit={{ opacity: 0, rotate: 45, scale: 0.4 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="flex items-center justify-center"
+                  >
+                    <svg width={vs(48)} height={vs(48)} viewBox="0 0 48 48" fill="none">
+                      <mask id="cursor-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48" style={{ maskType: "alpha" }}>
+                        <rect width="48" height="48" fill="#D9D9D9" />
+                      </mask>
+                      <g mask="url(#cursor-mask)">
+                        <path d={svgPaths.pa0c5900} fill="white" />
+                      </g>
+                    </svg>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+            <motion.div
+              animate={{
+                opacity: isDragAreaActive ? 1 : 0,
+                scale: isDragAreaActive ? 1 : 0.92,
+              }}
+              transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ gap: vs(2) }}
+            >
+              <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
+                <mask id="cursor-drag-back" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+                  <rect width="24" height="24" fill="#D9D9D9" />
+                </mask>
+                <g mask="url(#cursor-drag-back)">
+                  <path d={dragSvgPaths.p90d8b80} fill="white" />
+                </g>
+              </svg>
+              <svg width={vs(18)} height={vs(18)} viewBox="0 0 24 24" fill="none">
+                <mask id="cursor-drag-fwd" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
+                  <rect width="24" height="24" fill="#D9D9D9" />
+                </mask>
+                <g mask="url(#cursor-drag-fwd)">
+                  <path d={dragSvgPaths.p23cbb200} fill="white" />
+                </g>
+              </svg>
+            </motion.div>
+          </div>
         )}
       </motion.div>
     </div>
