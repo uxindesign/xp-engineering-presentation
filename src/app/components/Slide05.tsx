@@ -20,7 +20,7 @@ const CARDS = [
     iconKey: "p22ba1e00",
     title: "Pesquisa e Discovery",
     items: [
-      "Entrevistas com usuários e stakeholders",
+      "Entrevistas com utilizadores e stakeholders",
       "Personas e jornadas",
       "Benchmarks e análise de contexto",
     ],
@@ -62,7 +62,7 @@ const CARDS = [
     items: [
       "Auditoria WCAG 2.2",
       "Documentação de boas práticas",
-      "Testes com usuários diversos",
+      "Testes com utilizadores diversos",
     ],
   },
   {

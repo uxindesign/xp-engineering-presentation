@@ -521,8 +521,7 @@ function Step1() {
     <div className="content-stretch flex flex-col gap-[16px] items-center overflow-clip relative shrink-0 w-[220px]" data-name="Step">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[32px] min-w-full not-italic relative shrink-0 text-[#04165d] text-[24px] text-center w-[min-content]">Descobrir</p>
       <Circle />
-      <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#2f3237] text-[14px] text-center tracking-[0.25px] w-[190px]">Entender o problema, o usuário e o contexto</p>
-    </div>
+      <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#2f3237] text-[14px] text-center tracking-[0.25px] w-[190px]">Entender o problema, o utilizador e o contexto</p>    </div>
   );
 }
 
@@ -593,8 +592,7 @@ function Step4() {
     <div className="content-stretch flex flex-col gap-[16px] items-center overflow-clip relative shrink-0 w-[220px]" data-name="Step">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[32px] min-w-full not-italic relative shrink-0 text-[#04165d] text-[24px] text-center w-[min-content]">Validar</p>
       <Circle3 />
-      <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#2f3237] text-[14px] text-center tracking-[0.25px] w-[190px]">Testar com usuários, iterar com evidência</p>
-    </div>
+      <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#2f3237] text-[14px] text-center tracking-[0.25px] w-[190px]">Testar com utilizadores, iterar com evidência</p>    </div>
   );
 }
 

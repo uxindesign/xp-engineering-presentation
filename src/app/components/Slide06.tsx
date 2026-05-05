@@ -208,7 +208,7 @@ const AI_PRINCIPLES = [
   { title: "Centrado em pessoas", desc: "Empatia, contexto e valor continuam no centro", icon: "groups" },
   { title: "Evidências antes de soluções", desc: "Decisões guiadas por evidências, não suposições", icon: "fact_check" },
   { title: "Julgamento Humano", desc: "IA amplia possibilidades, mas não substitui decisão", icon: "balance", descWidth: 190 },
-  { title: "Menos ainda é mais", desc: "Focar no que gera mais valor, não no que é mais fácil de gerar", icon: "kid_star" },
+  { title: "Menos é mais", desc: "Focar no que gera mais valor, não no que é mais fácil de gerar", icon: "kid_star" },
   { title: "Iterar e evoluir sempre", desc: "Aprendizado contínuo gera vantagem sustentável", icon: "potted_plant" },
 ];
 
@@ -499,10 +499,10 @@ export function Slide06({ scaleX, scaleY, onExpandedChange }: Props) {
   ];
 
   const STEPS = [
-    { title: "Descobrir",  desc: "Entender o problema, o usuário e o contexto" },
+    { title: "Descobrir",  desc: "Entender o problema, o utilizador e o contexto" },
     { title: "Definir",    desc: "Estabelecer escopo, personas e critérios" },
     { title: "Explorar",   desc: "Gerar e avaliar possibilidades de solução" },
-    { title: "Validar",    desc: "Testar com usuários, iterar com evidência" },
+    { title: "Validar",    desc: "Testar com utilizadores, iterar com evidência" },
     { title: "Entregar",   desc: "Especificar, alinhar com dev, acompanhar build" },
     { title: "Acompanhar", desc: "Avaliar impacto, extrair aprendizados" },
   ];

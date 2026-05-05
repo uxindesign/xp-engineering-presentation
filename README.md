@@ -31,5 +31,5 @@ Este projeto já inclui o workflow `.github/workflows/deploy.yml`.
 Depois do workflow concluir, o link ficará disponível em:
 
 ```text
-https://SEU_USUARIO.github.io/NOME_DO_REPOSITORIO/
+https://SEU_UTILIZADOR.github.io/NOME_DO_REPOSITORIO/
 ```

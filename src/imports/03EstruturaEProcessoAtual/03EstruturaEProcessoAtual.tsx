@@ -148,8 +148,7 @@ function Content3() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-start min-w-px relative" data-name="Content">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Sem teste de usabilidade</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">Os protótipos seguem para desenvolvimento sem validação com usuário. Os problemas são identificados muito tarde.</p>
-    </div>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">Os protótipos seguem para desenvolvimento sem validação com o utilizador. Os problemas são identificados muito tarde.</p>    </div>
   );
 }
 

@@ -264,7 +264,7 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
                   style={{ fontSize: vs(20), lineHeight: 1.5 }}
                   className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
                 >
-                  Os protótipos seguem para desenvolvimento sem validação com usuário. Os problemas são identificados muito tarde.
+                  Os protótipos seguem para desenvolvimento sem validação com o utilizador. Os problemas são identificados muito tarde.
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: vs(12), flex: 1, minWidth: 0 }}>
