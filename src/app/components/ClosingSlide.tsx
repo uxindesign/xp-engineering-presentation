@@ -1,12 +1,14 @@
-import { motion } from "motion/react";
+import { motion, type MotionValue } from "motion/react";
 import svgPaths from "../../imports/01Capa/svg-9xym7sn689";
 
 interface Props {
   scaleX: number;
   scaleY: number;
+  logoRotateX: MotionValue<number>;
+  logoRotateY: MotionValue<number>;
 }
 
-export function ClosingSlide({ scaleX, scaleY }: Props) {
+export function ClosingSlide({ scaleX, scaleY, logoRotateX, logoRotateY }: Props) {
   const s = Math.min(scaleX, scaleY);
   const vx = (n: number) => n * scaleX;
   const vy = (n: number) => n * scaleY;
@@ -21,10 +23,7 @@ export function ClosingSlide({ scaleX, scaleY }: Props) {
       transition={{ duration: 0.35 }}
       className="absolute inset-0 overflow-hidden bg-[#04165d]"
     >
-      <motion.div
-        initial={{ opacity: 0, x: vx(-80) }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
+      <div
         style={{
           position: "absolute",
           left: vx(120),
@@ -33,13 +32,16 @@ export function ClosingSlide({ scaleX, scaleY }: Props) {
           width: vx(708),
         }}
       >
-        <p
+        <motion.p
+          initial={{ opacity: 0, x: vx(-80) }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
           style={{ fontSize: vs(180), letterSpacing: vs(-5), lineHeight: 0.92, margin: 0 }}
           className="font-['Bronkoh-Heavy',sans-serif] not-italic text-white"
         >
           Muito obrigado!
-        </p>
-      </motion.div>
+        </motion.p>
+      </div>
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -82,10 +84,16 @@ export function ClosingSlide({ scaleX, scaleY }: Props) {
           bottom: vy(-81.57),
           width: vs(800),
           height: vs(797.568),
+          perspective: 1200,
         }}
         className="pointer-events-none"
       >
-        <svg
+        <motion.svg
+          style={{
+            rotateX: logoRotateX,
+            rotateY: logoRotateY,
+            transformStyle: "preserve-3d",
+          }}
           className="absolute block inset-0 size-full"
           fill="none"
           preserveAspectRatio="none"
@@ -94,7 +102,7 @@ export function ClosingSlide({ scaleX, scaleY }: Props) {
           <path d={svgPaths.p26e5dc80} fill="#036EF2" />
           <path d={svgPaths.p2da8a80} fill="#036EF2" />
           <path d={svgPaths.p21370b80} fill="#036EF2" />
-        </svg>
+        </motion.svg>
       </motion.div>
     </motion.div>
   );

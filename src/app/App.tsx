@@ -14,6 +14,7 @@ import { StandardPlanSlide, type StandardPlanSlideData } from "./components/Stan
 
 const TOTAL_SLIDES = 17;
 const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
+const REPEAT_ICON_PATH = "M35.3 12.65C32.4 9.75 28.4 8 24 8C15.15 8 8 15.15 8 24C8 32.85 15.15 40 24 40C31.45 40 37.7 34.9 39.45 28H35.25C33.6 32.65 29.15 36 24 36C17.35 36 12 30.65 12 24C12 17.35 17.35 12 24 12C27.3 12 30.25 13.35 32.4 15.5L26 22H40V8L35.3 12.65Z";
 const INFOGRAPHIC_CURSOR_SIZE = 64;
 const INFOGRAPHIC_CURSOR_ICON_SIZE = 40;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
@@ -215,6 +216,11 @@ export default function App() {
     setIsTapping(true);
     setTimeout(() => setIsTapping(false), 180);
 
+    if (currentSlide === TOTAL_SLIDES - 1 && !isLeftHalf) {
+      goToSlide(0);
+      return;
+    }
+
     if (currentSlide === 0 || !isLeftHalf) {
       goNext();
     } else {
@@ -223,7 +229,10 @@ export default function App() {
   };
 
   const isSlide0 = currentSlide === 0;
+  const isClosingSlide = currentSlide === TOTAL_SLIDES - 1;
+  const isDarkSlide = isSlide0 || isClosingSlide;
   const showBackCursor = currentSlide > 0 && isLeftHalf;
+  const showRepeatCursor = isClosingSlide && !isLeftHalf;
   const isInfographicActionCursor = isInfographicExpanded || isExpandHover;
   const isInteractiveSuppressingCursor = isNearInteractive && !isNearCustomCursorTarget;
 
@@ -248,7 +257,7 @@ export default function App() {
       onMouseLeave={() => { setCursorVisible(false); setIsNearInteractive(false); setIsOnInteractive(false); setIsNearCustomCursorTarget(false); logoX.set(0); logoY.set(0); }}
       onMouseEnter={() => setCursorVisible(true)}
       onClick={handleClick}
-      style={{ backgroundColor: isSlide0 ? "#04165d" : "#ffffff" }}
+      style={{ backgroundColor: isDarkSlide ? "#04165d" : "#ffffff" }}
       className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isInfographicExpanded ? "cursor-none" : (isModalOpen ? "cursor-auto" : (isInteractiveSuppressingCursor ? "" : "cursor-none"))}`}
     >
       <div
@@ -454,6 +463,8 @@ export default function App() {
             key="slide-17"
             scaleX={scaleX}
             scaleY={scaleY}
+            logoRotateX={logoRotateX}
+            logoRotateY={logoRotateY}
           />
         )}
       </AnimatePresence>
@@ -572,6 +583,19 @@ export default function App() {
                   <g mask="url(#cursor-back-mask)">
                     <path d={backSvgPaths.p1cb876f0} fill="white" />
                   </g>
+                </svg>
+              </motion.div>
+            ) : showRepeatCursor ? (
+              <motion.div
+                key="repeat"
+                initial={{ opacity: 0, rotate: -45, scale: 0.4 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 45, scale: 0.4 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="flex items-center justify-center"
+              >
+                <svg width={vs(48)} height={vs(48)} viewBox="0 0 48 48" fill="none">
+                  <path d={REPEAT_ICON_PATH} fill="white" />
                 </svg>
               </motion.div>
             ) : (
