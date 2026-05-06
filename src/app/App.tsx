@@ -30,7 +30,7 @@ const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
     number: "10",
     eyebrow: "Dimensionamento de Time",
     title: "Composição da equipa",
-    body: "Crescimento progressivo, dimensionado pelo volume e criticidade dos projetos",
+    body: "Crescimento progressivo, dimensionado pelo volume e criticidade dos projetos.",
   },
   { number: "11", eyebrow: "AAAA", title: "Papéis e responsabilidades", body: "AAA" },
   {
