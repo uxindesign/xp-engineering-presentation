@@ -277,7 +277,7 @@ export default function App() {
                   transition={{ duration: 0.8, delay: 0.7 }}
                   style={{ lineHeight: 0.92 }}
                 >
-                  Experience
+                  TIS Experience
                 </motion.p>
                 <motion.p
                   initial={{ opacity: 0, y: 50 }}
