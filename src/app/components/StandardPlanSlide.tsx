@@ -2,11 +2,17 @@ import { motion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 
-interface Props {
+export interface StandardPlanSlideData {
+  number: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  background?: string;
+}
+
+interface Props extends StandardPlanSlideData {
   scaleX: number;
   scaleY: number;
-  onPrev: () => void;
-  onNext: () => void;
 }
 
 const ease = "easeOut" as const;
@@ -39,7 +45,15 @@ function TisLogo({ scale }: { scale: (n: number) => number }) {
   );
 }
 
-export function Slide07({ scaleX, scaleY }: Props) {
+export function StandardPlanSlide({
+  scaleX,
+  scaleY,
+  number,
+  eyebrow,
+  title,
+  body,
+  background = "#ffffff",
+}: Props) {
   const s = Math.min(scaleX, scaleY);
   const vx = (n: number) => n * scaleX;
   const vy = (n: number) => n * scaleY;
@@ -47,12 +61,13 @@ export function Slide07({ scaleX, scaleY }: Props) {
 
   return (
     <motion.div
-      key="slide-7"
+      key={`slide-${number}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35 }}
-      className="absolute inset-0 bg-white overflow-hidden"
+      className="absolute inset-0 overflow-hidden"
+      style={{ backgroundColor: background }}
     >
       <motion.div
         initial={{ opacity: 0, y: vy(-24) }}
@@ -73,20 +88,20 @@ export function Slide07({ scaleX, scaleY }: Props) {
             style={{ fontSize: vs(16), letterSpacing: vs(2), lineHeight: "normal" }}
             className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-[#036ef2] uppercase"
           >
-            Padronização
+            {eyebrow}
           </p>
           <p
             style={{ fontSize: vs(80), letterSpacing: vs(-1.5), lineHeight: 1 }}
             className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
           >
-            Modelo de atuação
+            {title}
           </p>
         </div>
         <p
           style={{ fontSize: vs(28), lineHeight: 1.5 }}
           className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
         >
-          AAA
+          {body}
         </p>
       </motion.div>
 
@@ -109,7 +124,7 @@ export function Slide07({ scaleX, scaleY }: Props) {
             style={{ fontSize: vs(14), letterSpacing: vs(1.5), lineHeight: "normal" }}
             className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-[#036ef2] uppercase whitespace-nowrap"
           >
-            07
+            {number}
           </p>
           <div style={{ width: vx(24), height: vy(2), overflow: "hidden", position: "relative", flexShrink: 0 }}>
             <div style={{ position: "absolute", background: "rgba(43,118,193,0.4)", height: vs(1), left: 0, right: 0, top: 0 }} />

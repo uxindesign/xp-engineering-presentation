@@ -9,12 +9,40 @@ import { Slide03 } from "./components/Slide03";
 import { Slide04 } from "./components/Slide04";
 import { Slide05 } from "./components/Slide05";
 import { Slide06 } from "./components/Slide06";
-import { Slide07 } from "./components/Slide07";
+import { ClosingSlide } from "./components/ClosingSlide";
+import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
 
-const TOTAL_SLIDES = 7;
+const TOTAL_SLIDES = 17;
 const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
 const INFOGRAPHIC_CURSOR_SIZE = 64;
 const INFOGRAPHIC_CURSOR_ICON_SIZE = 40;
+const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
+  { number: "07", eyebrow: "Padronização", title: "Modelo de atuação", body: "AAA" },
+  {
+    number: "08",
+    eyebrow: "em construção",
+    title: "Design System TIS",
+    body: "Nosso Design System já nasce preparado para o uso por agentes, fornecendo contexto e acelerando o processo.",
+  },
+  { number: "09", eyebrow: "AAAA", title: "Stack e IA no processo", body: "AAA" },
+  {
+    number: "10",
+    eyebrow: "Dimensionamento de Time",
+    title: "Composição da equipa",
+    body: "Crescimento progressivo, dimensionado pelo volume e criticidade dos projetos",
+  },
+  { number: "11", eyebrow: "AAAA", title: "Papéis e responsabilidades", body: "AAA" },
+  {
+    number: "12",
+    eyebrow: "CONEXÕES OPERACIONAIS",
+    title: "Interações com as demais áreas",
+    body: "O trabalho de Experience Engineering acontece nas interfaces entre as áreas, não em paralelo a elas.",
+  },
+  { number: "13", eyebrow: "cadência e alinhamento", title: "Ritos de UX", body: "AAA" },
+  { number: "14", eyebrow: "Como vamos medir", title: "Indicadores de sucesso", body: "AAA" },
+  { number: "15", eyebrow: "AAAA", title: "Roadmap de implantação", body: "AAA", background: "#f4f5f7" },
+  { number: "16", eyebrow: "AAAA", title: "Próximos passos", body: "AAA", background: "#f4f5f7" },
+];
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -410,14 +438,22 @@ export default function App() {
           />
         )}
 
-        {/* ─────────────── SLIDE 7 ─────────────── */}
-        {currentSlide === 6 && (
-          <Slide07
-            key="slide-7"
+        {/* ─────────────── SLIDES 7–16 ─────────────── */}
+        {currentSlide >= 6 && currentSlide <= 15 && (
+          <StandardPlanSlide
+            key={`slide-${currentSlide + 1}`}
             scaleX={scaleX}
             scaleY={scaleY}
-            onPrev={goPrev}
-            onNext={goNext}
+            {...STANDARD_PLAN_SLIDES[currentSlide - 6]}
+          />
+        )}
+
+        {/* ─────────────── SLIDE 17 — Closing ─────────────── */}
+        {currentSlide === 16 && (
+          <ClosingSlide
+            key="slide-17"
+            scaleX={scaleX}
+            scaleY={scaleY}
           />
         )}
       </AnimatePresence>
