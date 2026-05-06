@@ -601,7 +601,7 @@ export function Slide06({ scaleX, scaleY, onExpandedChange, onExpandHoverChange 
             <div style={{ position: "absolute", background: "rgba(43,118,193,0.4)", height: vs(1), left: 0, right: 0, top: 0 }} />
           </div>
           <p style={{ fontFamily: "'Bronkoh-SemiBold', sans-serif", fontSize: vs(14), letterSpacing: vs(1.5), color: "#6e7587", textTransform: "uppercase", lineHeight: "normal" }}>
-            Estrutura e processo ideal
+            PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING
           </p>
         </div>
         <TisLogo scale={vs} />

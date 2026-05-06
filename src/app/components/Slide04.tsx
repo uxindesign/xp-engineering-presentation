@@ -646,7 +646,7 @@ export function Slide04({ scaleX, scaleY }: Props) {
           }}
           className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-[#6e7587] uppercase whitespace-nowrap"
         >
-          Camadas da experiência
+          PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING
         </p>
       </div>
     </motion.div>
