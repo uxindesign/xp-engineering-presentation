@@ -9,8 +9,9 @@ import { Slide03 } from "./components/Slide03";
 import { Slide04 } from "./components/Slide04";
 import { Slide05 } from "./components/Slide05";
 import { Slide06 } from "./components/Slide06";
+import { Slide07 } from "./components/Slide07";
 
-const TOTAL_SLIDES = 6;
+const TOTAL_SLIDES = 7;
 const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
 const INFOGRAPHIC_CURSOR_SIZE = 64;
 const INFOGRAPHIC_CURSOR_ICON_SIZE = 40;
@@ -406,6 +407,17 @@ export default function App() {
             onNext={goNext}
             onExpandedChange={setIsInfographicExpanded}
             onExpandHoverChange={setIsExpandHover}
+          />
+        )}
+
+        {/* ─────────────── SLIDE 7 ─────────────── */}
+        {currentSlide === 6 && (
+          <Slide07
+            key="slide-7"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onPrev={goPrev}
+            onNext={goNext}
           />
         )}
       </AnimatePresence>
