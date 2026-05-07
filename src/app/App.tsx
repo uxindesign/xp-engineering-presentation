@@ -17,9 +17,10 @@ const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33
 const REPEAT_ICON_PATH = "M35.3 12.65C32.4 9.75 28.4 8 24 8C15.15 8 8 15.15 8 24C8 32.85 15.15 40 24 40C31.45 40 37.7 34.9 39.45 28H35.25C33.6 32.65 29.15 36 24 36C17.35 36 12 30.65 12 24C12 17.35 17.35 12 24 12C27.3 12 30.25 13.35 32.4 15.5L26 22H40V8L35.3 12.65Z";
 const INFOGRAPHIC_CURSOR_SIZE = 64;
 const INFOGRAPHIC_CURSOR_ICON_SIZE = 40;
-const LOGO_IDLE_TILT_RANGE = 0.14;
-const LOGO_MOUSE_TILT_MULTIPLIER = 1.22;
-const LOGO_MOUSE_IDLE_DELAY_MS = 720;
+const LOGO_IDLE_X_RANGE = 0.22;
+const LOGO_IDLE_Y_RANGE = 0.18;
+const LOGO_MOUSE_TILT_MULTIPLIER = 1.32;
+const LOGO_MOUSE_IDLE_DELAY_MS = 560;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
   { number: "07", eyebrow: "Padronização", title: "Modelo de atuação", body: "AAA" },
   {
@@ -86,9 +87,17 @@ export default function App() {
   const logoMouseActiveRef = useRef(false);
   const logoMouseIdleTimerRef = useRef<number | null>(null);
 
-  const setLogoIdleTarget = () => {
-    logoX.set((Math.random() * 2 - 1) * LOGO_IDLE_TILT_RANGE);
-    logoY.set((Math.random() * 2 - 1) * LOGO_IDLE_TILT_RANGE);
+  const setLogoIdleTarget = (time: number) => {
+    const t = time / 1000;
+    const x =
+      Math.sin(t * 0.42) * (LOGO_IDLE_X_RANGE * 0.76) +
+      Math.sin(t * 0.19 + 1.7) * (LOGO_IDLE_X_RANGE * 0.24);
+    const y =
+      Math.cos(t * 0.36 + 0.8) * (LOGO_IDLE_Y_RANGE * 0.74) +
+      Math.sin(t * 0.21 + 2.4) * (LOGO_IDLE_Y_RANGE * 0.26);
+
+    logoX.set(x);
+    logoY.set(y);
   };
 
   // Uniform scale for fonts / decorative elements
@@ -136,19 +145,18 @@ export default function App() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return undefined;
 
-    let idleTimer: number;
-    const scheduleIdleTilt = () => {
-      idleTimer = window.setTimeout(() => {
-        if (!logoMouseActiveRef.current) setLogoIdleTarget();
-        scheduleIdleTilt();
-      }, 1800 + Math.random() * 1800);
+    let frameId: number;
+    const tick = (time: number) => {
+      if (!logoMouseActiveRef.current) {
+        setLogoIdleTarget(time);
+      }
+      frameId = window.requestAnimationFrame(tick);
     };
 
-    setLogoIdleTarget();
-    scheduleIdleTilt();
+    frameId = window.requestAnimationFrame(tick);
 
     return () => {
-      window.clearTimeout(idleTimer);
+      window.cancelAnimationFrame(frameId);
       if (logoMouseIdleTimerRef.current !== null) {
         window.clearTimeout(logoMouseIdleTimerRef.current);
       }
@@ -201,7 +209,6 @@ export default function App() {
     }
     logoMouseIdleTimerRef.current = window.setTimeout(() => {
       logoMouseActiveRef.current = false;
-      setLogoIdleTarget();
     }, LOGO_MOUSE_IDLE_DELAY_MS);
     logoX.set(xRatio * LOGO_MOUSE_TILT_MULTIPLIER);
     logoY.set(yRatio * LOGO_MOUSE_TILT_MULTIPLIER);
@@ -291,7 +298,6 @@ export default function App() {
         if (logoMouseIdleTimerRef.current !== null) {
           window.clearTimeout(logoMouseIdleTimerRef.current);
         }
-        setLogoIdleTarget();
       }}
       onMouseEnter={() => setCursorVisible(true)}
       onClick={handleClick}
