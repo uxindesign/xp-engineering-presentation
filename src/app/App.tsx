@@ -17,6 +17,9 @@ const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33
 const REPEAT_ICON_PATH = "M35.3 12.65C32.4 9.75 28.4 8 24 8C15.15 8 8 15.15 8 24C8 32.85 15.15 40 24 40C31.45 40 37.7 34.9 39.45 28H35.25C33.6 32.65 29.15 36 24 36C17.35 36 12 30.65 12 24C12 17.35 17.35 12 24 12C27.3 12 30.25 13.35 32.4 15.5L26 22H40V8L35.3 12.65Z";
 const INFOGRAPHIC_CURSOR_SIZE = 64;
 const INFOGRAPHIC_CURSOR_ICON_SIZE = 40;
+const LOGO_IDLE_TILT_RANGE = 0.14;
+const LOGO_MOUSE_TILT_MULTIPLIER = 1.22;
+const LOGO_MOUSE_IDLE_DELAY_MS = 720;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
   { number: "07", eyebrow: "Padronização", title: "Modelo de atuação", body: "AAA" },
   {
@@ -80,18 +83,12 @@ export default function App() {
   const logoSpringY = useSpring(logoY, logoSpringConfig);
   const logoRotateX = useTransform(logoSpringY, [-0.5, 0.5], [15, -15]);
   const logoRotateY = useTransform(logoSpringX, [-0.5, 0.5], [-15, 15]);
+  const logoMouseActiveRef = useRef(false);
+  const logoMouseIdleTimerRef = useRef<number | null>(null);
 
-  const handleLogoMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    logoX.set(x / rect.width - 0.5);
-    logoY.set(y / rect.height - 0.5);
-  };
-
-  const handleLogoMouseLeave = () => {
-    logoX.set(0);
-    logoY.set(0);
+  const setLogoIdleTarget = () => {
+    logoX.set((Math.random() * 2 - 1) * LOGO_IDLE_TILT_RANGE);
+    logoY.set((Math.random() * 2 - 1) * LOGO_IDLE_TILT_RANGE);
   };
 
   // Uniform scale for fonts / decorative elements
@@ -135,6 +132,29 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return undefined;
+
+    let idleTimer: number;
+    const scheduleIdleTilt = () => {
+      idleTimer = window.setTimeout(() => {
+        if (!logoMouseActiveRef.current) setLogoIdleTarget();
+        scheduleIdleTilt();
+      }, 1800 + Math.random() * 1800);
+    };
+
+    setLogoIdleTarget();
+    scheduleIdleTilt();
+
+    return () => {
+      window.clearTimeout(idleTimer);
+      if (logoMouseIdleTimerRef.current !== null) {
+        window.clearTimeout(logoMouseIdleTimerRef.current);
+      }
+    };
+  }, []);
+
   // Reset per-slide cursor flags when navigating away — slide-scoped onPointerLeave
   // doesn't fire on unmount, so the drag/expand cursors can get stuck otherwise.
   useEffect(() => {
@@ -175,8 +195,16 @@ export default function App() {
     const yRatio = (clientY / innerHeight) - 0.5; // -0.5 to 0.5
     
     // Set values within the expected [-0.5, 0.5] range for useTransform
-    logoX.set(xRatio);
-    logoY.set(yRatio);
+    logoMouseActiveRef.current = true;
+    if (logoMouseIdleTimerRef.current !== null) {
+      window.clearTimeout(logoMouseIdleTimerRef.current);
+    }
+    logoMouseIdleTimerRef.current = window.setTimeout(() => {
+      logoMouseActiveRef.current = false;
+      setLogoIdleTarget();
+    }, LOGO_MOUSE_IDLE_DELAY_MS);
+    logoX.set(xRatio * LOGO_MOUSE_TILT_MULTIPLIER);
+    logoY.set(yRatio * LOGO_MOUSE_TILT_MULTIPLIER);
 
     const els = document.querySelectorAll('button, a, input, select, textarea, [role="button"]');
     let near = false;
@@ -254,7 +282,17 @@ export default function App() {
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => { setCursorVisible(false); setIsNearInteractive(false); setIsOnInteractive(false); setIsNearCustomCursorTarget(false); logoX.set(0); logoY.set(0); }}
+      onMouseLeave={() => {
+        setCursorVisible(false);
+        setIsNearInteractive(false);
+        setIsOnInteractive(false);
+        setIsNearCustomCursorTarget(false);
+        logoMouseActiveRef.current = false;
+        if (logoMouseIdleTimerRef.current !== null) {
+          window.clearTimeout(logoMouseIdleTimerRef.current);
+        }
+        setLogoIdleTarget();
+      }}
       onMouseEnter={() => setCursorVisible(true)}
       onClick={handleClick}
       style={{ backgroundColor: isDarkSlide ? "#04165d" : "#ffffff" }}
