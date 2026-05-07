@@ -90,11 +90,11 @@ export default function App() {
   const setLogoIdleTarget = (time: number) => {
     const t = time / 1000;
     const x =
-      Math.sin(t * 0.54) * (LOGO_IDLE_X_RANGE * 0.82) +
-      Math.sin(t * 0.23 + 1.7) * (LOGO_IDLE_X_RANGE * 0.18);
+      Math.sin(t * 0.82) * (LOGO_IDLE_X_RANGE * 0.82) +
+      Math.sin(t * 0.35 + 1.7) * (LOGO_IDLE_X_RANGE * 0.18);
     const y =
-      Math.cos(t * 0.47 + 0.8) * (LOGO_IDLE_Y_RANGE * 0.8) +
-      Math.sin(t * 0.25 + 2.4) * (LOGO_IDLE_Y_RANGE * 0.2);
+      Math.cos(t * 0.71 + 0.8) * (LOGO_IDLE_Y_RANGE * 0.8) +
+      Math.sin(t * 0.38 + 2.4) * (LOGO_IDLE_Y_RANGE * 0.2);
 
     logoX.set(x);
     logoY.set(y);
