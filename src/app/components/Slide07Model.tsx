@@ -1,7 +1,20 @@
-import { useRef, useState, type MouseEvent, type ReactNode, type WheelEvent } from "react";
+import { useRef, useState, type CSSProperties, type MouseEvent, type ReactNode, type WheelEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
+import coreArrow from "../../assets/slide07/core-arrow.svg";
+import coreConnector from "../../assets/slide07/core-connector.svg";
+import coreRenew from "../../assets/slide07/core-renew.svg";
+import earlyArrowDiagonalDown from "../../assets/slide07/early-arrow-diagonal-down.svg";
+import earlyArrowDiagonalUp from "../../assets/slide07/early-arrow-diagonal-up.svg";
+import earlyArrowLong from "../../assets/slide07/early-arrow-long.svg";
+import earlyArrowSmall from "../../assets/slide07/early-arrow-small.svg";
+import earlyArrowUp from "../../assets/slide07/early-arrow-up.svg";
+import earlyQuestionMark from "../../assets/slide07/early-question-mark.svg";
+import earlyRenewA from "../../assets/slide07/early-renew-a.svg";
+import earlyRenewB from "../../assets/slide07/early-renew-b.svg";
+import growthArrow from "../../assets/slide07/growth-arrow.svg";
+import growthRenew from "../../assets/slide07/growth-renew.svg";
 
 interface Slide07ModelProps {
   scaleX: number;
@@ -104,6 +117,37 @@ function RenewIcon({ metrics, color = NAVY }: { metrics: Metrics; color?: string
   );
 }
 
+function SvgAsset({
+  src,
+  width,
+  height,
+  metrics,
+  style,
+}: {
+  src: string;
+  width: number;
+  height: number;
+  metrics: Metrics;
+  style?: CSSProperties;
+}) {
+  const { vx, vy } = metrics;
+
+  return (
+    <img
+      alt=""
+      src={src}
+      draggable={false}
+      style={{
+        display: "block",
+        width: vx(width),
+        height: vy(height),
+        flexShrink: 0,
+        ...style,
+      }}
+    />
+  );
+}
+
 function TisLogo({ scale }: { scale: (n: number) => number }) {
   return (
     <div style={{ width: scale(120), height: scale(54), position: "relative", opacity: 0.9, overflow: "hidden", flexShrink: 0 }}>
@@ -177,7 +221,7 @@ function Header({ page, metrics }: { page: number; metrics: Metrics }) {
             color: NAVY,
           }}
         >
-          Modelo de actuação
+          {page === 0 ? "Modelo de atuação" : "Modelo de actuação"}
         </p>
       </div>
       <p
@@ -277,94 +321,112 @@ function VerticalNav({
       style={{
         position: "absolute",
         left: vx(1810),
-        top: vy(410),
-        width: vx(80),
-        height: vy(236),
+        top: vy(420),
+        width: vx(88),
+        height: vy(240),
         display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
-        gap: vy(14),
         zIndex: 20,
       }}
       onClick={handleContainerClick}
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <button
-        type="button"
-        aria-label="Página anterior do slide 7"
-        onClick={(event) => {
-          stopEvent(event);
-          if (canGoUp) setPage(page - 1);
-        }}
-        disabled={!canGoUp}
+      <div
         style={{
-          border: 0,
-          background: "transparent",
-          padding: 0,
-          width: vs(56),
-          height: vs(56),
+          marginLeft: vx(22),
+          width: vs(40),
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          cursor: canGoUp ? "pointer" : "default",
-          opacity: canGoUp ? 1 : 0.35,
-          outline: "none",
+          gap: vy(40),
         }}
       >
-        <ArrowIcon direction="up" size={vs(32)} />
-      </button>
+        <button
+          type="button"
+          aria-label="Página anterior do slide 7"
+          onClick={(event) => {
+            stopEvent(event);
+            if (canGoUp) setPage(page - 1);
+          }}
+          style={{
+            border: 0,
+            background: "transparent",
+            padding: 0,
+            width: vs(40),
+            height: vs(40),
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            opacity: 1,
+            outline: "none",
+          }}
+        >
+          <ArrowIcon direction="up" size={vs(24)} />
+        </button>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(12), alignItems: "center" }}>
-        {[0, 1, 2].map((dot) => (
-          <button
-            key={dot}
-            type="button"
-            aria-label={`Ir para página ${dot + 1} do slide 7`}
-            onClick={(event) => {
-              stopEvent(event);
-              setPage(dot);
-            }}
-            style={{
-              width: vs(12),
-              height: vs(12),
-              borderRadius: "50%",
-              border: 0,
-              padding: 0,
-              cursor: "pointer",
-              background: page === dot ? BLUE : "#b8d4ee",
-              transform: page === dot ? `scale(${1.1})` : "scale(1)",
-              transition: "transform 220ms cubic-bezier(0.22,1,0.36,1), background-color 220ms ease",
-              outline: "none",
-            }}
-          />
-        ))}
+        <div style={{ display: "flex", flexDirection: "column", gap: vy(4), alignItems: "center" }}>
+          {[0, 1, 2].map((dot) => (
+            <button
+              key={dot}
+              type="button"
+              aria-label={`Ir para página ${dot + 1} do slide 7`}
+              onClick={(event) => {
+                stopEvent(event);
+                setPage(dot);
+              }}
+              style={{
+                width: vs(24),
+                height: vs(24),
+                borderRadius: "50%",
+                border: 0,
+                padding: 0,
+                cursor: "pointer",
+                background: "transparent",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                outline: "none",
+              }}
+            >
+              <span
+                style={{
+                  width: vs(8),
+                  height: vs(8),
+                  borderRadius: "50%",
+                  background: page === dot ? BLUE : "#b8d4ee",
+                  transition: "background-color 220ms ease",
+                }}
+              />
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          aria-label="Próxima página do slide 7"
+          onClick={(event) => {
+            stopEvent(event);
+            if (canGoDown) setPage(page + 1);
+          }}
+          style={{
+            border: 0,
+            background: "transparent",
+            padding: 0,
+            width: vs(40),
+            height: vs(40),
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            opacity: 1,
+            outline: "none",
+          }}
+        >
+          <ArrowIcon direction="down" size={vs(24)} />
+        </button>
       </div>
-
-      <button
-        type="button"
-        aria-label="Próxima página do slide 7"
-        onClick={(event) => {
-          stopEvent(event);
-          if (canGoDown) setPage(page + 1);
-        }}
-        disabled={!canGoDown}
-        style={{
-          border: 0,
-          background: "transparent",
-          padding: 0,
-          width: vs(56),
-          height: vs(56),
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: canGoDown ? "pointer" : "default",
-          opacity: canGoDown ? 1 : 0.35,
-          outline: "none",
-        }}
-      >
-        <ArrowIcon direction="down" size={vs(32)} />
-      </button>
     </div>
   );
 }
@@ -376,26 +438,29 @@ function Bullet({
   children: ReactNode;
   metrics: Metrics;
 }) {
-  const { vx, vs } = metrics;
+  const { vx, vy, vs } = metrics;
 
   return (
-    <li style={{ display: "flex", alignItems: "flex-start", gap: vx(18), listStyle: "none" }}>
+    <li style={{ display: "flex", alignItems: "flex-start", gap: vx(12), listStyle: "none", width: "100%" }}>
+      <span style={{ height: vy(32), display: "flex", alignItems: "center", flexShrink: 0 }}>
+        <span
+          style={{
+            width: vs(10),
+            height: vs(10),
+            background: BLUE,
+            flexShrink: 0,
+          }}
+        />
+      </span>
       <span
         style={{
-          width: vs(8),
-          height: vs(8),
-          marginTop: vs(14),
-          borderRadius: "50%",
-          background: BLUE,
-          flexShrink: 0,
-        }}
-      />
-      <span
-        style={{
-          fontFamily: "'Bronkoh-Regular', sans-serif",
-          fontSize: vs(28),
-          lineHeight: 1.38,
-          color: INK,
+          flex: "1 0 0",
+          minWidth: 0,
+          fontFamily: "'Manrope', sans-serif",
+          fontWeight: 400,
+          fontSize: vs(20),
+          lineHeight: 1.5,
+          color: NAVY,
         }}
       >
         {children}
@@ -419,25 +484,25 @@ function PageOne({ metrics }: { metrics: Metrics }) {
           padding: 0,
           display: "flex",
           flexDirection: "column",
-          gap: vy(22),
+          gap: vy(32),
         }}
       >
         <Bullet metrics={metrics}>
-          Criar uma porta de entrada única para pedidos, com briefing mínimo:{" "}
-          <strong style={{ fontFamily: "'Bronkoh-SemiBold', sans-serif", fontWeight: 600 }}>
+          <span style={{ display: "block", marginBottom: vy(8) }}>Criar uma porta de entrada única para pedidos, com briefing mínimo:</span>
+          <strong style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800 }}>
             Objectivos de negócio, público, contexto de uso, restrições, prazo, stakeholders e critérios de sucesso.
           </strong>
         </Bullet>
         <Bullet metrics={metrics}>Classificar pedidos por níveis de risco e incerteza.</Bullet>
         <Bullet metrics={metrics}>
           Definir tipos de demandas:{" "}
-          <strong style={{ fontFamily: "'Bronkoh-SemiBold', sans-serif", fontWeight: 600 }}>
+          <strong style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800 }}>
             Quick win, Melhoria, Nova funcionalidade e Novo produto
           </strong>
           , cada um com métodos, prazos, papéis e entregáveis compatíveis.
         </Bullet>
         <Bullet metrics={metrics}>
-          <strong style={{ fontFamily: "'Bronkoh-SemiBold', sans-serif", fontWeight: 600 }}>Estabelecer gates mínimos:</strong> problema
+          <strong style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 800 }}>Estabelecer gates mínimos:</strong> problema
           compreendido, escopo validado, uso do Design System, critérios de acessibilidade, handoff e métrica pós-release.
         </Bullet>
       </ul>
@@ -449,9 +514,9 @@ function PageOne({ metrics }: { metrics: Metrics }) {
           top: vy(813),
           width: vx(829),
           margin: 0,
-          fontFamily: "'Bronkoh-SemiBold', sans-serif",
-          fontSize: vs(28),
-          lineHeight: 1.35,
+          fontFamily: "'Bronkoh-Heavy', sans-serif",
+          fontSize: vs(26),
+          lineHeight: 1.3,
           color: NAVY,
         }}
       >
@@ -468,23 +533,21 @@ function PageOne({ metrics }: { metrics: Metrics }) {
           left: vx(1072),
           top: vy(384),
           width: vx(620),
-          minHeight: vy(322),
           borderRadius: vs(40),
           background: PALE_BLUE,
-          border: `${vs(1)}px solid ${STROKE_BLUE}`,
-          padding: `${vy(56)}px ${vx(64)}px`,
+          padding: `${vy(48)}px ${vx(56)}px`,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
+          gap: vy(32),
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: vy(22) }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: vy(8), justifyContent: "center", width: "100%" }}>
           <p
             style={{
               margin: 0,
               fontFamily: "'Bronkoh-Heavy', sans-serif",
-              fontSize: vs(30),
-              lineHeight: 1.2,
+              fontSize: vs(32),
+              lineHeight: 1.3,
               color: NAVY,
             }}
           >
@@ -494,47 +557,61 @@ function PageOne({ metrics }: { metrics: Metrics }) {
             style={{
               margin: 0,
               fontFamily: "'Manrope', sans-serif",
-              fontSize: vs(22),
-              lineHeight: 1.45,
+              fontSize: vs(18),
+              lineHeight: 1.5,
               color: INK,
             }}
           >
             Compreender o problema antes de resolver reduz o risco de construir o produto errado.
           </p>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: vy(10), marginTop: vy(40) }}>
-          <p
+        <div style={{ display: "flex", flexDirection: "column", gap: vy(8), width: "100%" }}>
+          <div
             style={{
-              margin: 0,
-              fontFamily: "'Bronkoh-Heavy', sans-serif",
-              fontSize: vs(76),
-              lineHeight: 0.95,
-              letterSpacing: vs(-1),
-              color: BLUE,
+              display: "flex",
+              alignItems: "center",
+              gap: vx(16),
+              paddingBottom: vy(32),
+              borderBottom: `${vs(1)}px solid ${STROKE_BLUE}`,
+              width: "100%",
             }}
           >
-            135%
-          </p>
+            <p
+              style={{
+                margin: 0,
+                fontFamily: "'Bronkoh-Heavy', sans-serif",
+                fontSize: vs(64),
+                lineHeight: `${vs(56)}px`,
+                letterSpacing: vs(-1),
+                color: BLUE,
+                whiteSpace: "nowrap",
+              }}
+            >
+              135<span style={{ fontSize: vs(48), lineHeight: `${vs(56)}px` }}>%</span>
+            </p>
+            <p
+              style={{
+                flex: "1 0 0",
+                minWidth: 0,
+                margin: 0,
+                fontFamily: "'Manrope', sans-serif",
+                fontWeight: 700,
+                fontSize: vs(20),
+                lineHeight: 1.3,
+                color: NAVY,
+              }}
+            >
+              de melhoria média nas métricas após redesenho focado em usabilidade
+            </p>
+          </div>
           <p
             style={{
               margin: 0,
               fontFamily: "'Manrope', sans-serif",
-              fontSize: vs(18),
-              lineHeight: 1.45,
-              color: NAVY,
-              width: vx(420),
-            }}
-          >
-            de melhoria média nas métricas após redesenho focado em usabilidade
-          </p>
-          <p
-            style={{
-              margin: `${vy(8)}px 0 0`,
-              fontFamily: "'Bronkoh-SemiBold', sans-serif",
               fontSize: vs(14),
-              letterSpacing: vs(1.6),
-              textTransform: "uppercase",
-              color: BLUE,
+              lineHeight: 1.5,
+              color: INK,
+              whiteSpace: "nowrap",
             }}
           >
             Nielsen Norman Group
@@ -545,38 +622,42 @@ function PageOne({ metrics }: { metrics: Metrics }) {
   );
 }
 
-function Pager({
-  index,
-  total,
-  setIndex,
+function ArrowPairNav({
+  previous,
+  next,
   metrics,
-  label,
+  justify = "center",
 }: {
-  index: number;
-  total: number;
-  setIndex: (next: number) => void;
+  previous: () => void;
+  next: () => void;
   metrics: Metrics;
-  label: string;
+  justify?: CSSProperties["justifyContent"];
 }) {
-  const { vx, vy, vs } = metrics;
-  const previous = () => setIndex((index - 1 + total) % total);
-  const next = () => setIndex((index + 1) % total);
+  const { vx, vs } = metrics;
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: vx(18) }} onClick={(event) => event.stopPropagation()}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: justify,
+        gap: vx(32),
+      }}
+      onClick={(event) => event.stopPropagation()}
+    >
       <button
         type="button"
-        aria-label={`${label} anterior`}
+        aria-label="Anterior"
         onClick={(event) => {
           stopEvent(event);
           previous();
         }}
         style={{
-          width: vs(48),
-          height: vs(48),
+          width: vs(40),
+          height: vs(40),
           borderRadius: "50%",
-          border: `${vs(1)}px solid ${STROKE_BLUE}`,
-          background: "#fff",
+          border: 0,
+          background: "transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -585,35 +666,21 @@ function Pager({
           outline: "none",
         }}
       >
-        <ArrowIcon direction="left" size={vs(26)} />
+        <ArrowIcon direction="left" size={vs(24)} />
       </button>
-      <div style={{ display: "flex", gap: vx(8), alignItems: "center", height: vy(48) }}>
-        {Array.from({ length: total }).map((_, dot) => (
-          <span
-            key={dot}
-            style={{
-              width: dot === index ? vs(22) : vs(8),
-              height: vs(8),
-              borderRadius: vs(999),
-              background: dot === index ? BLUE : "#b8d4ee",
-              transition: "width 240ms cubic-bezier(0.22,1,0.36,1), background-color 240ms ease",
-            }}
-          />
-        ))}
-      </div>
       <button
         type="button"
-        aria-label={`Próximo ${label}`}
+        aria-label="Próximo"
         onClick={(event) => {
           stopEvent(event);
           next();
         }}
         style={{
-          width: vs(48),
-          height: vs(48),
+          width: vs(40),
+          height: vs(40),
           borderRadius: "50%",
-          border: `${vs(1)}px solid ${STROKE_BLUE}`,
-          background: "#fff",
+          border: 0,
+          background: "transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -622,8 +689,33 @@ function Pager({
           outline: "none",
         }}
       >
-        <ArrowIcon direction="right" size={vs(26)} />
+        <ArrowIcon direction="right" size={vs(24)} />
       </button>
+    </div>
+  );
+}
+
+function TextPager({
+  index,
+  total,
+  setIndex,
+  metrics,
+}: {
+  index: number;
+  total: number;
+  setIndex: (next: number) => void;
+  metrics: Metrics;
+}) {
+  const previous = () => setIndex((index - 1 + total) % total);
+  const next = () => setIndex((index + 1) % total);
+
+  return (
+    <div
+      style={{
+        width: "100%",
+      }}
+    >
+      <ArrowPairNav previous={previous} next={next} metrics={metrics} justify="flex-end" />
     </div>
   );
 }
@@ -645,8 +737,8 @@ function ClassificationText({
   const page = classificationPages[index];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: vy(34), width: "100%" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(18), minHeight: vy(292), overflow: "hidden" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: vy(24), width: "100%", background: "#fff" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: vy(24), minHeight: vy(260), overflow: "hidden" }}>
         <p
           style={{
             margin: 0,
@@ -657,7 +749,7 @@ function ClassificationText({
             color: BLUE,
           }}
         >
-          Critérios de classificação
+          CritérioS de classificação
         </p>
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -666,14 +758,14 @@ function ClassificationText({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: reducedMotion ? 0 : direction * -32 }}
             transition={{ duration: reducedMotion ? 0 : 0.32, ease: EASE }}
-            style={{ display: "flex", flexDirection: "column", gap: vy(14) }}
+            style={{ display: "flex", flexDirection: "column", gap: vy(12), lineHeight: 1.5 }}
           >
             <p
               style={{
                 margin: 0,
                 fontFamily: "'Bronkoh-Heavy', sans-serif",
-                fontSize: vs(30),
-                lineHeight: 1.25,
+                fontSize: vs(26),
+                lineHeight: 1.5,
                 color: NAVY,
               }}
             >
@@ -684,7 +776,7 @@ function ClassificationText({
                 margin: 0,
                 fontFamily: "'Manrope', sans-serif",
                 fontSize: vs(22),
-                lineHeight: 1.55,
+                lineHeight: 1.5,
                 color: INK,
               }}
             >
@@ -693,101 +785,112 @@ function ClassificationText({
           </motion.div>
         </AnimatePresence>
       </div>
-      <Pager index={index} total={classificationPages.length} setIndex={setIndex} metrics={metrics} label="critério" />
+      <TextPager index={index} total={classificationPages.length} setIndex={setIndex} metrics={metrics} />
     </div>
   );
 }
 
 function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
+  const segmentRadius = (rowIndex: number, cellIndex: number) => {
+    const fill = matrixRows[rowIndex].fills[cellIndex];
+    if (!fill) return vs(999);
+    const leftActive = cellIndex > 0 && Boolean(matrixRows[rowIndex].fills[cellIndex - 1]);
+    const rightActive = cellIndex < phases.length - 1 && Boolean(matrixRows[rowIndex].fills[cellIndex + 1]);
+    if (!leftActive && !rightActive) return vs(999);
+    if (!leftActive) return `${vs(999)}px 0 0 ${vs(999)}px`;
+    if (!rightActive) return `0 ${vs(999)}px ${vs(999)}px 0`;
+    return 0;
+  };
 
   return (
     <div
       style={{
         width: vx(760),
-        minHeight: vy(646),
         borderRadius: vs(40),
         background: PALE_BLUE,
-        border: `${vs(1)}px solid ${STROKE_BLUE}`,
-        padding: `${vy(52)}px ${vx(48)}px`,
+        padding: `${vy(48)}px ${vx(56)}px`,
         display: "flex",
         flexDirection: "column",
-        gap: vy(28),
+        gap: vy(32),
       }}
     >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `${vx(154)}px repeat(5, 1fr)`,
-          columnGap: vx(8),
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <div />
-        {phases.map((phase) => (
+      {matrixRows.map((row, rowIndex) => (
+        <div key={row.label} style={{ display: "flex", flexDirection: "column", gap: vy(12), alignItems: "flex-start", width: "100%" }}>
           <p
-            key={phase}
             style={{
               margin: 0,
-              fontFamily: "'Manrope', sans-serif",
-              fontWeight: 800,
-              fontSize: vs(14),
-              lineHeight: 1.2,
+              width: "100%",
+              fontFamily: "'Bronkoh-Heavy', sans-serif",
+              fontSize: vs(24),
+              lineHeight: 1.5,
               color: NAVY,
-              textAlign: "center",
             }}
           >
-            {phase}
+            {row.label}
           </p>
-        ))}
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(20) }}>
-        {matrixRows.map((row) => (
-          <div
-            key={row.label}
-            style={{
-              display: "grid",
-              gridTemplateColumns: `${vx(154)}px 1fr`,
-              columnGap: vx(16),
-              alignItems: "center",
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                fontFamily: "'Bronkoh-Heavy', sans-serif",
-                fontSize: vs(21),
-                lineHeight: 1.2,
-                color: NAVY,
-              }}
-            >
-              {row.label}
-            </p>
-            <div
-              style={{
-                height: vy(48),
-                borderRadius: vs(999),
-                background: "#fff",
-                display: "grid",
-                gridTemplateColumns: "repeat(5, 1fr)",
-                overflow: "hidden",
-                border: `${vs(1)}px solid rgba(43,118,193,0.22)`,
-              }}
-            >
-              {row.fills.map((fill, i) => (
+          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+            {phases.map((phase, cellIndex) => {
+              const fill = row.fills[cellIndex];
+              const paddingLeft = cellIndex === 0 ? 12 : fill && !row.fills[cellIndex - 1] ? 6 : fill ? 0 : cellIndex === 2 ? 6 : 0;
+              const paddingRight =
+                cellIndex === phases.length - 1 ? 12 : fill && !row.fills[cellIndex + 1] ? 6 : fill ? 0 : cellIndex === 2 ? 6 : 0;
+
+              return (
                 <div
-                  key={`${row.label}-${phases[i]}`}
+                  key={`${row.label}-${phase}`}
                   style={{
-                    background: fill || "transparent",
-                    borderLeft: i === 0 ? "none" : `${vs(1)}px solid rgba(43,118,193,0.12)`,
+                    flex: "1 0 0",
+                    minWidth: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: vy(12),
+                    alignItems: "center",
                   }}
-                />
-              ))}
-            </div>
+                >
+                  <p
+                    style={{
+                      margin: 0,
+                      width: "100%",
+                      fontFamily: "'Manrope', sans-serif",
+                      fontWeight: 800,
+                      fontSize: vs(16),
+                      lineHeight: 1.4,
+                      color: INK,
+                      textAlign: "center",
+                    }}
+                  >
+                    {phase}
+                  </p>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: vy(48),
+                      background: "#fff",
+                      overflow: "hidden",
+                      padding: `${vy(12)}px ${vx(paddingRight)}px ${vy(12)}px ${vx(paddingLeft)}px`,
+                      borderTopLeftRadius: cellIndex === 0 ? vs(999) : 0,
+                      borderBottomLeftRadius: cellIndex === 0 ? vs(999) : 0,
+                      borderTopRightRadius: cellIndex === phases.length - 1 ? vs(999) : 0,
+                      borderBottomRightRadius: cellIndex === phases.length - 1 ? vs(999) : 0,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        minWidth: 0,
+                        background: fill || "transparent",
+                        borderRadius: segmentRadius(rowIndex, cellIndex),
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -831,10 +934,11 @@ function PageTwo({
         <p
           style={{
             margin: 0,
-            fontFamily: "'Bronkoh-Regular', sans-serif",
-            fontSize: vs(28),
-            lineHeight: 1.45,
-            color: INK,
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 400,
+            fontSize: vs(22),
+            lineHeight: 1.5,
+            color: NAVY,
           }}
         >
           O processo e os entregáveis mudam conforme a necessidade, considerando o grau de risco e incerteza envolvidos. Nem toda demanda precisa
@@ -948,18 +1052,7 @@ function QuestionMark({ metrics }: { metrics: Metrics }) {
         flexShrink: 0,
       }}
     >
-      <p
-        style={{
-          margin: 0,
-          fontFamily: "'Manrope', sans-serif",
-          fontWeight: 800,
-          fontSize: vs(25),
-          lineHeight: 1,
-          color: BLUE,
-        }}
-      >
-        ?
-      </p>
+      <SvgAsset src={earlyQuestionMark} width={24} height={24} metrics={metrics} />
     </div>
   );
 }
@@ -971,40 +1064,30 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
     <div style={{ position: "relative", height: vy(220), width: "100%", overflow: "hidden" }}>
       <FlowRow metrics={metrics} top={62}>
         <FlowLabel metrics={metrics}>Protótipos</FlowLabel>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={earlyArrowSmall} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics}>
           Testes com público alvo
           <br />
           <span style={{ fontWeight: 400 }}>(gerar aprendizado)</span>
         </FlowLabel>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={earlyArrowSmall} width={51} height={14.728} metrics={metrics} />
         <QuestionMark metrics={metrics} />
-        <FlowArrow width={330} metrics={metrics} />
+        <SvgAsset src={earlyArrowLong} width={486} height={14.728} metrics={metrics} style={{ minWidth: 0 }} />
         <FlowLabel metrics={metrics} width={158}>
           Backlog de produto e/ou produção
         </FlowLabel>
       </FlowRow>
 
-      <svg
-        width={vx(110)}
-        height={vy(78)}
-        viewBox="0 0 110 78"
-        fill="none"
-        style={{ position: "absolute", left: vx(653), top: vy(24), overflow: "visible" }}
-      >
-        <path d="M4 70C30 34 55 14 104 8" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
-        <path d="M95 3L106 7L99 16" stroke={NAVY} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      <svg
-        width={vx(110)}
-        height={vy(78)}
-        viewBox="0 0 110 78"
-        fill="none"
-        style={{ position: "absolute", left: vx(653), top: vy(117), overflow: "visible" }}
-      >
-        <path d="M4 8C31 43 55 63 104 70" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
-        <path d="M97 62L106 71L94 74" stroke={NAVY} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <div style={{ position: "absolute", left: vx(653.3), top: vy(30), width: vx(90.898), height: vy(48), display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ transform: "rotate(-27.84deg) skewX(4.42deg)" }}>
+          <SvgAsset src={earlyArrowDiagonalUp} width={103.793} height={14.728} metrics={metrics} />
+        </div>
+      </div>
+      <div style={{ position: "absolute", left: vx(652.72), top: vy(126), width: vx(90.898), height: vy(48), display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ transform: "rotate(27.84deg) skewX(-4.42deg)" }}>
+          <SvgAsset src={earlyArrowDiagonalDown} width={103.793} height={14.728} metrics={metrics} />
+        </div>
+      </div>
 
       <p
         style={{
@@ -1039,13 +1122,13 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
           <br />
           <span style={{ fontWeight: 400 }}>(novos testes)</span>
         </FlowLabel>
-        {[0, 1, 2, 3].map((item) => (
-          <RenewIcon key={item} metrics={metrics} />
-        ))}
-        <svg width={vs(40)} height={vs(40)} viewBox="0 0 40 40" fill="none" style={{ flexShrink: 0 }}>
-          <path d="M20 35V7" stroke={NAVY} strokeWidth="2.4" strokeLinecap="round" />
-          <path d="M12 15L20 7L28 15" stroke={NAVY} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <SvgAsset src={earlyRenewA} width={40} height={40} metrics={metrics} />
+        <SvgAsset src={earlyRenewB} width={40} height={40} metrics={metrics} />
+        <SvgAsset src={earlyRenewB} width={40} height={40} metrics={metrics} />
+        <SvgAsset src={earlyRenewA} width={40} height={40} metrics={metrics} />
+        <div style={{ width: 0, height: vs(40), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <SvgAsset src={earlyArrowUp} width={40} height={14.728} metrics={metrics} style={{ transform: "rotate(-90deg)" }} />
+        </div>
       </div>
     </div>
   );
@@ -1058,22 +1141,22 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
     <div style={{ position: "relative", height: vy(140), width: "100%", overflow: "hidden" }}>
       <FlowRow metrics={metrics} top={24}>
         <FlowLabel metrics={metrics}>Protótipos</FlowLabel>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={growthArrow} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics}>
           Testes com clientes
           <br />
           <span style={{ fontWeight: 400 }}>(Rápido de avaliação)</span>
         </FlowLabel>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={growthArrow} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics} width={102}>
           Produto em produção
         </FlowLabel>
         <div style={{ display: "flex", gap: vx(22), alignItems: "center", flexShrink: 0 }}>
           {[0, 1, 2, 3].map((item) => (
-            <RenewIcon key={item} metrics={metrics} />
+            <SvgAsset key={item} src={growthRenew} width={40} height={40} metrics={metrics} />
           ))}
         </div>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={growthArrow} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics} width={158}>
           Versão validada
         </FlowLabel>
@@ -1104,36 +1187,33 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
     <div style={{ position: "relative", height: vy(222), width: "100%", overflow: "hidden" }}>
       <FlowRow metrics={metrics} top={0} outlined>
         <FlowLabel metrics={metrics}>Pesquisas, análise de feedbacks, pedidos de suporte e analytics</FlowLabel>
-        <FlowArrow width={50} metrics={metrics} dark />
+        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics}>Oportunidades de melhoria</FlowLabel>
       </FlowRow>
 
-      <svg
-        width={vx(892)}
-        height={vy(101)}
-        viewBox="0 0 892 101"
-        fill="none"
+      <SvgAsset
+        src={coreConnector}
+        width={899.364}
+        height={102.5}
+        metrics={metrics}
         style={{ position: "absolute", left: vx(218), top: vy(32), overflow: "visible" }}
-      >
-        <path d="M890 28H650C634.5 28 624 38.5 624 54V63C624 78.5 613.5 89 598 89H25C9.5 89 1 97.5 1 100" stroke={NAVY} strokeWidth="2" strokeLinecap="round" />
-        <path d="M-6 90L1 100L8 90" stroke={NAVY} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      />
 
       <FlowRow metrics={metrics} top={116}>
         <FlowLabel metrics={metrics}>Protótipos</FlowLabel>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics}>
           Testes com clientes
           <br />
           <span style={{ fontWeight: 400 }}>(Gerar aprendizado)</span>
         </FlowLabel>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
         <div style={{ display: "flex", gap: vx(22), alignItems: "center", flexShrink: 0 }}>
           {[0, 1, 2, 3].map((item) => (
-            <RenewIcon key={item} metrics={metrics} />
+            <SvgAsset key={item} src={coreRenew} width={40} height={40} metrics={metrics} />
           ))}
         </div>
-        <FlowArrow width={50} metrics={metrics} />
+        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics} width={158}>
           Backlog de produto e/ou produção
         </FlowLabel>
@@ -1178,7 +1258,6 @@ function MaturityCard({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        boxShadow: "0 18px 36px rgba(4,22,93,0.08)",
       }}
     >
       <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: vy(24), alignItems: "flex-start" }}>
@@ -1241,7 +1320,6 @@ function CardShell({ metrics }: { metrics: Metrics }) {
         borderRadius: vs(40),
         border: `${vs(1)}px solid ${MUTED}`,
         background: "#fff",
-        boxShadow: "0 18px 36px rgba(4,22,93,0.08)",
       }}
     />
   );
@@ -1261,6 +1339,7 @@ function PageThree({
   reducedMotion: boolean;
 }) {
   const { vx, vy, vs } = metrics;
+  const cardHeight = (variant: (typeof maturityCards)[number]["variant"]) => (variant === "growth" ? 440 : variant === "core" ? 522 : 520);
 
   const updateIndex = (next: number) => {
     const normalized = (next + maturityCards.length) % maturityCards.length;
@@ -1282,9 +1361,8 @@ function PageThree({
       >
         {maturityCards.map((card, i) => {
           const depth = (i - maturityIndex + maturityCards.length) % maturityCards.length;
-          const y = [0, 52, 104][depth];
-          const scale = [1, 0.967, 0.934][depth];
-          const opacity = [1, 0.88, 0.72][depth];
+          const y = [0, 103.35, 49.15][depth];
+          const scale = [1, 0.9666, 0.9343][depth];
 
           return (
             <motion.div
@@ -1292,7 +1370,6 @@ function PageThree({
               animate={{
                 y: vy(y),
                 scale,
-                opacity,
                 zIndex: 10 - depth,
               }}
               transition={{
@@ -1304,7 +1381,7 @@ function PageThree({
                 left: 0,
                 top: 0,
                 width: vx(1440),
-                height: vy(500),
+                height: vy(cardHeight(card.variant)),
                 transformOrigin: "top center",
               }}
             >
@@ -1316,14 +1393,19 @@ function PageThree({
       <div
         style={{
           position: "absolute",
-          left: vx(678),
-          top: vy(904),
-          width: vx(320),
+          left: vx(784),
+          top: vy(894),
+          width: vx(112),
           display: "flex",
           justifyContent: "center",
+          zIndex: 30,
         }}
       >
-        <Pager index={maturityIndex} total={maturityCards.length} setIndex={updateIndex} metrics={metrics} label="card" />
+        <ArrowPairNav
+          previous={() => updateIndex(maturityIndex - 1)}
+          next={() => updateIndex(maturityIndex + 1)}
+          metrics={metrics}
+        />
       </div>
     </div>
   );
