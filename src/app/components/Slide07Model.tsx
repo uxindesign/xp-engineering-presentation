@@ -1378,6 +1378,7 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
           top: 0,
           width: vx(rowWidth),
           height: vy(topRowHeight),
+          boxSizing: "border-box",
           borderRadius: vs(22.424),
           border: `${vs(0.934)}px solid ${STROKE_BLUE}`,
           background: "#fff",
