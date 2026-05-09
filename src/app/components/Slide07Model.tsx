@@ -134,7 +134,7 @@ function SvgAsset({
   width,
   height,
   metrics,
-  scaleMode = "stretch",
+  scaleMode = "uniform",
   style,
 }: {
   src: string;
