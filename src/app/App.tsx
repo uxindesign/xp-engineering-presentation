@@ -112,14 +112,24 @@ export default function App() {
     const update = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const scale = Math.min(w / DESIGN_WIDTH, h / DESIGN_HEIGHT);
 
-      setScaleX(scale);
-      setScaleY(scale);
-      setStageOffsetX((w - DESIGN_WIDTH * scale) / 2);
-      setStageOffsetY((h - DESIGN_HEIGHT * scale) / 2);
-      setStageW(DESIGN_WIDTH * scale);
-      setStageH(DESIGN_HEIGHT * scale);
+      if (w >= 1440) {
+        setScaleX(w / DESIGN_WIDTH);
+        setScaleY(h / DESIGN_HEIGHT);
+        setStageOffsetX(0);
+        setStageOffsetY(0);
+        setStageW("100%");
+        setStageH("100%");
+      } else {
+        const scale = Math.min(w / DESIGN_WIDTH, h / DESIGN_HEIGHT);
+
+        setScaleX(scale);
+        setScaleY(scale);
+        setStageOffsetX((w - DESIGN_WIDTH * scale) / 2);
+        setStageOffsetY((h - DESIGN_HEIGHT * scale) / 2);
+        setStageW(DESIGN_WIDTH * scale);
+        setStageH(DESIGN_HEIGHT * scale);
+      }
     };
     update();
     window.addEventListener("resize", update);
