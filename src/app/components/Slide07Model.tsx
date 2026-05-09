@@ -969,7 +969,15 @@ function ClassificationText({
   );
 }
 
-function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
+function ClassificationMatrix({
+  activeIndex,
+  setIndex,
+  metrics,
+}: {
+  activeIndex: number;
+  setIndex: (next: number) => void;
+  metrics: Metrics;
+}) {
   const { vx, vy, vs } = metrics;
   const segmentPercent = 100 / phases.length;
 
@@ -985,74 +993,120 @@ function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
         gap: vy(32),
       }}
     >
-      {matrixRows.map((row) => (
-        <div key={row.label} style={{ display: "flex", flexDirection: "column", gap: vy(12), alignItems: "flex-start", width: "100%" }}>
-          <p
+      {matrixRows.map((row, rowIndex) => {
+        const [number, ...labelParts] = row.label.split(" ");
+        const label = labelParts.join(" ");
+        const isActive = rowIndex === activeIndex;
+
+        return (
+          <div
+            key={row.label}
+            role="button"
+            tabIndex={0}
+            aria-current={isActive ? "true" : undefined}
+            aria-label={`Mostrar critério ${row.label}`}
+            onMouseEnter={() => setIndex(rowIndex)}
+            onFocus={() => setIndex(rowIndex)}
+            onClick={(event) => {
+              event.stopPropagation();
+              setIndex(rowIndex);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setIndex(rowIndex);
+              }
+            }}
             style={{
-              margin: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: vy(12),
+              alignItems: "flex-start",
               width: "100%",
-              fontFamily: "'Bronkoh-Heavy', sans-serif",
-              fontSize: vs(24),
-              lineHeight: 1.5,
-              color: NAVY,
+              cursor: "pointer",
+              outline: "none",
             }}
           >
-            {row.label}
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: vy(12), width: "100%" }}>
-            <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-              {phases.map((phase) => (
-                <p
-                  key={`${row.label}-${phase}`}
-                  style={{
-                    flex: "1 0 0",
-                    minWidth: 0,
-                    margin: 0,
-                    fontFamily: "'Manrope', sans-serif",
-                    fontWeight: 800,
-                    fontSize: vs(16),
-                    lineHeight: 1.4,
-                    color: INK,
-                    textAlign: "center",
-                  }}
-                >
-                  {phase}
-                </p>
-              ))}
-            </div>
-            <div
+            <p
               style={{
-                position: "relative",
+                margin: 0,
                 width: "100%",
-                height: vy(48),
-                background: "#fff",
-                overflow: "hidden",
-                borderRadius: vs(999),
+                fontFamily: "'Bronkoh-Heavy', sans-serif",
+                fontSize: vs(24),
+                lineHeight: 1.5,
+                color: NAVY,
               }}
             >
-              {row.segments.map((segment) => {
-                const leftPadding = segment.start === 0 ? 12 : 6;
-                const rightPadding = segment.end === phases.length - 1 ? 12 : 6;
-
-                return (
-                  <div
-                    key={`${row.label}-${segment.start}-${segment.end}`}
+              <span>{number} </span>
+              <span
+                style={{
+                  textDecorationLine: isActive ? "underline" : "none",
+                  textDecorationStyle: "solid",
+                  textDecorationSkipInk: "none",
+                  textDecorationColor: BLUE,
+                  textDecorationThickness: vs(4),
+                  textUnderlineOffset: vs(4),
+                  textUnderlinePosition: "from-font",
+                }}
+              >
+                {label}
+              </span>
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: vy(12), width: "100%" }}>
+              <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                {phases.map((phase) => (
+                  <p
+                    key={`${row.label}-${phase}`}
                     style={{
-                      position: "absolute",
-                      left: `calc(${segment.start * segmentPercent}% + ${vx(leftPadding)}px)`,
-                      top: vy(12),
-                      width: `calc(${(segment.end - segment.start + 1) * segmentPercent}% - ${vx(leftPadding + rightPadding)}px)`,
-                      height: vy(24),
-                      background: segment.fill,
-                      borderRadius: vs(999),
+                      flex: "1 0 0",
+                      minWidth: 0,
+                      margin: 0,
+                      fontFamily: "'Manrope', sans-serif",
+                      fontWeight: 800,
+                      fontSize: vs(16),
+                      lineHeight: 1.4,
+                      color: INK,
+                      textAlign: "center",
                     }}
-                  />
-                );
-              })}
+                  >
+                    {phase}
+                  </p>
+                ))}
+              </div>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: vy(48),
+                  background: "#fff",
+                  overflow: "hidden",
+                  borderRadius: vs(999),
+                }}
+              >
+                {row.segments.map((segment) => {
+                  const leftPadding = segment.start === 0 ? 12 : 6;
+                  const rightPadding = segment.end === phases.length - 1 ? 12 : 6;
+
+                  return (
+                    <div
+                      key={`${row.label}-${segment.start}-${segment.end}`}
+                      style={{
+                        position: "absolute",
+                        left: `calc(${segment.start * segmentPercent}% + ${vx(leftPadding)}px)`,
+                        top: vy(12),
+                        width: `calc(${(segment.end - segment.start + 1) * segmentPercent}% - ${vx(leftPadding + rightPadding)}px)`,
+                        height: vy(24),
+                        background: segment.fill,
+                        borderRadius: vs(999),
+                      }}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -1076,6 +1130,7 @@ function PageTwo({
 
   const updateIndex = (next: number) => {
     const normalized = (next + classificationPages.length) % classificationPages.length;
+    if (normalized === classificationIndex) return;
     setClassificationDirection(normalized > classificationIndex || (classificationIndex === classificationPages.length - 1 && normalized === 0) ? 1 : -1);
     setClassificationIndex(normalized);
   };
@@ -1121,7 +1176,7 @@ function PageTwo({
         transition={{ duration: reducedMotion ? 0 : 0.48, delay: 0.12, ease: EASE }}
         style={{ position: "absolute", left: vx(1016), top: vy(160) }}
       >
-        <ClassificationMatrix metrics={metrics} />
+        <ClassificationMatrix activeIndex={classificationIndex} setIndex={updateIndex} metrics={metrics} />
       </motion.div>
     </div>
   );
