@@ -46,19 +46,19 @@ const NAV_ARROW_DOWN_PATH = "M2 8.025L3.775 6.25L12 14.475L20.225 6.25L22 8.025L
 
 const classificationPages = [
   {
-    title: "Quick win (Muita certeza + Baixo risco)",
+    title: "1. Quick win (Muita certeza + Baixo risco)",
     body: "Ajuste visual rápido ou alteração simples no fluxo com grande potencial de sucesso, que já seja uma necessidade comprovada e também de fácil reversão, se necessário.",
   },
   {
-    title: "Melhoria (Alguma certeza + Risco médio)",
+    title: "2. Melhoria (Alguma certeza + Risco médio)",
     body: "Possui um maior risco por se tratar de mudança em funcionalidade existente, sendo necessário alinhamento com os stakeholders e análise de métricas. Neste caso, a execução de desk research e benchmark podem ajudar na exploração de ideias, e também teste A/B (idealmente), em um ciclo mais curto.",
   },
   {
-    title: "Nova funcionalidade (Pouca certeza + Risco alto)",
+    title: "3. Nova funcionalidade (Pouca certeza + Risco alto)",
     body: "Neste caso é importante aumentar o grau de certeza, pois o risco de criar algo que pode não ser utilizado é real, então é interessante um discovery um pouco mais estruturado, com pesquisa, benchmark, entrevistas com os utilizadores, definição de fluxo, ideação, testes de usabilidade e handoff mais robusto.",
   },
   {
-    title: "Novo produto (Escopo estratégico ou incerto)",
+    title: "4. Novo produto (Escopo estratégico ou incerto)",
     body: "A construção de um novo produto envolve um risco altamente elevado aliado a um mar de incertezas, é importante ter a máxima preocupação em focar nos problemas certos para alcançar o MVP necessário que dará base para que se possa escalar. Para isso, Discovery e Pesquisa são obrigatórios, com o utilizador como integrante ativo e todas as áreas do time envolvidas em cada etapa.",
   },
 ];
@@ -82,10 +82,10 @@ const maturityCards = [
 ];
 
 const matrixRows = [
-  { label: "Quick win", segments: [{ start: 2, end: 2, fill: LIGHT_BLUE }, { start: 3, end: 4, fill: BLUE }] },
-  { label: "Melhoria", segments: [{ start: 1, end: 1, fill: LIGHT_BLUE }, { start: 2, end: 2, fill: MEDIUM_BLUE }, { start: 3, end: 4, fill: BLUE }] },
-  { label: "Nova funcionalidade", segments: [{ start: 0, end: 0, fill: LIGHT_BLUE }, { start: 1, end: 1, fill: MEDIUM_BLUE }, { start: 2, end: 4, fill: BLUE }] },
-  { label: "Novo produto", segments: [{ start: 0, end: 4, fill: BLUE }] },
+  { label: "1. Quick win", segments: [{ start: 2, end: 2, fill: LIGHT_BLUE }, { start: 3, end: 4, fill: BLUE }] },
+  { label: "2. Melhoria", segments: [{ start: 1, end: 1, fill: LIGHT_BLUE }, { start: 2, end: 2, fill: MEDIUM_BLUE }, { start: 3, end: 4, fill: BLUE }] },
+  { label: "3. Nova funcionalidade", segments: [{ start: 0, end: 0, fill: LIGHT_BLUE }, { start: 1, end: 1, fill: MEDIUM_BLUE }, { start: 2, end: 4, fill: BLUE }] },
+  { label: "4. Novo produto", segments: [{ start: 0, end: 4, fill: BLUE }] },
 ];
 
 const phases = ["Discovery", "Pesquisa", "Ideação", "Design", "Monitoramento"];
