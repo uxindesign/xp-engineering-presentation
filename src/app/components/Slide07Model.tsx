@@ -1362,14 +1362,26 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
           background: "#fff",
         }}
       />
-      <div style={{ position: "absolute", left: vx(262), top: vy(20.5) }}>
-        <FlowLabel metrics={metrics} width={471}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: vx(rowWidth),
+          height: vy(topRowHeight),
+          boxSizing: "border-box",
+          padding: `0 ${vx(40)}px`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: vx(32),
+        }}
+      >
+        <FlowLabel metrics={metrics}>
           Pesquisas, análise de feedbacks, pedidos de suporte e analytics
         </FlowLabel>
-      </div>
-      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(765), top: vy(arrowTop(30)) }} />
-      <div style={{ position: "absolute", left: vx(847), top: vy(20.5) }}>
-        <FlowLabel metrics={metrics} width={203}>
+        <ResponsiveRightArrow metrics={metrics} width={50} />
+        <FlowLabel metrics={metrics}>
           Oportunidades de melhoria
         </FlowLabel>
       </div>
