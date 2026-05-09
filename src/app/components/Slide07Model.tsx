@@ -1313,47 +1313,113 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
 
 function CoreDiagram({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
+  const rowWidth = 1225.822;
+  const topRowHeight = 56.059;
+  const bottomRowTop = 108.381;
+  const bottomRowHeight = 74.745;
+  const arrowHeight = 14.728;
+  const arrowTop = (lineY: number) => lineY - arrowHeight / 2;
 
   return (
     <div style={{ position: "relative", height: vy(222), width: "100%", overflow: "hidden" }}>
-      <FlowRow metrics={metrics} top={0} outlined>
-        <FlowLabel metrics={metrics}>Pesquisas, análise de feedbacks, pedidos de suporte e analytics</FlowLabel>
-        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
-        <FlowLabel metrics={metrics}>Oportunidades de melhoria</FlowLabel>
-      </FlowRow>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: vx(rowWidth),
+          height: vy(topRowHeight),
+          borderRadius: vs(22.424),
+          border: `${vs(0.934)}px solid ${STROKE_BLUE}`,
+          background: "#fff",
+        }}
+      />
+      <div style={{ position: "absolute", left: vx(244.655), top: vy(19.029) }}>
+        <FlowLabel metrics={metrics} width={440}>
+          Pesquisas, análise de feedbacks, pedidos de suporte e analytics
+        </FlowLabel>
+      </div>
+      <SvgAsset
+        src={coreArrow}
+        width={51}
+        height={14.728}
+        metrics={metrics}
+        style={{ position: "absolute", left: vx(714.553), top: vy(arrowTop(28.029)) }}
+      />
+      <div style={{ position: "absolute", left: vx(791.167), top: vy(19.029) }}>
+        <FlowLabel metrics={metrics} width={190}>
+          Oportunidades de melhoria
+        </FlowLabel>
+      </div>
 
       <SvgAsset
         src={coreConnector}
-        width={899.364}
-        height={102.5}
+        width={840.29}
+        height={95.767}
         metrics={metrics}
-        style={{ position: "absolute", left: vx(218), top: vy(32), overflow: "visible" }}
+        scaleMode="stretch"
+        style={{ position: "absolute", left: vx(196.77), top: vy(28.959), overflow: "visible" }}
       />
 
-      <FlowRow metrics={metrics} top={116}>
-        <FlowLabel metrics={metrics}>Protótipos</FlowLabel>
-        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
-        <FlowLabel metrics={metrics}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: vy(bottomRowTop),
+          width: vx(rowWidth),
+          height: vy(bottomRowHeight),
+          borderRadius: vs(22.424),
+          background: PALE_BLUE,
+        }}
+      />
+      <div style={{ position: "absolute", left: vx(167.254), top: vy(bottomRowTop + 28.373) }}>
+        <FlowLabel metrics={metrics} width={75}>
+          Protótipos
+        </FlowLabel>
+      </div>
+      <SvgAsset
+        src={coreArrow}
+        width={51}
+        height={14.728}
+        metrics={metrics}
+        style={{ position: "absolute", left: vx(272.153), top: vy(arrowTop(bottomRowTop + 37.373)) }}
+      />
+      <div style={{ position: "absolute", left: vx(348.766), top: vy(bottomRowTop + 19.373) }}>
+        <FlowLabel metrics={metrics} width={138}>
           Testes com clientes
           <br />
           <span style={{ fontWeight: 400 }}>(Gerar aprendizado)</span>
         </FlowLabel>
-        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
-        <div style={{ display: "flex", gap: vx(22), alignItems: "center", flexShrink: 0 }}>
+      </div>
+      <SvgAsset
+        src={coreArrow}
+        width={51}
+        height={14.728}
+        metrics={metrics}
+        style={{ position: "absolute", left: vx(516.665), top: vy(arrowTop(bottomRowTop + 37.373)) }}
+      />
+      <div style={{ position: "absolute", left: vx(593.278), top: vy(bottomRowTop + 18.686), display: "flex", gap: vx(20.555), alignItems: "center" }}>
           {[0, 1, 2, 3].map((item) => (
-            <SvgAsset key={item} src={coreRenew} width={40} height={40} metrics={metrics} />
+            <SvgAsset key={item} src={coreRenew} width={37.373} height={37.373} metrics={metrics} />
           ))}
-        </div>
-        <SvgAsset src={coreArrow} width={51} height={14.728} metrics={metrics} />
-        <FlowLabel metrics={metrics} width={158}>
+      </div>
+      <SvgAsset
+        src={coreArrow}
+        width={51}
+        height={14.728}
+        metrics={metrics}
+        style={{ position: "absolute", left: vx(834.332), top: vy(arrowTop(bottomRowTop + 37.373)) }}
+      />
+      <div style={{ position: "absolute", left: vx(910.946), top: vy(bottomRowTop + 19.373) }}>
+        <FlowLabel metrics={metrics} width={147.622}>
           Backlog de produto e/ou produção
         </FlowLabel>
-      </FlowRow>
+      </div>
       <p
         style={{
           position: "absolute",
-          left: vx(629),
-          top: vy(204),
+          left: vx(587.685),
+          top: vy(190.601),
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontSize: vs(16),
