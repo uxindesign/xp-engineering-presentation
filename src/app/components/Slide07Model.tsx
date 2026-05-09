@@ -1272,6 +1272,10 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
   const rowTop = 64;
   const rowCenterY = rowTop + 40;
   const arrowTop = rowCenterY - 14.728 / 2;
+  const renewGroupLeft = vx(702.5);
+  const renewGroupWidth = vs(40) * 4 + vx(22) * 3;
+  const cycleLabelWidth = vs(236);
+  const cycleLabelLeft = renewGroupLeft + renewGroupWidth / 2 - cycleLabelWidth / 2;
 
   return (
     <div style={{ position: "relative", height: vy(220), width: "100%", overflow: "hidden" }}>
@@ -1301,7 +1305,7 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
       <div style={{ position: "absolute", left: vx(568.5), top: vy(rowTop + 21) }}>
         <FlowLabel metrics={metrics} width={102}>Produto em produção</FlowLabel>
       </div>
-      <div style={{ position: "absolute", left: vx(702.5), top: vy(rowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
+      <div style={{ position: "absolute", left: renewGroupLeft, top: vy(rowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
         {[0, 1, 2, 3].map((item) => (
           <SvgAsset key={item} src={growthRenew} width={40} height={40} metrics={metrics} />
         ))}
@@ -1313,9 +1317,9 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
       <p
         style={{
           position: "absolute",
-          left: vx(698),
+          left: cycleLabelLeft,
           top: vy(156),
-          width: vx(236),
+          width: cycleLabelWidth,
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontSize: vs(16),
@@ -1339,6 +1343,10 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
   const bottomRowHeight = 80;
   const arrowHeight = 14.728;
   const arrowTop = (lineY: number) => lineY - arrowHeight / 2;
+  const renewGroupLeft = vx(634.5);
+  const renewGroupWidth = vs(40) * 4 + vx(22) * 3;
+  const cycleLabelWidth = vs(236);
+  const cycleLabelLeft = renewGroupLeft + renewGroupWidth / 2 - cycleLabelWidth / 2;
 
   return (
     <div style={{ position: "relative", height: vy(222), width: "100%", overflow: "hidden" }}>
@@ -1393,7 +1401,7 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
         </FlowLabel>
       </div>
       <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(552.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
-      <div style={{ position: "absolute", left: vx(634.5), top: vy(bottomRowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
+      <div style={{ position: "absolute", left: renewGroupLeft, top: vy(bottomRowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
           {[0, 1, 2, 3].map((item) => (
             <SvgAsset key={item} src={coreRenew} width={40} height={40} metrics={metrics} />
           ))}
@@ -1407,9 +1415,9 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
       <p
         style={{
           position: "absolute",
-          left: vx(629),
+          left: cycleLabelLeft,
           top: vy(204),
-          width: vx(236),
+          width: cycleLabelWidth,
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontSize: vs(16),
