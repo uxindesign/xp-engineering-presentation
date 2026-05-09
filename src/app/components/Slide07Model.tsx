@@ -217,14 +217,15 @@ function CoreConnectorArrow({ metrics, style }: { metrics: Metrics; style?: CSSP
   const height = vy(100.5);
   const strokeWidth = vs(1.868);
   const radius = vs(16);
-  const arrowHead = vs(6.36);
   const arrowX = vs(6.88);
   const topY = strokeWidth / 2;
   const middleY = height * (52.3217 / 95.7674);
-  const bottomY = height - strokeWidth / 2;
+  const stemTopY = height * (72 / 102.5);
   const rightX = width - strokeWidth / 2;
   const topStartX = Math.max(arrowX + radius, rightX - vs(34.1));
-  const lineEndY = bottomY - arrowHead;
+  const s = vs(1);
+  const sx = (value: number) => value * s;
+  const sy = (value: number) => stemTopY + (value - 72) * s;
 
   const path = [
     `M${topStartX} ${topY}`,
@@ -234,7 +235,27 @@ function CoreConnectorArrow({ metrics, style }: { metrics: Metrics; style?: CSSP
     `Q${rightX} ${middleY} ${rightX - radius} ${middleY}`,
     `H${arrowX + radius}`,
     `Q${arrowX} ${middleY} ${arrowX} ${middleY + radius}`,
-    `V${lineEndY}`,
+    `V${stemTopY}`,
+  ].join(" ");
+  const arrowEndPath = [
+    `M${sx(6.65685)} ${sy(102.207)}`,
+    `C${sx(7.04738)} ${sy(102.598)} ${sx(7.68054)} ${sy(102.598)} ${sx(8.07107)} ${sy(102.207)}`,
+    `L${sx(14.435)} ${sy(95.8431)}`,
+    `C${sx(14.8256)} ${sy(95.4526)} ${sx(14.8256)} ${sy(94.8195)} ${sx(14.435)} ${sy(94.4289)}`,
+    `C${sx(14.0445)} ${sy(94.0384)} ${sx(13.4113)} ${sy(94.0384)} ${sx(13.0208)} ${sy(94.4289)}`,
+    `L${sx(7.36396)} ${sy(100.086)}`,
+    `L${sx(1.70711)} ${sy(94.4289)}`,
+    `C${sx(1.31658)} ${sy(94.0384)} ${sx(0.683418)} ${sy(94.0384)} ${sx(0.292893)} ${sy(94.4289)}`,
+    `C${sx(-0.097631)} ${sy(94.8195)} ${sx(-0.097631)} ${sy(95.4526)} ${sx(0.292893)} ${sy(95.8431)}`,
+    `L${sx(6.65685)} ${sy(102.207)}`,
+    `ZM${sx(7.36396)} ${sy(72)}`,
+    `H${sx(6.36396)}`,
+    `V${sy(101.5)}`,
+    `H${sx(7.36396)}`,
+    `H${sx(8.36396)}`,
+    `V${sy(72)}`,
+    `H${sx(7.36396)}`,
+    "Z",
   ].join(" ");
 
   return (
@@ -246,7 +267,7 @@ function CoreConnectorArrow({ metrics, style }: { metrics: Metrics; style?: CSSP
       style={{ display: "block", overflow: "visible", ...style }}
     >
       <path d={path} stroke={NAVY} strokeLinecap="round" strokeLinejoin="round" strokeWidth={strokeWidth} />
-      <path d={`M${arrowX - arrowHead} ${bottomY - arrowHead}L${arrowX} ${bottomY}L${arrowX + arrowHead} ${bottomY - arrowHead}`} stroke={NAVY} strokeLinecap="round" strokeLinejoin="round" strokeWidth={strokeWidth} />
+      <path d={arrowEndPath} fill={NAVY} />
     </svg>
   );
 }
