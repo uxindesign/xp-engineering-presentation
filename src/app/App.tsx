@@ -14,6 +14,8 @@ import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
 
 const TOTAL_SLIDES = 17;
+const DESIGN_WIDTH = 1920;
+const DESIGN_HEIGHT = 1080;
 const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
 const REPEAT_ICON_PATH = "M35.3 12.65C32.4 9.75 28.4 8 24 8C15.15 8 8 15.15 8 24C8 32.85 15.15 40 24 40C31.45 40 37.7 34.9 39.45 28H35.25C33.6 32.65 29.15 36 24 36C17.35 36 12 30.65 12 24C12 17.35 17.35 12 24 12C27.3 12 30.25 13.35 32.4 15.5L26 22H40V8L35.3 12.65Z";
 const INFOGRAPHIC_CURSOR_SIZE = 64;
@@ -106,29 +108,18 @@ export default function App() {
   const vy = (n: number) => n * scaleY;
   const vs = (n: number) => n * s;
 
-  // Below 1440px width, switch to uniform-scale + letterbox so layout doesn't
-  // distort on non-16:9 viewports. At ≥1440 we keep the original behavior
-  // (independent X/Y scale filling the whole viewport).
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      if (w >= 1440) {
-        setScaleX(w / 1920);
-        setScaleY(h / 1080);
-        setStageOffsetX(0);
-        setStageOffsetY(0);
-        setStageW("100%");
-        setStageH("100%");
-      } else {
-        const scale = Math.min(w / 1920, h / 1080);
-        setScaleX(scale);
-        setScaleY(scale);
-        setStageOffsetX((w - 1920 * scale) / 2);
-        setStageOffsetY((h - 1080 * scale) / 2);
-        setStageW(1920 * scale);
-        setStageH(1080 * scale);
-      }
+      const scale = Math.min(w / DESIGN_WIDTH, h / DESIGN_HEIGHT);
+
+      setScaleX(scale);
+      setScaleY(scale);
+      setStageOffsetX((w - DESIGN_WIDTH * scale) / 2);
+      setStageOffsetY((h - DESIGN_HEIGHT * scale) / 2);
+      setStageW(DESIGN_WIDTH * scale);
+      setStageH(DESIGN_HEIGHT * scale);
     };
     update();
     window.addEventListener("resize", update);
