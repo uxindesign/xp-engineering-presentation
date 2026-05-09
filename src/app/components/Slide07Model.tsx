@@ -126,15 +126,19 @@ function SvgAsset({
   width,
   height,
   metrics,
+  scaleMode = "stretch",
   style,
 }: {
   src: string;
   width: number;
   height: number;
   metrics: Metrics;
+  scaleMode?: "stretch" | "uniform";
   style?: CSSProperties;
 }) {
-  const { vx, vy } = metrics;
+  const { vx, vy, vs } = metrics;
+  const renderedWidth = scaleMode === "uniform" ? vs(width) : vx(width);
+  const renderedHeight = scaleMode === "uniform" ? vs(height) : vy(height);
 
   return (
     <img
@@ -143,12 +147,59 @@ function SvgAsset({
       draggable={false}
       style={{
         display: "block",
-        width: vx(width),
-        height: vy(height),
+        width: renderedWidth,
+        height: renderedHeight,
         flexShrink: 0,
         ...style,
       }}
     />
+  );
+}
+
+function NavDot({
+  active,
+  metrics,
+}: {
+  active: boolean;
+  metrics: Metrics;
+}) {
+  const { vs } = metrics;
+  const size = vs(24);
+
+  return (
+    <span style={{ position: "relative", display: "block", width: size, height: size, overflow: "visible" }}>
+      <motion.img
+        alt=""
+        src={navDot}
+        draggable={false}
+        initial={false}
+        animate={{ opacity: active ? 0 : 1 }}
+        transition={{ duration: 0.24, ease: EASE }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: size,
+          height: size,
+          display: "block",
+        }}
+      />
+      <motion.img
+        alt=""
+        src={navDotCurrent}
+        draggable={false}
+        initial={false}
+        animate={{ opacity: active ? 1 : 0, scale: active ? 1 : 0.8 }}
+        whileHover={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.28, ease: EASE }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: size,
+          height: size,
+          display: "block",
+        }}
+      />
+    </span>
   );
 }
 
@@ -346,13 +397,16 @@ function VerticalNav({
           gap: vy(40),
         }}
       >
-        <button
+        <motion.button
           type="button"
           aria-label="Página anterior do slide 7"
           onClick={(event) => {
             stopEvent(event);
             if (canGoUp) setPage(page - 1);
           }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.94 }}
+          transition={{ duration: 0.28, ease: EASE }}
           style={{
             border: 0,
             background: "transparent",
@@ -367,12 +421,12 @@ function VerticalNav({
             outline: "none",
           }}
         >
-          <SvgAsset src={navArrowUp} width={24} height={24} metrics={metrics} />
-        </button>
+          <SvgAsset src={navArrowUp} width={24} height={24} metrics={metrics} scaleMode="uniform" />
+        </motion.button>
 
         <div style={{ display: "flex", flexDirection: "column", gap: vy(4), alignItems: "center" }}>
           {[0, 1, 2].map((dot) => (
-            <button
+            <motion.button
               key={dot}
               type="button"
               aria-label={`Ir para página ${dot + 1} do slide 7`}
@@ -380,6 +434,9 @@ function VerticalNav({
                 stopEvent(event);
                 setPage(dot);
               }}
+              whileHover={{ scale: page === dot ? 1.04 : 1.12 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ duration: 0.28, ease: EASE }}
               style={{
                 width: vs(24),
                 height: vs(24),
@@ -392,20 +449,24 @@ function VerticalNav({
                 alignItems: "center",
                 justifyContent: "center",
                 outline: "none",
+                overflow: "visible",
               }}
             >
-              <SvgAsset src={page === dot ? navDotCurrent : navDot} width={24} height={24} metrics={metrics} />
-            </button>
+              <NavDot active={page === dot} metrics={metrics} />
+            </motion.button>
           ))}
         </div>
 
-        <button
+        <motion.button
           type="button"
           aria-label="Próxima página do slide 7"
           onClick={(event) => {
             stopEvent(event);
             if (canGoDown) setPage(page + 1);
           }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.94 }}
+          transition={{ duration: 0.28, ease: EASE }}
           style={{
             border: 0,
             background: "transparent",
@@ -420,8 +481,8 @@ function VerticalNav({
             outline: "none",
           }}
         >
-          <SvgAsset src={navArrowDown} width={24} height={24} metrics={metrics} />
-        </button>
+          <SvgAsset src={navArrowDown} width={24} height={24} metrics={metrics} scaleMode="uniform" />
+        </motion.button>
       </div>
     </div>
   );
