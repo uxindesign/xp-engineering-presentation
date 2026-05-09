@@ -979,6 +979,7 @@ function ClassificationMatrix({
   metrics: Metrics;
 }) {
   const { vx, vy, vs } = metrics;
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const segmentPercent = 100 / phases.length;
 
   return (
@@ -997,6 +998,8 @@ function ClassificationMatrix({
         const [number, ...labelParts] = row.label.split(" ");
         const label = labelParts.join(" ");
         const isActive = rowIndex === activeIndex;
+        const isHoverPreview = hoveredIndex === rowIndex && !isActive;
+        const hasUnderline = isActive || isHoverPreview;
 
         return (
           <div
@@ -1005,8 +1008,10 @@ function ClassificationMatrix({
             tabIndex={0}
             aria-current={isActive ? "true" : undefined}
             aria-label={`Mostrar critério ${row.label}`}
-            onMouseEnter={() => setIndex(rowIndex)}
-            onFocus={() => setIndex(rowIndex)}
+            onMouseEnter={() => setHoveredIndex(rowIndex)}
+            onMouseLeave={() => setHoveredIndex((current) => (current === rowIndex ? null : current))}
+            onFocus={() => setHoveredIndex(rowIndex)}
+            onBlur={() => setHoveredIndex((current) => (current === rowIndex ? null : current))}
             onClick={(event) => {
               event.stopPropagation();
               setIndex(rowIndex);
@@ -1040,8 +1045,8 @@ function ClassificationMatrix({
               <span>{number} </span>
               <span
                 style={{
-                  textDecorationLine: isActive ? "underline" : "none",
-                  textDecorationStyle: "solid",
+                  textDecorationLine: hasUnderline ? "underline" : "none",
+                  textDecorationStyle: isHoverPreview ? "dotted" : "solid",
                   textDecorationSkipInk: "none",
                   textDecorationColor: BLUE,
                   textDecorationThickness: vs(4),
