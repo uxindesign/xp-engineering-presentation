@@ -97,15 +97,9 @@ function stopEvent(event: MouseEvent<HTMLButtonElement>) {
 function ArrowIcon({ direction = "right", size }: { direction?: "left" | "right"; size: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
-      <motion.path
+      <path
         d={direction === "left" ? HORIZONTAL_ARROW_LEFT_PATH : HORIZONTAL_ARROW_RIGHT_PATH}
-        variants={{
-          rest: { fill: BLUE },
-          hover: { fill: "#ffffff" },
-          press: { fill: "#ffffff" },
-        }}
-        initial={false}
-        transition={{ duration: 0.22, ease: EASE }}
+        className="fill-[#036EF2] transition-colors duration-150 group-hover:fill-white group-active:fill-white"
       />
     </svg>
   );
@@ -166,12 +160,14 @@ function SvgAsset({
 }
 
 function NavDot({
-  metrics,
+  active,
+  hovered,
 }: {
-  metrics: Metrics;
+  active: boolean;
+  hovered: boolean;
 }) {
-  void metrics;
   const size = 24;
+  const highlighted = active || hovered;
 
   return (
     <motion.svg
@@ -184,10 +180,9 @@ function NavDot({
       <motion.circle
         cx="12"
         cy="12"
-        variants={{
-          rest: { r: 8, fill: STROKE_BLUE },
-          hover: { r: 8, fill: BLUE },
-          active: { r: 10, fill: BLUE },
+        animate={{
+          r: highlighted ? 10 : 8,
+          fill: highlighted ? BLUE : STROKE_BLUE,
         }}
         initial={false}
         transition={{ duration: 0.24, ease: EASE }}
@@ -198,27 +193,87 @@ function NavDot({
 
 function VerticalNavArrow({
   direction,
-  metrics,
 }: {
   direction: "up" | "down";
-  metrics: Metrics;
 }) {
-  void metrics;
   const size = 24;
 
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
-      <motion.path
+      <path
         d={direction === "up" ? NAV_ARROW_UP_PATH : NAV_ARROW_DOWN_PATH}
-        variants={{
-          rest: { fill: BLUE },
-          hover: { fill: "#ffffff" },
-          press: { fill: "#ffffff" },
-        }}
-        initial={false}
-        transition={{ duration: 0.22, ease: EASE }}
+        className="fill-[#036EF2] transition-colors duration-150 group-hover:fill-white group-active:fill-white"
       />
     </svg>
+  );
+}
+
+function NavArrowButton({
+  ariaLabel,
+  onClick,
+  children,
+  size,
+}: {
+  ariaLabel: string;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  children: ReactNode;
+  size: number;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      onClick={onClick}
+      className="group flex items-center justify-center rounded-full bg-transparent hover:bg-[#036ef2] active:bg-[#036ef2] transition-colors duration-150 cursor-pointer"
+      style={{
+        width: size,
+        height: size,
+        border: 0,
+        padding: 0,
+        outline: "none",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function NavDotButton({
+  active,
+  ariaLabel,
+  onClick,
+}: {
+  active: boolean;
+  ariaLabel: string;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      onClick={onClick}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
+      style={{
+        width: 24,
+        height: 24,
+        borderRadius: "50%",
+        border: 0,
+        padding: 0,
+        cursor: "pointer",
+        background: "transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        outline: "none",
+        overflow: "visible",
+      }}
+    >
+      <NavDot active={active} hovered={hovered} />
+    </button>
   );
 }
 
@@ -416,110 +471,41 @@ function VerticalNav({
           gap: 40,
         }}
       >
-        <motion.button
-          type="button"
-          aria-label="Página anterior do slide 7"
+        <NavArrowButton
+          ariaLabel="Página anterior do slide 7"
           onClick={(event) => {
             stopEvent(event);
             if (canGoUp) setPage(page - 1);
           }}
-          initial={false}
-          animate="rest"
-          whileHover="hover"
-          whileTap="press"
-          variants={{
-            rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
-            hover: { backgroundColor: BLUE, scale: 1 },
-            press: { backgroundColor: BLUE, scale: 0.94 },
-          }}
-          transition={{ duration: 0.28, ease: EASE }}
-          style={{
-            border: 0,
-            background: "transparent",
-            borderRadius: 999,
-            padding: 0,
-            width: 40,
-            height: 40,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            opacity: 1,
-            outline: "none",
-          }}
+          size={40}
         >
-          <VerticalNavArrow direction="up" metrics={metrics} />
-        </motion.button>
+          <VerticalNavArrow direction="up" />
+        </NavArrowButton>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}>
           {[0, 1, 2].map((dot) => (
-            <motion.button
+            <NavDotButton
               key={dot}
-              type="button"
-              aria-label={`Ir para página ${dot + 1} do slide 7`}
+              active={page === dot}
+              ariaLabel={`Ir para página ${dot + 1} do slide 7`}
               onClick={(event) => {
                 stopEvent(event);
                 setPage(dot);
               }}
-              initial={false}
-              animate={page === dot ? "active" : "rest"}
-              whileHover={page === dot ? "active" : "hover"}
-              whileTap={{ scale: 0.92 }}
-              transition={{ duration: 0.28, ease: EASE }}
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: "50%",
-                border: 0,
-                padding: 0,
-                cursor: "pointer",
-                background: "transparent",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                outline: "none",
-                overflow: "visible",
-              }}
-            >
-              <NavDot metrics={metrics} />
-            </motion.button>
+            />
           ))}
         </div>
 
-        <motion.button
-          type="button"
-          aria-label="Próxima página do slide 7"
+        <NavArrowButton
+          ariaLabel="Próxima página do slide 7"
           onClick={(event) => {
             stopEvent(event);
             if (canGoDown) setPage(page + 1);
           }}
-          initial={false}
-          animate="rest"
-          whileHover="hover"
-          whileTap="press"
-          variants={{
-            rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
-            hover: { backgroundColor: BLUE, scale: 1 },
-            press: { backgroundColor: BLUE, scale: 0.94 },
-          }}
-          transition={{ duration: 0.28, ease: EASE }}
-          style={{
-            border: 0,
-            background: "transparent",
-            borderRadius: 999,
-            padding: 0,
-            width: 40,
-            height: 40,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            opacity: 1,
-            outline: "none",
-          }}
+          size={40}
         >
-          <VerticalNavArrow direction="down" metrics={metrics} />
-        </motion.button>
+          <VerticalNavArrow direction="down" />
+        </NavArrowButton>
       </div>
     </div>
   );
@@ -739,72 +725,26 @@ function ArrowPairNav({
       }}
       onClick={(event) => event.stopPropagation()}
     >
-      <motion.button
-        type="button"
-        aria-label="Anterior"
+      <NavArrowButton
+        ariaLabel="Anterior"
         onClick={(event) => {
           stopEvent(event);
           previous();
         }}
-        initial={false}
-        animate="rest"
-        whileHover="hover"
-        whileTap="press"
-        variants={{
-          rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
-          hover: { backgroundColor: BLUE, scale: 1 },
-          press: { backgroundColor: BLUE, scale: 0.94 },
-        }}
-        transition={{ duration: 0.28, ease: EASE }}
-        style={{
-          width: vs(40),
-          height: vs(40),
-          borderRadius: vs(999),
-          border: 0,
-          background: "transparent",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          padding: 0,
-          outline: "none",
-        }}
+        size={vs(40)}
       >
         <ArrowIcon direction="left" size={vs(24)} />
-      </motion.button>
-      <motion.button
-        type="button"
-        aria-label="Próximo"
+      </NavArrowButton>
+      <NavArrowButton
+        ariaLabel="Próximo"
         onClick={(event) => {
           stopEvent(event);
           next();
         }}
-        initial={false}
-        animate="rest"
-        whileHover="hover"
-        whileTap="press"
-        variants={{
-          rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
-          hover: { backgroundColor: BLUE, scale: 1 },
-          press: { backgroundColor: BLUE, scale: 0.94 },
-        }}
-        transition={{ duration: 0.28, ease: EASE }}
-        style={{
-          width: vs(40),
-          height: vs(40),
-          borderRadius: vs(999),
-          border: 0,
-          background: "transparent",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          padding: 0,
-          outline: "none",
-        }}
+        size={vs(40)}
       >
         <ArrowIcon direction="right" size={vs(24)} />
-      </motion.button>
+      </NavArrowButton>
     </div>
   );
 }
