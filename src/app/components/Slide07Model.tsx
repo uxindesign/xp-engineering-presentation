@@ -702,13 +702,16 @@ function ArrowPairNav({
       }}
       onClick={(event) => event.stopPropagation()}
     >
-      <button
+      <motion.button
         type="button"
         aria-label="Anterior"
         onClick={(event) => {
           stopEvent(event);
           previous();
         }}
+        whileHover={{ scale: 1.16, x: -vs(2) }}
+        whileTap={{ scale: 0.92 }}
+        transition={{ duration: 0.28, ease: EASE }}
         style={{
           width: vs(40),
           height: vs(40),
@@ -724,14 +727,17 @@ function ArrowPairNav({
         }}
       >
         <ArrowIcon direction="left" size={vs(24)} />
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         type="button"
         aria-label="Próximo"
         onClick={(event) => {
           stopEvent(event);
           next();
         }}
+        whileHover={{ scale: 1.16, x: vs(2) }}
+        whileTap={{ scale: 0.92 }}
+        transition={{ duration: 0.28, ease: EASE }}
         style={{
           width: vs(40),
           height: vs(40),
@@ -747,7 +753,7 @@ function ArrowPairNav({
         }}
       >
         <ArrowIcon direction="right" size={vs(24)} />
-      </button>
+      </motion.button>
     </div>
   );
 }
