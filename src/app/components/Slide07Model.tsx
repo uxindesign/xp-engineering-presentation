@@ -102,6 +102,7 @@ function ArrowIcon({ direction = "right", size }: { direction?: "left" | "right"
         variants={{
           rest: { fill: BLUE },
           hover: { fill: "#ffffff" },
+          press: { fill: "#ffffff" },
         }}
         initial={false}
         transition={{ duration: 0.22, ease: EASE }}
@@ -745,10 +746,11 @@ function ArrowPairNav({
         initial={false}
         animate="rest"
         whileHover="hover"
-        whileTap={{ scale: 0.94 }}
+        whileTap="press"
         variants={{
           rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
           hover: { backgroundColor: BLUE, scale: 1 },
+          press: { backgroundColor: BLUE, scale: 0.94 },
         }}
         transition={{ duration: 0.28, ease: EASE }}
         style={{
@@ -777,10 +779,11 @@ function ArrowPairNav({
         initial={false}
         animate="rest"
         whileHover="hover"
-        whileTap={{ scale: 0.94 }}
+        whileTap="press"
         variants={{
           rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
           hover: { backgroundColor: BLUE, scale: 1 },
+          press: { backgroundColor: BLUE, scale: 0.94 },
         }}
         transition={{ duration: 0.28, ease: EASE }}
         style={{
