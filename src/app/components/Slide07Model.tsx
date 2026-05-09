@@ -1408,6 +1408,14 @@ function PageThree({
 }) {
   const { vx, vy, vs } = metrics;
   const cardHeight = (variant: (typeof maturityCards)[number]["variant"]) => (variant === "growth" ? 440 : variant === "core" ? 522 : 520);
+  const activeCardHeight = cardHeight(maturityCards[maturityIndex].variant);
+  const depthOffsets = [0, 103.35, 49.15];
+  const depthScales = [1, 0.9666, 0.9343];
+  const depthLips = [0, 9, 17];
+  const shellHeight = (depth: number) => {
+    if (depth === 0) return activeCardHeight;
+    return Math.max(0, (activeCardHeight + depthLips[depth] - depthOffsets[depth]) / depthScales[depth]);
+  };
 
   const updateIndex = (next: number) => {
     const normalized = (next + maturityCards.length) % maturityCards.length;
@@ -1429,8 +1437,9 @@ function PageThree({
       >
         {maturityCards.map((card, i) => {
           const depth = (i - maturityIndex + maturityCards.length) % maturityCards.length;
-          const y = [0, 103.35, 49.15][depth];
-          const scale = [1, 0.9666, 0.9343][depth];
+          const y = depthOffsets[depth];
+          const scale = depthScales[depth];
+          const height = depth === 0 ? cardHeight(card.variant) : shellHeight(depth);
 
           return (
             <motion.div
@@ -1449,7 +1458,7 @@ function PageThree({
                 left: 0,
                 top: 0,
                 width: vx(1440),
-                height: vy(cardHeight(card.variant)),
+                height: vy(height),
                 transformOrigin: "top center",
               }}
             >
@@ -1462,7 +1471,7 @@ function PageThree({
         style={{
           position: "absolute",
           left: vx(784),
-          top: vy(894),
+          top: vy(341 + activeCardHeight + 33),
           width: vx(112),
           display: "flex",
           justifyContent: "center",
