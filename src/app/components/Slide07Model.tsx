@@ -1269,8 +1269,8 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
 
   return (
-    <div style={{ position: "relative", height: vy(140), width: "100%", overflow: "hidden" }}>
-      <FlowRow metrics={metrics} top={24}>
+    <div style={{ position: "relative", height: vy(220), width: "100%", overflow: "hidden" }}>
+      <FlowRow metrics={metrics} top={64}>
         <FlowLabel metrics={metrics}>Protótipos</FlowLabel>
         <SvgAsset src={growthArrow} width={51} height={14.728} metrics={metrics} />
         <FlowLabel metrics={metrics}>
@@ -1296,7 +1296,7 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
         style={{
           position: "absolute",
           left: vx(698),
-          top: vy(116),
+          top: vy(156),
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontSize: vs(16),
@@ -1536,8 +1536,7 @@ function PageThree({
   reducedMotion: boolean;
 }) {
   const { vx, vy, vs } = metrics;
-  const cardHeight = (variant: (typeof maturityCards)[number]["variant"]) => (variant === "growth" ? 440 : variant === "core" ? 522 : 520);
-  const activeCardHeight = cardHeight(maturityCards[maturityIndex].variant);
+  const activeCardHeight = 520;
   const depthOffsets = [0, 103.35, 49.15];
   const depthScales = [1, 0.9666, 0.9343];
   const depthLips = [0, 9, 17];
@@ -1568,7 +1567,7 @@ function PageThree({
           const depth = (i - maturityIndex + maturityCards.length) % maturityCards.length;
           const y = depthOffsets[depth];
           const scale = depthScales[depth];
-          const height = depth === 0 ? cardHeight(card.variant) : shellHeight(depth);
+          const height = depth === 0 ? activeCardHeight : shellHeight(depth);
 
           return (
             <motion.div
