@@ -2,6 +2,8 @@ import { useRef, useState, type CSSProperties, type MouseEvent, type ReactNode, 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
+import coreArrow from "../../assets/slide07/core-arrow.svg";
+import coreConnector from "../../assets/slide07/core-connector.svg";
 import coreRenew from "../../assets/slide07/core-renew.svg";
 import earlyArrowDiagonalDown from "../../assets/slide07/early-arrow-diagonal-down.svg";
 import earlyArrowDiagonalUp from "../../assets/slide07/early-arrow-diagonal-up.svg";
@@ -212,64 +214,64 @@ function ResponsiveUpArrow({ metrics, color = INK, style }: { metrics: Metrics; 
   );
 }
 
-function CoreConnectorArrow({ metrics, style }: { metrics: Metrics; style?: CSSProperties }) {
-  const { vx, vy, vs } = metrics;
-  const width = vx(891);
-  const height = vy(100.5);
-  const strokeWidth = vs(1.868);
-  const radius = vs(16);
-  const arrowX = vs(6.88);
-  const topY = strokeWidth / 2;
-  const middleY = height * (52.3217 / 95.7674);
-  const stemTopY = height * (72 / 102.5);
-  const rightX = width - strokeWidth / 2;
-  const topStartX = Math.max(arrowX + radius, rightX - vs(34.1));
-  const s = vs(1);
-  const sx = (value: number) => value * s;
-  const sy = (value: number) => stemTopY + (value - 72) * s;
-
-  const path = [
-    `M${topStartX} ${topY}`,
-    `H${rightX - radius}`,
-    `Q${rightX} ${topY} ${rightX} ${topY + radius}`,
-    `V${middleY - radius}`,
-    `Q${rightX} ${middleY} ${rightX - radius} ${middleY}`,
-    `H${arrowX + radius}`,
-    `Q${arrowX} ${middleY} ${arrowX} ${middleY + radius}`,
-    `V${stemTopY}`,
-  ].join(" ");
-  const arrowEndPath = [
-    `M${sx(6.65685)} ${sy(102.207)}`,
-    `C${sx(7.04738)} ${sy(102.598)} ${sx(7.68054)} ${sy(102.598)} ${sx(8.07107)} ${sy(102.207)}`,
-    `L${sx(14.435)} ${sy(95.8431)}`,
-    `C${sx(14.8256)} ${sy(95.4526)} ${sx(14.8256)} ${sy(94.8195)} ${sx(14.435)} ${sy(94.4289)}`,
-    `C${sx(14.0445)} ${sy(94.0384)} ${sx(13.4113)} ${sy(94.0384)} ${sx(13.0208)} ${sy(94.4289)}`,
-    `L${sx(7.36396)} ${sy(100.086)}`,
-    `L${sx(1.70711)} ${sy(94.4289)}`,
-    `C${sx(1.31658)} ${sy(94.0384)} ${sx(0.683418)} ${sy(94.0384)} ${sx(0.292893)} ${sy(94.4289)}`,
-    `C${sx(-0.097631)} ${sy(94.8195)} ${sx(-0.097631)} ${sy(95.4526)} ${sx(0.292893)} ${sy(95.8431)}`,
-    `L${sx(6.65685)} ${sy(102.207)}`,
-    `ZM${sx(7.36396)} ${sy(72)}`,
-    `H${sx(6.36396)}`,
-    `V${sy(101.5)}`,
-    `H${sx(7.36396)}`,
-    `H${sx(8.36396)}`,
-    `V${sy(72)}`,
-    `H${sx(7.36396)}`,
-    "Z",
-  ].join(" ");
+function CoreFlowArrow({ metrics, style }: { metrics: Metrics; style?: CSSProperties }) {
+  const { vs } = metrics;
 
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      fill="none"
-      style={{ display: "block", overflow: "visible", ...style }}
+    <div
+      style={{
+        width: vs(50),
+        height: vs(14.728),
+        position: "relative",
+        overflow: "visible",
+        flexShrink: 0,
+        ...style,
+      }}
     >
-      <path d={path} stroke={NAVY} strokeLinecap="round" strokeLinejoin="round" strokeWidth={strokeWidth} />
-      <path d={arrowEndPath} fill={NAVY} />
-    </svg>
+      <img
+        alt=""
+        src={coreArrow}
+        draggable={false}
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: vs(51),
+          height: vs(14.728),
+          display: "block",
+        }}
+      />
+    </div>
+  );
+}
+
+function CoreConnectorArrow({ metrics, style }: { metrics: Metrics; style?: CSSProperties }) {
+  const { vs } = metrics;
+
+  return (
+    <div
+      style={{
+        width: vs(891),
+        height: vs(100.5),
+        position: "relative",
+        overflow: "visible",
+        ...style,
+      }}
+    >
+      <img
+        alt=""
+        src={coreConnector}
+        draggable={false}
+        style={{
+          position: "absolute",
+          left: "-0.83%",
+          top: "-1%",
+          width: "100.94%",
+          height: "102%",
+          display: "block",
+        }}
+      />
+    </div>
   );
 }
 
@@ -1131,20 +1133,23 @@ function FlowLabel({
   width,
   color = BLUE,
   weight = 800,
+  scaleMode = "x",
 }: {
   children: ReactNode;
   metrics: Metrics;
   width?: number;
   color?: string;
   weight?: number;
+  scaleMode?: "x" | "uniform";
 }) {
   const { vx, vs } = metrics;
+  const renderedWidth = width ? (scaleMode === "uniform" ? vs(width) : vx(width)) : undefined;
 
   return (
     <p
       style={{
         margin: 0,
-        width: width ? vx(width) : undefined,
+        width: renderedWidth,
         fontFamily: "'Manrope', sans-serif",
         fontWeight: weight,
         fontSize: vs(16),
@@ -1182,7 +1187,9 @@ function QuestionMark({ metrics }: { metrics: Metrics }) {
 }
 
 function EarlyDiagram({ metrics }: { metrics: Metrics }) {
-  const { vx, vy, vs } = metrics;
+  const { vy, vs } = metrics;
+  const innerWidth = vs(1312);
+  const ix = (n: number) => `calc(50% - ${innerWidth / 2}px + ${vs(n)}px)`;
   const rowTop = 62;
   const rowCenterY = rowTop + 40;
   const arrowTop = rowCenterY - 14.728 / 2;
@@ -1200,8 +1207,8 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
           background: PALE_BLUE,
         }}
       />
-      <div style={{ position: "absolute", left: vx(40), top: vy(rowTop + 30.5) }}>
-        <FlowLabel metrics={metrics} width={80}>
+      <div style={{ position: "absolute", left: ix(40), top: vy(rowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={80} scaleMode="uniform">
           Protótipos
         </FlowLabel>
       </div>
@@ -1210,10 +1217,10 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
         width={51}
         height={14.728}
         metrics={metrics}
-        style={{ position: "absolute", left: vx(152), top: vy(arrowTop) }}
+        style={{ position: "absolute", left: ix(152), top: vy(arrowTop) }}
       />
-      <div style={{ position: "absolute", left: vx(234), top: vy(rowTop + 21) }}>
-        <FlowLabel metrics={metrics} width={177}>
+      <div style={{ position: "absolute", left: ix(234), top: vy(rowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={177} scaleMode="uniform">
           Testes com público alvo
           <br />
           <span style={{ fontWeight: 400 }}>(gerar aprendizado)</span>
@@ -1224,9 +1231,9 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
         width={51}
         height={14.728}
         metrics={metrics}
-        style={{ position: "absolute", left: vx(443), top: vy(arrowTop) }}
+        style={{ position: "absolute", left: ix(443), top: vy(arrowTop) }}
       />
-      <div style={{ position: "absolute", left: vx(525), top: vy(rowTop + 20) }}>
+      <div style={{ position: "absolute", left: ix(525), top: vy(rowTop + 20) }}>
         <QuestionMark metrics={metrics} />
       </div>
       <SvgAsset
@@ -1234,20 +1241,20 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
         width={486}
         height={14.728}
         metrics={metrics}
-        style={{ position: "absolute", left: vx(597), top: vy(arrowTop) }}
+        style={{ position: "absolute", left: ix(597), top: vy(arrowTop) }}
       />
-      <div style={{ position: "absolute", left: vx(1114), top: vy(rowTop + 21) }}>
-        <FlowLabel metrics={metrics} width={158}>
+      <div style={{ position: "absolute", left: ix(1114), top: vy(rowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={158} scaleMode="uniform">
           Backlog de produto e/ou produção
         </FlowLabel>
       </div>
 
-      <div style={{ position: "absolute", left: vx(653.3), top: vy(30), width: vx(90.898), height: vy(48), display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "absolute", left: ix(653.3), top: vy(30), width: vs(90.898), height: vy(48), display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ transform: "rotate(-27.84deg) skewX(4.42deg)" }}>
           <SvgAsset src={earlyArrowDiagonalUp} width={103.793} height={14.728} metrics={metrics} />
         </div>
       </div>
-      <div style={{ position: "absolute", left: vx(652.72), top: vy(126), width: vx(90.898), height: vy(48), display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "absolute", left: ix(652.72), top: vy(126), width: vs(90.898), height: vy(48), display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ transform: "rotate(27.84deg) skewX(-4.42deg)" }}>
           <SvgAsset src={earlyArrowDiagonalDown} width={103.793} height={14.728} metrics={metrics} />
         </div>
@@ -1256,9 +1263,9 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
       <p
         style={{
           position: "absolute",
-          left: vx(764),
+          left: ix(764),
           top: vy(16),
-          width: vx(168),
+          width: vs(168),
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontWeight: 800,
@@ -1273,15 +1280,15 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
       <div
         style={{
           position: "absolute",
-          left: vx(764),
+          left: ix(764),
           top: vy(166),
-          width: vx(432),
+          width: vs(432),
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <FlowLabel metrics={metrics} width={102} color={INK}>
+        <FlowLabel metrics={metrics} width={102} color={INK} scaleMode="uniform">
           Continuar aprendendo
           <br />
           <span style={{ fontWeight: 400 }}>(novos testes)</span>
@@ -1299,14 +1306,15 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
 }
 
 function GrowthDiagram({ metrics }: { metrics: Metrics }) {
-  const { vx, vy, vs } = metrics;
+  const { vy, vs } = metrics;
+  const innerWidth = vs(1312);
+  const ix = (n: number) => `calc(50% - ${innerWidth / 2}px + ${vs(n)}px)`;
   const rowTop = 64;
   const rowCenterY = rowTop + 40;
   const arrowTop = rowCenterY - 14.728 / 2;
-  const renewGroupLeft = vx(702.5);
-  const renewGroupWidth = vs(40) * 4 + vx(22) * 3;
   const cycleLabelWidth = vs(236);
-  const cycleLabelLeft = renewGroupLeft + renewGroupWidth / 2 - cycleLabelWidth / 2;
+  const renewGroupLeft = ix(702.5);
+  const cycleLabelLeft = ix(697.5);
 
   return (
     <div style={{ position: "relative", height: vy(220), width: "100%", overflow: "hidden" }}>
@@ -1321,29 +1329,29 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
           background: PALE_BLUE,
         }}
       />
-      <div style={{ position: "absolute", left: vx(111.5), top: vy(rowTop + 30.5) }}>
-        <FlowLabel metrics={metrics} width={80}>Protótipos</FlowLabel>
+      <div style={{ position: "absolute", left: ix(111.5), top: vy(rowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={80} scaleMode="uniform">Protótipos</FlowLabel>
       </div>
-      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(223.5), top: vy(arrowTop) }} />
-      <div style={{ position: "absolute", left: vx(305.5), top: vy(rowTop + 21) }}>
-        <FlowLabel metrics={metrics} width={149}>
+      <CoreFlowArrow metrics={metrics} style={{ position: "absolute", left: ix(223.5), top: vy(arrowTop) }} />
+      <div style={{ position: "absolute", left: ix(305.5), top: vy(rowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={149} scaleMode="uniform">
           Testes com clientes
           <br />
           <span style={{ fontWeight: 400 }}>(Rápido de avaliação)</span>
         </FlowLabel>
       </div>
-      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(486.5), top: vy(arrowTop) }} />
-      <div style={{ position: "absolute", left: vx(568.5), top: vy(rowTop + 21) }}>
-        <FlowLabel metrics={metrics} width={102}>Produto em produção</FlowLabel>
+      <CoreFlowArrow metrics={metrics} style={{ position: "absolute", left: ix(486.5), top: vy(arrowTop) }} />
+      <div style={{ position: "absolute", left: ix(568.5), top: vy(rowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={102} scaleMode="uniform">Produto em produção</FlowLabel>
       </div>
-      <div style={{ position: "absolute", left: renewGroupLeft, top: vy(rowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
+      <div style={{ position: "absolute", left: renewGroupLeft, top: vy(rowTop + 20), display: "flex", gap: vs(22), alignItems: "center" }}>
         {[0, 1, 2, 3].map((item) => (
           <SvgAsset key={item} src={growthRenew} width={40} height={40} metrics={metrics} />
         ))}
       </div>
-      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(960.5), top: vy(arrowTop) }} />
-      <div style={{ position: "absolute", left: vx(1042.5), top: vy(rowTop + 30.5) }}>
-        <FlowLabel metrics={metrics} width={158}>Versão validada</FlowLabel>
+      <CoreFlowArrow metrics={metrics} style={{ position: "absolute", left: ix(960.5), top: vy(arrowTop) }} />
+      <div style={{ position: "absolute", left: ix(1042.5), top: vy(rowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={158} scaleMode="uniform">Versão validada</FlowLabel>
       </div>
       <p
         style={{
@@ -1367,17 +1375,17 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
 }
 
 function CoreDiagram({ metrics }: { metrics: Metrics }) {
-  const { vx, vy, vs } = metrics;
-  const rowWidth = 1312;
+  const { vy, vs } = metrics;
+  const innerWidth = vs(1312);
+  const ix = (n: number) => `calc(50% - ${innerWidth / 2}px + ${vs(n)}px)`;
   const topRowHeight = 60;
   const bottomRowTop = 116;
   const bottomRowHeight = 80;
   const arrowHeight = 14.728;
   const arrowTop = (lineY: number) => lineY - arrowHeight / 2;
-  const renewGroupLeft = vx(634.5);
-  const renewGroupWidth = vs(40) * 4 + vx(22) * 3;
   const cycleLabelWidth = vs(236);
-  const cycleLabelLeft = renewGroupLeft + renewGroupWidth / 2 - cycleLabelWidth / 2;
+  const renewGroupLeft = ix(634.5);
+  const cycleLabelLeft = ix(629);
 
   return (
     <div style={{ position: "relative", height: vy(222), width: "100%", overflow: "visible" }}>
@@ -1402,23 +1410,23 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
           width: "100%",
           height: vy(topRowHeight),
           boxSizing: "border-box",
-          padding: `0 ${vx(40)}px`,
+          padding: `0 ${vs(40)}px`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: vx(32),
+          gap: vs(32),
         }}
       >
-        <FlowLabel metrics={metrics} width={471}>
+        <FlowLabel metrics={metrics} width={471} scaleMode="uniform">
           Pesquisas, análise de feedbacks, pedidos de suporte e analytics
         </FlowLabel>
-        <ResponsiveRightArrow metrics={metrics} width={50} />
-        <FlowLabel metrics={metrics} width={203}>
+        <CoreFlowArrow metrics={metrics} />
+        <FlowLabel metrics={metrics} width={203} scaleMode="uniform">
           Oportunidades de melhoria
         </FlowLabel>
       </div>
 
-      <CoreConnectorArrow metrics={metrics} style={{ position: "absolute", left: vx(218), top: vy(32) }} />
+      <CoreConnectorArrow metrics={metrics} style={{ position: "absolute", left: ix(218), top: vy(32) }} />
 
       <div
         style={{
@@ -1431,28 +1439,28 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
           background: PALE_BLUE,
         }}
       />
-      <div style={{ position: "absolute", left: vx(179.5), top: vy(bottomRowTop + 30.5) }}>
-        <FlowLabel metrics={metrics} width={80}>
+      <div style={{ position: "absolute", left: ix(179.5), top: vy(bottomRowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={80} scaleMode="uniform">
           Protótipos
         </FlowLabel>
       </div>
-      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(291.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
-      <div style={{ position: "absolute", left: vx(373.5), top: vy(bottomRowTop + 21) }}>
-        <FlowLabel metrics={metrics} width={147}>
+      <CoreFlowArrow metrics={metrics} style={{ position: "absolute", left: ix(291.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
+      <div style={{ position: "absolute", left: ix(373.5), top: vy(bottomRowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={147} scaleMode="uniform">
           Testes com clientes
           <br />
           <span style={{ fontWeight: 400 }}>(Gerar aprendizado)</span>
         </FlowLabel>
       </div>
-      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(552.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
-      <div style={{ position: "absolute", left: renewGroupLeft, top: vy(bottomRowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
+      <CoreFlowArrow metrics={metrics} style={{ position: "absolute", left: ix(552.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
+      <div style={{ position: "absolute", left: renewGroupLeft, top: vy(bottomRowTop + 20), display: "flex", gap: vs(22), alignItems: "center" }}>
           {[0, 1, 2, 3].map((item) => (
             <SvgAsset key={item} src={coreRenew} width={40} height={40} metrics={metrics} />
           ))}
       </div>
-      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(892.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
-      <div style={{ position: "absolute", left: vx(974.5), top: vy(bottomRowTop + 21) }}>
-        <FlowLabel metrics={metrics} width={158}>
+      <CoreFlowArrow metrics={metrics} style={{ position: "absolute", left: ix(892.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
+      <div style={{ position: "absolute", left: ix(974.5), top: vy(bottomRowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={158} scaleMode="uniform">
           Backlog de produto e/ou produção
         </FlowLabel>
       </div>
