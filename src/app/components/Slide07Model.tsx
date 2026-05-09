@@ -2,18 +2,14 @@ import { useRef, useState, type CSSProperties, type MouseEvent, type ReactNode, 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
-import coreArrow from "../../assets/slide07/core-arrow.svg";
-import coreConnector from "../../assets/slide07/core-connector.svg";
 import coreRenew from "../../assets/slide07/core-renew.svg";
 import earlyArrowDiagonalDown from "../../assets/slide07/early-arrow-diagonal-down.svg";
 import earlyArrowDiagonalUp from "../../assets/slide07/early-arrow-diagonal-up.svg";
 import earlyArrowLong from "../../assets/slide07/early-arrow-long.svg";
 import earlyArrowSmall from "../../assets/slide07/early-arrow-small.svg";
-import earlyArrowUp from "../../assets/slide07/early-arrow-up.svg";
 import earlyQuestionMark from "../../assets/slide07/early-question-mark.svg";
 import earlyRenewA from "../../assets/slide07/early-renew-a.svg";
 import earlyRenewB from "../../assets/slide07/early-renew-b.svg";
-import growthArrow from "../../assets/slide07/growth-arrow.svg";
 import growthRenew from "../../assets/slide07/growth-renew.svg";
 
 interface Slide07ModelProps {
@@ -156,6 +152,102 @@ function SvgAsset({
         ...style,
       }}
     />
+  );
+}
+
+function ResponsiveRightArrow({
+  width,
+  metrics,
+  color = NAVY,
+  style,
+}: {
+  width: number;
+  metrics: Metrics;
+  color?: string;
+  style?: CSSProperties;
+}) {
+  const { vx, vs } = metrics;
+  const renderedWidth = vx(width);
+  const renderedHeight = vs(14.728);
+  const strokeWidth = vs(2);
+  const head = vs(6.36);
+  const y = renderedHeight / 2;
+  const endX = renderedWidth - strokeWidth / 2;
+  const baseX = Math.max(0, endX - head);
+
+  return (
+    <svg
+      width={renderedWidth}
+      height={renderedHeight}
+      viewBox={`0 0 ${renderedWidth} ${renderedHeight}`}
+      fill="none"
+      style={{ display: "block", overflow: "visible", flexShrink: 0, ...style }}
+    >
+      <path d={`M0 ${y}H${endX}`} stroke={color} strokeLinecap="round" strokeWidth={strokeWidth} />
+      <path d={`M${baseX} ${y - head}L${endX} ${y}L${baseX} ${y + head}`} stroke={color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={strokeWidth} />
+    </svg>
+  );
+}
+
+function ResponsiveUpArrow({ metrics, color = INK, style }: { metrics: Metrics; color?: string; style?: CSSProperties }) {
+  const { vs } = metrics;
+  const renderedWidth = vs(14.728);
+  const renderedHeight = vs(40);
+  const strokeWidth = vs(2);
+  const head = vs(6.36);
+  const x = renderedWidth / 2;
+
+  return (
+    <svg
+      width={renderedWidth}
+      height={renderedHeight}
+      viewBox={`0 0 ${renderedWidth} ${renderedHeight}`}
+      fill="none"
+      style={{ display: "block", overflow: "visible", flexShrink: 0, ...style }}
+    >
+      <path d={`M${x} ${renderedHeight}V${strokeWidth / 2}`} stroke={color} strokeLinecap="round" strokeWidth={strokeWidth} />
+      <path d={`M${x - head} ${head}L${x} ${strokeWidth / 2}L${x + head} ${head}`} stroke={color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={strokeWidth} />
+    </svg>
+  );
+}
+
+function CoreConnectorArrow({ metrics, style }: { metrics: Metrics; style?: CSSProperties }) {
+  const { vx, vy, vs } = metrics;
+  const width = vx(891);
+  const height = vy(100.5);
+  const strokeWidth = vs(1.868);
+  const radius = vs(16);
+  const arrowHead = vs(6.36);
+  const arrowX = vs(6.88);
+  const topY = strokeWidth / 2;
+  const middleY = height * (52.3217 / 95.7674);
+  const bottomY = height - strokeWidth / 2;
+  const rightX = width - strokeWidth / 2;
+  const topStartX = Math.max(arrowX + radius, rightX - vs(34.1));
+  const lineEndY = bottomY - arrowHead;
+
+  const path = [
+    `M${topStartX} ${topY}`,
+    `H${rightX - radius}`,
+    `Q${rightX} ${topY} ${rightX} ${topY + radius}`,
+    `V${middleY - radius}`,
+    `Q${rightX} ${middleY} ${rightX - radius} ${middleY}`,
+    `H${arrowX + radius}`,
+    `Q${arrowX} ${middleY} ${arrowX} ${middleY + radius}`,
+    `V${lineEndY}`,
+  ].join(" ");
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      fill="none"
+      style={{ display: "block", overflow: "visible", ...style }}
+    >
+      <path d={path} stroke={NAVY} strokeLinecap="round" strokeLinejoin="round" strokeWidth={strokeWidth} />
+      <path d={`M${arrowX - arrowHead} ${bottomY - arrowHead}L${arrowX} ${bottomY}L${arrowX + arrowHead} ${bottomY - arrowHead}`} stroke={NAVY} strokeLinecap="round" strokeLinejoin="round" strokeWidth={strokeWidth} />
+    </svg>
   );
 }
 
@@ -1002,42 +1094,6 @@ function PageTwo({
   );
 }
 
-function FlowRow({
-  children,
-  metrics,
-  top = 0,
-  outlined = false,
-}: {
-  children: ReactNode;
-  metrics: Metrics;
-  top?: number;
-  outlined?: boolean;
-}) {
-  const { vx, vy, vs } = metrics;
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: 0,
-        top: vy(top),
-        width: "100%",
-        minHeight: vy(60),
-        borderRadius: vs(24),
-        background: outlined ? "#fff" : PALE_BLUE,
-        border: outlined ? `${vs(1)}px solid ${STROKE_BLUE}` : "none",
-        padding: `${vy(20)}px ${vx(40)}px`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: vx(32),
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
 function FlowLabel({
   children,
   metrics,
@@ -1194,7 +1250,7 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
           justifyContent: "space-between",
         }}
       >
-        <FlowLabel metrics={metrics} width={116} color={INK}>
+        <FlowLabel metrics={metrics} width={102} color={INK}>
           Continuar aprendendo
           <br />
           <span style={{ fontWeight: 400 }}>(novos testes)</span>
@@ -1203,8 +1259,8 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
         <SvgAsset src={earlyRenewB} width={40} height={40} metrics={metrics} />
         <SvgAsset src={earlyRenewB} width={40} height={40} metrics={metrics} />
         <SvgAsset src={earlyRenewA} width={40} height={40} metrics={metrics} />
-        <div style={{ width: 0, height: vs(40), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <SvgAsset src={earlyArrowUp} width={40} height={14.728} metrics={metrics} style={{ transform: "rotate(-90deg)" }} />
+        <div style={{ width: vs(14.728), height: vs(40), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <ResponsiveUpArrow metrics={metrics} />
         </div>
       </div>
     </div>
@@ -1213,42 +1269,60 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
 
 function GrowthDiagram({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
+  const rowTop = 64;
+  const rowCenterY = rowTop + 40;
+  const arrowTop = rowCenterY - 14.728 / 2;
 
   return (
     <div style={{ position: "relative", height: vy(220), width: "100%", overflow: "hidden" }}>
-      <FlowRow metrics={metrics} top={64}>
-        <FlowLabel metrics={metrics}>Protótipos</FlowLabel>
-        <SvgAsset src={growthArrow} width={51} height={14.728} metrics={metrics} />
-        <FlowLabel metrics={metrics}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: vy(rowTop),
+          width: "100%",
+          height: vy(80),
+          borderRadius: vs(24),
+          background: PALE_BLUE,
+        }}
+      />
+      <div style={{ position: "absolute", left: vx(111.5), top: vy(rowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={80}>Protótipos</FlowLabel>
+      </div>
+      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(223.5), top: vy(arrowTop) }} />
+      <div style={{ position: "absolute", left: vx(305.5), top: vy(rowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={149}>
           Testes com clientes
           <br />
           <span style={{ fontWeight: 400 }}>(Rápido de avaliação)</span>
         </FlowLabel>
-        <SvgAsset src={growthArrow} width={51} height={14.728} metrics={metrics} />
-        <FlowLabel metrics={metrics} width={102}>
-          Produto em produção
-        </FlowLabel>
-        <div style={{ display: "flex", gap: vx(22), alignItems: "center", flexShrink: 0 }}>
-          {[0, 1, 2, 3].map((item) => (
-            <SvgAsset key={item} src={growthRenew} width={40} height={40} metrics={metrics} />
-          ))}
-        </div>
-        <SvgAsset src={growthArrow} width={51} height={14.728} metrics={metrics} />
-        <FlowLabel metrics={metrics} width={158}>
-          Versão validada
-        </FlowLabel>
-      </FlowRow>
+      </div>
+      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(486.5), top: vy(arrowTop) }} />
+      <div style={{ position: "absolute", left: vx(568.5), top: vy(rowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={102}>Produto em produção</FlowLabel>
+      </div>
+      <div style={{ position: "absolute", left: vx(702.5), top: vy(rowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
+        {[0, 1, 2, 3].map((item) => (
+          <SvgAsset key={item} src={growthRenew} width={40} height={40} metrics={metrics} />
+        ))}
+      </div>
+      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(960.5), top: vy(arrowTop) }} />
+      <div style={{ position: "absolute", left: vx(1042.5), top: vy(rowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={158}>Versão validada</FlowLabel>
+      </div>
       <p
         style={{
           position: "absolute",
           left: vx(698),
           top: vy(156),
+          width: vx(236),
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontSize: vs(16),
           lineHeight: 1.1,
           letterSpacing: vs(-0.5),
           color: INK,
+          textAlign: "center",
         }}
       >
         Ciclo de testes/acompanhamento
@@ -1259,10 +1333,10 @@ function GrowthDiagram({ metrics }: { metrics: Metrics }) {
 
 function CoreDiagram({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
-  const rowWidth = 1225.822;
-  const topRowHeight = 56.059;
-  const bottomRowTop = 108.381;
-  const bottomRowHeight = 74.745;
+  const rowWidth = 1312;
+  const topRowHeight = 60;
+  const bottomRowTop = 116;
+  const bottomRowHeight = 80;
   const arrowHeight = 14.728;
   const arrowTop = (lineY: number) => lineY - arrowHeight / 2;
 
@@ -1280,32 +1354,19 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
           background: "#fff",
         }}
       />
-      <div style={{ position: "absolute", left: vx(244.655), top: vy(19.029) }}>
-        <FlowLabel metrics={metrics} width={440}>
+      <div style={{ position: "absolute", left: vx(262), top: vy(20.5) }}>
+        <FlowLabel metrics={metrics} width={471}>
           Pesquisas, análise de feedbacks, pedidos de suporte e analytics
         </FlowLabel>
       </div>
-      <SvgAsset
-        src={coreArrow}
-        width={51}
-        height={14.728}
-        metrics={metrics}
-        style={{ position: "absolute", left: vx(714.553), top: vy(arrowTop(28.029)) }}
-      />
-      <div style={{ position: "absolute", left: vx(791.167), top: vy(19.029) }}>
-        <FlowLabel metrics={metrics} width={190}>
+      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(765), top: vy(arrowTop(30)) }} />
+      <div style={{ position: "absolute", left: vx(847), top: vy(20.5) }}>
+        <FlowLabel metrics={metrics} width={203}>
           Oportunidades de melhoria
         </FlowLabel>
       </div>
 
-      <SvgAsset
-        src={coreConnector}
-        width={840.29}
-        height={95.767}
-        metrics={metrics}
-        scaleMode="stretch"
-        style={{ position: "absolute", left: vx(196.77), top: vy(28.959), overflow: "visible" }}
-      />
+      <CoreConnectorArrow metrics={metrics} style={{ position: "absolute", left: vx(218), top: vy(32) }} />
 
       <div
         style={{
@@ -1318,60 +1379,44 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
           background: PALE_BLUE,
         }}
       />
-      <div style={{ position: "absolute", left: vx(167.254), top: vy(bottomRowTop + 28.373) }}>
-        <FlowLabel metrics={metrics} width={75}>
+      <div style={{ position: "absolute", left: vx(179.5), top: vy(bottomRowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={80}>
           Protótipos
         </FlowLabel>
       </div>
-      <SvgAsset
-        src={coreArrow}
-        width={51}
-        height={14.728}
-        metrics={metrics}
-        style={{ position: "absolute", left: vx(272.153), top: vy(arrowTop(bottomRowTop + 37.373)) }}
-      />
-      <div style={{ position: "absolute", left: vx(348.766), top: vy(bottomRowTop + 19.373) }}>
-        <FlowLabel metrics={metrics} width={138}>
+      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(291.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
+      <div style={{ position: "absolute", left: vx(373.5), top: vy(bottomRowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={147}>
           Testes com clientes
           <br />
           <span style={{ fontWeight: 400 }}>(Gerar aprendizado)</span>
         </FlowLabel>
       </div>
-      <SvgAsset
-        src={coreArrow}
-        width={51}
-        height={14.728}
-        metrics={metrics}
-        style={{ position: "absolute", left: vx(516.665), top: vy(arrowTop(bottomRowTop + 37.373)) }}
-      />
-      <div style={{ position: "absolute", left: vx(593.278), top: vy(bottomRowTop + 18.686), display: "flex", gap: vx(20.555), alignItems: "center" }}>
+      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(552.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
+      <div style={{ position: "absolute", left: vx(634.5), top: vy(bottomRowTop + 20), display: "flex", gap: vx(22), alignItems: "center" }}>
           {[0, 1, 2, 3].map((item) => (
-            <SvgAsset key={item} src={coreRenew} width={37.373} height={37.373} metrics={metrics} />
+            <SvgAsset key={item} src={coreRenew} width={40} height={40} metrics={metrics} />
           ))}
       </div>
-      <SvgAsset
-        src={coreArrow}
-        width={51}
-        height={14.728}
-        metrics={metrics}
-        style={{ position: "absolute", left: vx(834.332), top: vy(arrowTop(bottomRowTop + 37.373)) }}
-      />
-      <div style={{ position: "absolute", left: vx(910.946), top: vy(bottomRowTop + 19.373) }}>
-        <FlowLabel metrics={metrics} width={147.622}>
+      <ResponsiveRightArrow metrics={metrics} width={50} style={{ position: "absolute", left: vx(892.5), top: vy(arrowTop(bottomRowTop + 40)) }} />
+      <div style={{ position: "absolute", left: vx(974.5), top: vy(bottomRowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={158}>
           Backlog de produto e/ou produção
         </FlowLabel>
       </div>
       <p
         style={{
           position: "absolute",
-          left: vx(587.685),
-          top: vy(190.601),
+          left: vx(629),
+          top: vy(204),
+          width: vx(236),
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontSize: vs(16),
           lineHeight: 1.1,
           letterSpacing: vs(-0.5),
           color: INK,
+          textAlign: "center",
         }}
       >
         Ciclo de testes/acompanhamento
