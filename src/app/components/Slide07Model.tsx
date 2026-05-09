@@ -15,10 +15,6 @@ import earlyRenewA from "../../assets/slide07/early-renew-a.svg";
 import earlyRenewB from "../../assets/slide07/early-renew-b.svg";
 import growthArrow from "../../assets/slide07/growth-arrow.svg";
 import growthRenew from "../../assets/slide07/growth-renew.svg";
-import navArrowDown from "../../assets/slide07/nav-arrow-down.svg";
-import navArrowUp from "../../assets/slide07/nav-arrow-up.svg";
-import navDot from "../../assets/slide07/nav-dot.svg";
-import navDotCurrent from "../../assets/slide07/nav-dot-current.svg";
 
 interface Slide07ModelProps {
   scaleX: number;
@@ -43,6 +39,10 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const AUTORENEW_PATH =
   "M35.3 12.65C32.4 9.75 28.4 8 24 8C15.15 8 8 15.15 8 24C8 32.85 15.15 40 24 40C31.45 40 37.7 34.9 39.45 28H35.25C33.6 32.65 29.15 36 24 36C17.35 36 12 30.65 12 24C12 17.35 17.35 12 24 12C27.3 12 30.25 13.35 32.4 15.5L26 22H40V8L35.3 12.65Z";
+const HORIZONTAL_ARROW_LEFT_PATH = "M15 22L5 12L15 2L16.775 3.775L8.55 12L16.775 20.225L15 22Z";
+const HORIZONTAL_ARROW_RIGHT_PATH = "M9.025 22L7.25 20.225L15.475 12L7.25 3.775L9.025 2L19.025 12L9.025 22Z";
+const NAV_ARROW_UP_PATH = "M2 16L12 6L22 16L20.225 17.775L12 9.55L3.775 17.775L2 16Z";
+const NAV_ARROW_DOWN_PATH = "M2 8.025L3.775 6.25L12 14.475L20.225 6.25L22 8.025L12 18.025L2 8.025Z";
 
 const classificationPages = [
   {
@@ -94,12 +94,18 @@ function stopEvent(event: MouseEvent<HTMLButtonElement>) {
   event.stopPropagation();
 }
 
-function ArrowIcon({ direction = "right", size }: { direction?: "left" | "right" | "up" | "down"; size: number }) {
-  const rotation = direction === "left" ? 180 : direction === "up" ? -90 : direction === "down" ? 90 : 0;
-
+function ArrowIcon({ direction = "right", size }: { direction?: "left" | "right"; size: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" style={{ transform: `rotate(${rotation}deg)` }}>
-      <path d="M12 7L21 16L12 25" stroke={BLUE} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
+      <motion.path
+        d={direction === "left" ? HORIZONTAL_ARROW_LEFT_PATH : HORIZONTAL_ARROW_RIGHT_PATH}
+        variants={{
+          rest: { fill: BLUE },
+          hover: { fill: "#ffffff" },
+        }}
+        initial={false}
+        transition={{ duration: 0.22, ease: EASE }}
+      />
     </svg>
   );
 }
@@ -159,49 +165,58 @@ function SvgAsset({
 }
 
 function NavDot({
-  active,
   metrics,
 }: {
-  active: boolean;
   metrics: Metrics;
 }) {
   const { vs } = metrics;
   const size = vs(24);
 
   return (
-    <span style={{ position: "relative", display: "block", width: size, height: size, overflow: "visible" }}>
-      <motion.img
-        alt=""
-        src={navDot}
-        draggable={false}
+    <motion.svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      style={{ display: "block", overflow: "visible", flexShrink: 0 }}
+    >
+      <motion.circle
+        cx="12"
+        cy="12"
+        variants={{
+          rest: { r: 8, fill: STROKE_BLUE },
+          hover: { r: 8, fill: BLUE },
+          active: { r: 10, fill: BLUE },
+        }}
         initial={false}
-        animate={{ opacity: active ? 0 : 1 }}
         transition={{ duration: 0.24, ease: EASE }}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: size,
-          height: size,
-          display: "block",
-        }}
       />
-      <motion.img
-        alt=""
-        src={navDotCurrent}
-        draggable={false}
+    </motion.svg>
+  );
+}
+
+function VerticalNavArrow({
+  direction,
+  metrics,
+}: {
+  direction: "up" | "down";
+  metrics: Metrics;
+}) {
+  const { vs } = metrics;
+  const size = vs(24);
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
+      <motion.path
+        d={direction === "up" ? NAV_ARROW_UP_PATH : NAV_ARROW_DOWN_PATH}
+        variants={{
+          rest: { fill: BLUE },
+          hover: { fill: "#ffffff" },
+        }}
         initial={false}
-        animate={{ opacity: active ? 1 : 0, scale: active ? 1 : 0.8 }}
-        whileHover={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.28, ease: EASE }}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: size,
-          height: size,
-          display: "block",
-        }}
+        transition={{ duration: 0.22, ease: EASE }}
       />
-    </span>
+    </svg>
   );
 }
 
@@ -406,12 +421,19 @@ function VerticalNav({
             stopEvent(event);
             if (canGoUp) setPage(page - 1);
           }}
-          whileHover={{ scale: 1.08 }}
+          initial={false}
+          animate="rest"
+          whileHover="hover"
           whileTap={{ scale: 0.94 }}
+          variants={{
+            rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
+            hover: { backgroundColor: BLUE, scale: 1 },
+          }}
           transition={{ duration: 0.28, ease: EASE }}
           style={{
             border: 0,
             background: "transparent",
+            borderRadius: vs(999),
             padding: 0,
             width: vs(40),
             height: vs(40),
@@ -423,7 +445,7 @@ function VerticalNav({
             outline: "none",
           }}
         >
-          <SvgAsset src={navArrowUp} width={24} height={24} metrics={metrics} scaleMode="uniform" />
+          <VerticalNavArrow direction="up" metrics={metrics} />
         </motion.button>
 
         <div style={{ display: "flex", flexDirection: "column", gap: vy(4), alignItems: "center" }}>
@@ -436,7 +458,9 @@ function VerticalNav({
                 stopEvent(event);
                 setPage(dot);
               }}
-              whileHover={{ scale: page === dot ? 1.04 : 1.12 }}
+              initial={false}
+              animate={page === dot ? "active" : "rest"}
+              whileHover={page === dot ? "active" : "hover"}
               whileTap={{ scale: 0.92 }}
               transition={{ duration: 0.28, ease: EASE }}
               style={{
@@ -454,7 +478,7 @@ function VerticalNav({
                 overflow: "visible",
               }}
             >
-              <NavDot active={page === dot} metrics={metrics} />
+              <NavDot metrics={metrics} />
             </motion.button>
           ))}
         </div>
@@ -466,12 +490,19 @@ function VerticalNav({
             stopEvent(event);
             if (canGoDown) setPage(page + 1);
           }}
-          whileHover={{ scale: 1.08 }}
+          initial={false}
+          animate="rest"
+          whileHover="hover"
           whileTap={{ scale: 0.94 }}
+          variants={{
+            rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
+            hover: { backgroundColor: BLUE, scale: 1 },
+          }}
           transition={{ duration: 0.28, ease: EASE }}
           style={{
             border: 0,
             background: "transparent",
+            borderRadius: vs(999),
             padding: 0,
             width: vs(40),
             height: vs(40),
@@ -483,7 +514,7 @@ function VerticalNav({
             outline: "none",
           }}
         >
-          <SvgAsset src={navArrowDown} width={24} height={24} metrics={metrics} scaleMode="uniform" />
+          <VerticalNavArrow direction="down" metrics={metrics} />
         </motion.button>
       </div>
     </div>
@@ -711,13 +742,19 @@ function ArrowPairNav({
           stopEvent(event);
           previous();
         }}
-        whileHover={{ scale: 1.16, x: -vs(2) }}
-        whileTap={{ scale: 0.92 }}
+        initial={false}
+        animate="rest"
+        whileHover="hover"
+        whileTap={{ scale: 0.94 }}
+        variants={{
+          rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
+          hover: { backgroundColor: BLUE, scale: 1 },
+        }}
         transition={{ duration: 0.28, ease: EASE }}
         style={{
           width: vs(40),
           height: vs(40),
-          borderRadius: "50%",
+          borderRadius: vs(999),
           border: 0,
           background: "transparent",
           display: "flex",
@@ -737,13 +774,19 @@ function ArrowPairNav({
           stopEvent(event);
           next();
         }}
-        whileHover={{ scale: 1.16, x: vs(2) }}
-        whileTap={{ scale: 0.92 }}
+        initial={false}
+        animate="rest"
+        whileHover="hover"
+        whileTap={{ scale: 0.94 }}
+        variants={{
+          rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
+          hover: { backgroundColor: BLUE, scale: 1 },
+        }}
         transition={{ duration: 0.28, ease: EASE }}
         style={{
           width: vs(40),
           height: vs(40),
-          borderRadius: "50%",
+          borderRadius: vs(999),
           border: 0,
           background: "transparent",
           display: "flex",
