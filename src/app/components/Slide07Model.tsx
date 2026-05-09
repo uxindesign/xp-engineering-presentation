@@ -15,6 +15,10 @@ import earlyRenewA from "../../assets/slide07/early-renew-a.svg";
 import earlyRenewB from "../../assets/slide07/early-renew-b.svg";
 import growthArrow from "../../assets/slide07/growth-arrow.svg";
 import growthRenew from "../../assets/slide07/growth-renew.svg";
+import navArrowDown from "../../assets/slide07/nav-arrow-down.svg";
+import navArrowUp from "../../assets/slide07/nav-arrow-up.svg";
+import navDot from "../../assets/slide07/nav-dot.svg";
+import navDotCurrent from "../../assets/slide07/nav-dot-current.svg";
 
 interface Slide07ModelProps {
   scaleX: number;
@@ -363,7 +367,7 @@ function VerticalNav({
             outline: "none",
           }}
         >
-          <ArrowIcon direction="up" size={vs(24)} />
+          <SvgAsset src={navArrowUp} width={24} height={24} metrics={metrics} />
         </button>
 
         <div style={{ display: "flex", flexDirection: "column", gap: vy(4), alignItems: "center" }}>
@@ -390,15 +394,7 @@ function VerticalNav({
                 outline: "none",
               }}
             >
-              <span
-                style={{
-                  width: vs(8),
-                  height: vs(8),
-                  borderRadius: "50%",
-                  background: page === dot ? BLUE : "#b8d4ee",
-                  transition: "background-color 220ms ease",
-                }}
-              />
+              <SvgAsset src={page === dot ? navDotCurrent : navDot} width={24} height={24} metrics={metrics} />
             </button>
           ))}
         </div>
@@ -424,7 +420,7 @@ function VerticalNav({
             outline: "none",
           }}
         >
-          <ArrowIcon direction="down" size={vs(24)} />
+          <SvgAsset src={navArrowDown} width={24} height={24} metrics={metrics} />
         </button>
       </div>
     </div>
