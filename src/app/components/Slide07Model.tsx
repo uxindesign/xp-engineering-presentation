@@ -849,15 +849,27 @@ function ClassificationText({
 
 function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
-  const segmentRadius = (rowIndex: number, cellIndex: number) => {
-    const fill = matrixRows[rowIndex].fills[cellIndex];
-    if (!fill) return vs(999);
-    const leftActive = cellIndex > 0 && Boolean(matrixRows[rowIndex].fills[cellIndex - 1]);
-    const rightActive = cellIndex < phases.length - 1 && Boolean(matrixRows[rowIndex].fills[cellIndex + 1]);
-    if (!leftActive && !rightActive) return vs(999);
-    if (!leftActive) return `${vs(999)}px 0 0 ${vs(999)}px`;
-    if (!rightActive) return `0 ${vs(999)}px ${vs(999)}px 0`;
-    return 0;
+  const fillGroups = (fills: string[]) => {
+    const groups: Array<{ fill: string; start: number; end: number }> = [];
+    let start = 0;
+
+    while (start < fills.length) {
+      const fill = fills[start];
+      if (!fill) {
+        start += 1;
+        continue;
+      }
+
+      let end = start;
+      while (end + 1 < fills.length && fills[end + 1] === fill) {
+        end += 1;
+      }
+
+      groups.push({ fill, start, end });
+      start = end + 1;
+    }
+
+    return groups;
   };
 
   return (
@@ -886,65 +898,58 @@ function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
           >
             {row.label}
           </p>
-          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-            {phases.map((phase, cellIndex) => {
-              const fill = row.fills[cellIndex];
-              const paddingLeft = cellIndex === 0 ? 12 : fill && !row.fills[cellIndex - 1] ? 6 : fill ? 0 : cellIndex === 2 ? 6 : 0;
-              const paddingRight =
-                cellIndex === phases.length - 1 ? 12 : fill && !row.fills[cellIndex + 1] ? 6 : fill ? 0 : cellIndex === 2 ? 6 : 0;
-
-              return (
-                <div
+          <div style={{ display: "flex", flexDirection: "column", gap: vy(12), width: "100%" }}>
+            <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+              {phases.map((phase) => (
+                <p
                   key={`${row.label}-${phase}`}
                   style={{
                     flex: "1 0 0",
                     minWidth: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: vy(12),
-                    alignItems: "center",
+                    margin: 0,
+                    fontFamily: "'Manrope', sans-serif",
+                    fontWeight: 800,
+                    fontSize: vs(16),
+                    lineHeight: 1.4,
+                    color: INK,
+                    textAlign: "center",
                   }}
                 >
-                  <p
-                    style={{
-                      margin: 0,
-                      width: "100%",
-                      fontFamily: "'Manrope', sans-serif",
-                      fontWeight: 800,
-                      fontSize: vs(16),
-                      lineHeight: 1.4,
-                      color: INK,
-                      textAlign: "center",
-                    }}
-                  >
-                    {phase}
-                  </p>
+                  {phase}
+                </p>
+              ))}
+            </div>
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: vy(48),
+                background: "#fff",
+                overflow: "hidden",
+                borderRadius: vs(999),
+              }}
+            >
+              {fillGroups(row.fills).map((group) => {
+                const leftPadding = group.start === 0 ? 12 : 6;
+                const rightPadding = group.end === phases.length - 1 ? 12 : 6;
+                const segmentPercent = 100 / phases.length;
+
+                return (
                   <div
+                    key={`${row.label}-${group.fill}-${group.start}-${group.end}`}
                     style={{
-                      width: "100%",
-                      height: vy(48),
-                      background: "#fff",
-                      overflow: "hidden",
-                      padding: `${vy(12)}px ${vx(paddingRight)}px ${vy(12)}px ${vx(paddingLeft)}px`,
-                      borderTopLeftRadius: cellIndex === 0 ? vs(999) : 0,
-                      borderBottomLeftRadius: cellIndex === 0 ? vs(999) : 0,
-                      borderTopRightRadius: cellIndex === phases.length - 1 ? vs(999) : 0,
-                      borderBottomRightRadius: cellIndex === phases.length - 1 ? vs(999) : 0,
+                      position: "absolute",
+                      left: `calc(${group.start * segmentPercent}% + ${vx(leftPadding)}px)`,
+                      top: vy(12),
+                      width: `calc(${(group.end - group.start + 1) * segmentPercent}% - ${vx(leftPadding + rightPadding)}px)`,
+                      height: vy(24),
+                      background: group.fill,
+                      borderRadius: vs(999),
                     }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        minWidth: 0,
-                        background: fill || "transparent",
-                        borderRadius: segmentRadius(rowIndex, cellIndex),
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       ))}
