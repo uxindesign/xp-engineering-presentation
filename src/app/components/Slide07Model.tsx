@@ -36,6 +36,8 @@ const NAVY = "#04165d";
 const INK = "#2f3237";
 const MUTED = "#6e7587";
 const PALE_BLUE = "rgba(3,110,242,0.06)";
+const LIGHT_BLUE = "rgba(3,110,242,0.12)";
+const MEDIUM_BLUE = "rgba(3,110,242,0.48)";
 const STROKE_BLUE = "rgba(43,118,193,0.4)";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
@@ -80,10 +82,10 @@ const maturityCards = [
 ];
 
 const matrixRows = [
-  { label: "Quick win", fills: ["", "", "rgba(3,110,242,0.12)", BLUE, BLUE] },
-  { label: "Melhoria", fills: ["", "rgba(3,110,242,0.12)", "rgba(3,110,242,0.48)", BLUE, BLUE] },
-  { label: "Nova funcionalidade", fills: ["rgba(3,110,242,0.12)", "rgba(3,110,242,0.48)", BLUE, BLUE, BLUE] },
-  { label: "Novo produto", fills: [BLUE, BLUE, BLUE, BLUE, BLUE] },
+  { label: "Quick win", segments: [{ start: 2, end: 2, fill: LIGHT_BLUE }, { start: 3, end: 4, fill: BLUE }] },
+  { label: "Melhoria", segments: [{ start: 1, end: 1, fill: LIGHT_BLUE }, { start: 2, end: 2, fill: MEDIUM_BLUE }, { start: 3, end: 4, fill: BLUE }] },
+  { label: "Nova funcionalidade", segments: [{ start: 0, end: 0, fill: LIGHT_BLUE }, { start: 1, end: 1, fill: MEDIUM_BLUE }, { start: 2, end: 4, fill: BLUE }] },
+  { label: "Novo produto", segments: [{ start: 0, end: 4, fill: BLUE }] },
 ];
 
 const phases = ["Discovery", "Pesquisa", "Ideação", "Design", "Monitoramento"];
@@ -855,28 +857,7 @@ function ClassificationText({
 
 function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
-  const fillGroups = (fills: string[]) => {
-    const groups: Array<{ fill: string; start: number; end: number }> = [];
-    let start = 0;
-
-    while (start < fills.length) {
-      const fill = fills[start];
-      if (!fill) {
-        start += 1;
-        continue;
-      }
-
-      let end = start;
-      while (end + 1 < fills.length && fills[end + 1] === fill) {
-        end += 1;
-      }
-
-      groups.push({ fill, start, end });
-      start = end + 1;
-    }
-
-    return groups;
-  };
+  const segmentPercent = 100 / phases.length;
 
   return (
     <div
@@ -890,7 +871,7 @@ function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
         gap: vy(32),
       }}
     >
-      {matrixRows.map((row, rowIndex) => (
+      {matrixRows.map((row) => (
         <div key={row.label} style={{ display: "flex", flexDirection: "column", gap: vy(12), alignItems: "flex-start", width: "100%" }}>
           <p
             style={{
@@ -935,21 +916,20 @@ function ClassificationMatrix({ metrics }: { metrics: Metrics }) {
                 borderRadius: vs(999),
               }}
             >
-              {fillGroups(row.fills).map((group) => {
-                const leftPadding = group.start === 0 ? 12 : 6;
-                const rightPadding = group.end === phases.length - 1 ? 12 : 6;
-                const segmentPercent = 100 / phases.length;
+              {row.segments.map((segment) => {
+                const leftPadding = segment.start === 0 ? 12 : 6;
+                const rightPadding = segment.end === phases.length - 1 ? 12 : 6;
 
                 return (
                   <div
-                    key={`${row.label}-${group.fill}-${group.start}-${group.end}`}
+                    key={`${row.label}-${segment.start}-${segment.end}`}
                     style={{
                       position: "absolute",
-                      left: `calc(${group.start * segmentPercent}% + ${vx(leftPadding)}px)`,
+                      left: `calc(${segment.start * segmentPercent}% + ${vx(leftPadding)}px)`,
                       top: vy(12),
-                      width: `calc(${(group.end - group.start + 1) * segmentPercent}% - ${vx(leftPadding + rightPadding)}px)`,
+                      width: `calc(${(segment.end - segment.start + 1) * segmentPercent}% - ${vx(leftPadding + rightPadding)}px)`,
                       height: vy(24),
-                      background: group.fill,
+                      background: segment.fill,
                       borderRadius: vs(999),
                     }}
                   />
