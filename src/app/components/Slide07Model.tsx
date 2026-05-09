@@ -95,7 +95,8 @@ function ArrowIcon({ direction = "right", size }: { direction?: "left" | "right"
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
       <path
         d={direction === "left" ? HORIZONTAL_ARROW_LEFT_PATH : HORIZONTAL_ARROW_RIGHT_PATH}
-        className="fill-[#036EF2] transition-colors duration-150 group-hover:fill-white group-active:fill-white"
+        fill="currentColor"
+        style={{ transition: "fill 150ms ease" }}
       />
     </svg>
   );
@@ -315,7 +316,8 @@ function VerticalNavArrow({
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
       <path
         d={direction === "up" ? NAV_ARROW_UP_PATH : NAV_ARROW_DOWN_PATH}
-        className="fill-[#036EF2] transition-colors duration-150 group-hover:fill-white group-active:fill-white"
+        fill="currentColor"
+        style={{ transition: "fill 150ms ease" }}
       />
     </svg>
   );
@@ -332,18 +334,26 @@ function NavArrowButton({
   children: ReactNode;
   size: number;
 }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <button
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
-      className="group flex items-center justify-center rounded-full bg-transparent hover:bg-[#036ef2] active:bg-[#036ef2] transition-colors duration-150 cursor-pointer"
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
+      className="flex items-center justify-center rounded-full cursor-pointer"
       style={{
         width: size,
         height: size,
         border: 0,
         padding: 0,
         outline: "none",
+        background: hovered ? BLUE : "transparent",
+        color: hovered ? "#fff" : BLUE,
+        transition: "background-color 150ms ease, color 150ms ease",
       }}
     >
       {children}
@@ -1370,7 +1380,7 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
   const cycleLabelLeft = renewGroupLeft + renewGroupWidth / 2 - cycleLabelWidth / 2;
 
   return (
-    <div style={{ position: "relative", height: vy(222), width: "100%", overflow: "hidden" }}>
+    <div style={{ position: "relative", height: vy(222), width: "100%", overflow: "visible" }}>
       <div
         style={{
           position: "absolute",
