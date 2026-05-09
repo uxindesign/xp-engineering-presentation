@@ -1150,24 +1150,64 @@ function QuestionMark({ metrics }: { metrics: Metrics }) {
 
 function EarlyDiagram({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
+  const rowTop = 62;
+  const rowCenterY = rowTop + 40;
+  const arrowTop = rowCenterY - 14.728 / 2;
 
   return (
     <div style={{ position: "relative", height: vy(220), width: "100%", overflow: "hidden" }}>
-      <FlowRow metrics={metrics} top={62}>
-        <FlowLabel metrics={metrics}>Protótipos</FlowLabel>
-        <SvgAsset src={earlyArrowSmall} width={51} height={14.728} metrics={metrics} />
-        <FlowLabel metrics={metrics}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: vy(rowTop),
+          width: "100%",
+          height: vy(80),
+          borderRadius: vs(24),
+          background: PALE_BLUE,
+        }}
+      />
+      <div style={{ position: "absolute", left: vx(40), top: vy(rowTop + 30.5) }}>
+        <FlowLabel metrics={metrics} width={80}>
+          Protótipos
+        </FlowLabel>
+      </div>
+      <SvgAsset
+        src={earlyArrowSmall}
+        width={51}
+        height={14.728}
+        metrics={metrics}
+        style={{ position: "absolute", left: vx(152), top: vy(arrowTop) }}
+      />
+      <div style={{ position: "absolute", left: vx(234), top: vy(rowTop + 21) }}>
+        <FlowLabel metrics={metrics} width={177}>
           Testes com público alvo
           <br />
           <span style={{ fontWeight: 400 }}>(gerar aprendizado)</span>
         </FlowLabel>
-        <SvgAsset src={earlyArrowSmall} width={51} height={14.728} metrics={metrics} />
+      </div>
+      <SvgAsset
+        src={earlyArrowSmall}
+        width={51}
+        height={14.728}
+        metrics={metrics}
+        style={{ position: "absolute", left: vx(443), top: vy(arrowTop) }}
+      />
+      <div style={{ position: "absolute", left: vx(525), top: vy(rowTop + 20) }}>
         <QuestionMark metrics={metrics} />
-        <SvgAsset src={earlyArrowLong} width={486} height={14.728} metrics={metrics} style={{ minWidth: 0 }} />
+      </div>
+      <SvgAsset
+        src={earlyArrowLong}
+        width={486}
+        height={14.728}
+        metrics={metrics}
+        style={{ position: "absolute", left: vx(597), top: vy(arrowTop) }}
+      />
+      <div style={{ position: "absolute", left: vx(1114), top: vy(rowTop + 21) }}>
         <FlowLabel metrics={metrics} width={158}>
           Backlog de produto e/ou produção
         </FlowLabel>
-      </FlowRow>
+      </div>
 
       <div style={{ position: "absolute", left: vx(653.3), top: vy(30), width: vx(90.898), height: vy(48), display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ transform: "rotate(-27.84deg) skewX(4.42deg)" }}>
