@@ -1377,11 +1377,11 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
           gap: vx(32),
         }}
       >
-        <FlowLabel metrics={metrics}>
+        <FlowLabel metrics={metrics} width={471}>
           Pesquisas, análise de feedbacks, pedidos de suporte e analytics
         </FlowLabel>
         <ResponsiveRightArrow metrics={metrics} width={50} />
-        <FlowLabel metrics={metrics}>
+        <FlowLabel metrics={metrics} width={203}>
           Oportunidades de melhoria
         </FlowLabel>
       </div>
