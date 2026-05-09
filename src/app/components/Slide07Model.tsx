@@ -170,8 +170,8 @@ function NavDot({
 }: {
   metrics: Metrics;
 }) {
-  const { vs } = metrics;
-  const size = vs(24);
+  void metrics;
+  const size = 24;
 
   return (
     <motion.svg
@@ -203,8 +203,8 @@ function VerticalNavArrow({
   direction: "up" | "down";
   metrics: Metrics;
 }) {
-  const { vs } = metrics;
-  const size = vs(24);
+  void metrics;
+  const size = 24;
 
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
@@ -213,6 +213,7 @@ function VerticalNavArrow({
         variants={{
           rest: { fill: BLUE },
           hover: { fill: "#ffffff" },
+          press: { fill: "#ffffff" },
         }}
         initial={false}
         transition={{ duration: 0.22, ease: EASE }}
@@ -395,8 +396,8 @@ function VerticalNav({
         position: "absolute",
         left: vx(1810),
         top: vy(420),
-        width: vx(88),
-        height: vy(240),
+        width: 88,
+        height: 240,
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
@@ -408,11 +409,11 @@ function VerticalNav({
       <div
         style={{
           marginLeft: vx(22),
-          width: vs(40),
+          width: 40,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: vy(40),
+          gap: 40,
         }}
       >
         <motion.button
@@ -425,19 +426,20 @@ function VerticalNav({
           initial={false}
           animate="rest"
           whileHover="hover"
-          whileTap={{ scale: 0.94 }}
+          whileTap="press"
           variants={{
             rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
             hover: { backgroundColor: BLUE, scale: 1 },
+            press: { backgroundColor: BLUE, scale: 0.94 },
           }}
           transition={{ duration: 0.28, ease: EASE }}
           style={{
             border: 0,
             background: "transparent",
-            borderRadius: vs(999),
+            borderRadius: 999,
             padding: 0,
-            width: vs(40),
-            height: vs(40),
+            width: 40,
+            height: 40,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -449,7 +451,7 @@ function VerticalNav({
           <VerticalNavArrow direction="up" metrics={metrics} />
         </motion.button>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: vy(4), alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}>
           {[0, 1, 2].map((dot) => (
             <motion.button
               key={dot}
@@ -465,8 +467,8 @@ function VerticalNav({
               whileTap={{ scale: 0.92 }}
               transition={{ duration: 0.28, ease: EASE }}
               style={{
-                width: vs(24),
-                height: vs(24),
+                width: 24,
+                height: 24,
                 borderRadius: "50%",
                 border: 0,
                 padding: 0,
@@ -494,19 +496,20 @@ function VerticalNav({
           initial={false}
           animate="rest"
           whileHover="hover"
-          whileTap={{ scale: 0.94 }}
+          whileTap="press"
           variants={{
             rest: { backgroundColor: "rgba(3,110,242,0)", scale: 1 },
             hover: { backgroundColor: BLUE, scale: 1 },
+            press: { backgroundColor: BLUE, scale: 0.94 },
           }}
           transition={{ duration: 0.28, ease: EASE }}
           style={{
             border: 0,
             background: "transparent",
-            borderRadius: vs(999),
+            borderRadius: 999,
             padding: 0,
-            width: vs(40),
-            height: vs(40),
+            width: 40,
+            height: 40,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
