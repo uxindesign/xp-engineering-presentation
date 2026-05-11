@@ -1,4 +1,4 @@
-import { useRef, useState, type WheelEvent } from "react";
+import { useRef, useState, type MouseEvent, type ReactNode, type WheelEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
@@ -19,7 +19,6 @@ const NAVY = "#04165d";
 const INK = "#2f3237";
 const MUTED = "#6e7587";
 const PALE_BLUE = "rgba(3,110,242,0.06)";
-const LIGHT_BLUE = "rgba(3,110,242,0.24)";
 const STROKE_BLUE = "rgba(43,118,193,0.4)";
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -211,52 +210,52 @@ function Footer({ metrics }: { metrics: Metrics }) {
   );
 }
 
-function NavDot({ active, hovered, metrics }: { active: boolean; hovered: boolean; metrics: Metrics }) {
-  const { vs } = metrics;
-  const size = active || hovered ? 16 : 14;
+function stopEvent(event: MouseEvent<HTMLButtonElement>) {
+  event.stopPropagation();
+}
+
+function NavDot({ active, hovered }: { active: boolean; hovered: boolean }) {
+  const highlighted = active || hovered;
 
   return (
-    <motion.span
-      animate={{
-        width: vs(size),
-        height: vs(size),
-        backgroundColor: active ? BLUE : hovered ? LIGHT_BLUE : "rgba(43,118,193,0.32)",
-      }}
-      transition={{ duration: 0.2, ease: EASE }}
-      style={{ display: "block", borderRadius: "50%" }}
-    />
+    <motion.svg width={24} height={24} viewBox="0 0 24 24" fill="none" style={{ display: "block", overflow: "visible", flexShrink: 0 }}>
+      <motion.circle
+        cx="12"
+        cy="12"
+        animate={{
+          r: highlighted ? 10 : 8,
+          fill: highlighted ? BLUE : STROKE_BLUE,
+        }}
+        initial={false}
+        transition={{ duration: 0.24, ease: EASE }}
+      />
+    </motion.svg>
   );
 }
 
 function NavDotButton({
   active,
   onClick,
-  metrics,
   ariaLabel,
 }: {
   active: boolean;
-  onClick: () => void;
-  metrics: Metrics;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   ariaLabel: string;
 }) {
   const [hovered, setHovered] = useState(false);
-  const { vs } = metrics;
 
   return (
     <button
       type="button"
       aria-label={ariaLabel}
       aria-current={active ? "true" : undefined}
-      onClick={(event) => {
-        event.stopPropagation();
-        onClick();
-      }}
+      onClick={onClick}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       onBlur={() => setHovered(false)}
       style={{
-        width: vs(24),
-        height: vs(24),
+        width: 24,
+        height: 24,
         borderRadius: "50%",
         border: 0,
         padding: 0,
@@ -269,60 +268,61 @@ function NavDotButton({
         overflow: "visible",
       }}
     >
-      <NavDot active={active} hovered={hovered} metrics={metrics} />
+      <NavDot active={active} hovered={hovered} />
     </button>
   );
 }
 
+function VerticalNavArrow({ direction }: { direction: "up" | "down" }) {
+  return (
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
+      <path
+        d={direction === "up" ? NAV_ARROW_UP_PATH : NAV_ARROW_DOWN_PATH}
+        fill="currentColor"
+        style={{ transition: "fill 150ms ease" }}
+      />
+    </svg>
+  );
+}
+
 function NavArrowButton({
-  path,
   onClick,
-  metrics,
   ariaLabel,
+  children,
+  size,
 }: {
-  path: string;
-  onClick: () => void;
-  metrics: Metrics;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   ariaLabel: string;
+  children: ReactNode;
+  size: number;
 }) {
   const [hovered, setHovered] = useState(false);
-  const { vs } = metrics;
 
   return (
     <button
       type="button"
       aria-label={ariaLabel}
-      onClick={(event) => {
-        event.stopPropagation();
-        onClick();
-      }}
+      onClick={onClick}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       onBlur={() => setHovered(false)}
       style={{
-        width: vs(48),
-        height: vs(48),
+        width: size,
+        height: size,
         border: 0,
         padding: 0,
         borderRadius: "50%",
-        background: "transparent",
+        background: hovered ? BLUE : "transparent",
+        color: hovered ? "#fff" : BLUE,
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
+        transition: "background-color 150ms ease, color 150ms ease",
       }}
     >
-      <motion.svg
-        width={vs(24)}
-        height={vs(24)}
-        viewBox="0 0 24 24"
-        fill="none"
-        animate={{ scale: hovered ? 1.18 : 1 }}
-        transition={{ duration: 0.22, ease: EASE }}
-      >
-        <path d={path} fill={BLUE} />
-      </motion.svg>
+      {children}
     </button>
   );
 }
@@ -339,37 +339,78 @@ function VerticalNav({
   metrics: Metrics;
 }) {
   const { vx, vy } = metrics;
+  const canGoUp = page > 0;
+  const canGoDown = page < pageCount - 1;
+  const handleContainerClick = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const ratio = (event.clientY - rect.top) / rect.height;
+    if (ratio < 0.37 && canGoUp) setPage(page - 1);
+    if (ratio > 0.63 && canGoDown) setPage(page + 1);
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: vx(20) }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.45, delay: 0.22, ease: "easeOut" }}
+    <div
       style={{
         position: "absolute",
-        left: vx(1648),
-        top: vy(388),
+        left: vx(1810),
+        top: vy(420),
+        width: 88,
+        height: 240,
         display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: vy(18),
-        zIndex: 12,
+        alignItems: "flex-start",
+        justifyContent: "center",
+        zIndex: 20,
       }}
+      onClick={handleContainerClick}
+      onPointerDown={(event) => event.stopPropagation()}
     >
-      <NavArrowButton path={NAV_ARROW_UP_PATH} onClick={() => setPage(page - 1)} metrics={metrics} ariaLabel="Página anterior do slide 8" />
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(8), alignItems: "center" }}>
-        {Array.from({ length: pageCount }).map((_, index) => (
-          <NavDotButton
-            key={index}
-            active={index === page}
-            onClick={() => setPage(index)}
-            metrics={metrics}
-            ariaLabel={`Ir para página ${index + 1} do slide 8`}
-          />
-        ))}
+      <div
+        style={{
+          marginLeft: vx(22),
+          width: 40,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 40,
+        }}
+      >
+        <NavArrowButton
+          ariaLabel="Página anterior do slide 8"
+          onClick={(event) => {
+            stopEvent(event);
+            if (canGoUp) setPage(page - 1);
+          }}
+          size={40}
+        >
+          <VerticalNavArrow direction="up" />
+        </NavArrowButton>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}>
+          {Array.from({ length: pageCount }).map((_, index) => (
+            <NavDotButton
+              key={index}
+              active={index === page}
+              onClick={(event) => {
+                stopEvent(event);
+                setPage(index);
+              }}
+              ariaLabel={`Ir para página ${index + 1} do slide 8`}
+            />
+          ))}
+        </div>
+        <NavArrowButton
+          ariaLabel="Próxima página do slide 8"
+          onClick={(event) => {
+            stopEvent(event);
+            if (canGoDown) setPage(page + 1);
+          }}
+          size={40}
+        >
+          <VerticalNavArrow direction="down" />
+        </NavArrowButton>
       </div>
-      <NavArrowButton path={NAV_ARROW_DOWN_PATH} onClick={() => setPage(page + 1)} metrics={metrics} ariaLabel="Próxima página do slide 8" />
-    </motion.div>
+    </div>
   );
 }
 
@@ -383,13 +424,13 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
       transition={{ duration: 0.52, delay: 0.16, ease: "easeOut" }}
       style={{
         position: "absolute",
-        left: vx(1100),
+        left: vx(1072),
         top: vy(244),
-        width: vx(440),
-        minHeight: vy(388),
+        width: vx(620),
+        minHeight: vy(420),
         borderRadius: vs(40),
         background: PALE_BLUE,
-        padding: `${vy(36)}px ${vx(40)}px`,
+        padding: `${vy(48)}px ${vx(56)}px`,
         display: "flex",
         flexDirection: "column",
         gap: vy(28),
@@ -399,7 +440,7 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
         style={{
           margin: 0,
           fontFamily: "'Bronkoh-SemiBold', sans-serif",
-          fontSize: vs(12),
+          fontSize: vs(14),
           letterSpacing: vs(2),
           lineHeight: "normal",
           color: "#7fb3fb",
@@ -408,14 +449,14 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
       >
         Redução de custos e ROI (Design System + IA)
       </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(22) }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: vy(20) }}>
         {metricsRows.map((row) => (
-          <div key={row.title} style={{ display: "grid", gridTemplateColumns: `${vx(98)}px 1fr`, columnGap: vx(12), alignItems: "start" }}>
+          <div key={row.title} style={{ display: "grid", gridTemplateColumns: `${vx(156)}px 1fr`, columnGap: vx(24), alignItems: "start" }}>
             <p
               style={{
                 margin: 0,
                 fontFamily: "'Bronkoh-Heavy', sans-serif",
-                fontSize: vs(42),
+                fontSize: vs(56),
                 lineHeight: 0.9,
                 color: BLUE,
                 whiteSpace: "pre-line",
@@ -428,8 +469,8 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
                 style={{
                   margin: 0,
                   fontFamily: "'Bronkoh-Heavy', sans-serif",
-                  fontSize: vs(14),
-                  lineHeight: 1.25,
+                  fontSize: vs(18),
+                  lineHeight: 1.3,
                   color: NAVY,
                 }}
               >
@@ -440,8 +481,8 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
                   margin: 0,
                   fontFamily: "'Manrope', sans-serif",
                   fontWeight: 400,
-                  fontSize: vs(12),
-                  lineHeight: 1.25,
+                  fontSize: vs(14),
+                  lineHeight: 1.4,
                   color: INK,
                 }}
               >
@@ -466,18 +507,18 @@ function Benefits({ metrics }: { metrics: Metrics }) {
       style={{
         position: "absolute",
         left: vx(120),
-        top: vy(428),
-        width: vx(690),
+        top: vy(384),
+        width: vx(760),
         display: "flex",
         flexDirection: "column",
-        gap: vy(24),
+        gap: vy(28),
       }}
     >
       <p
         style={{
           margin: 0,
           fontFamily: "'Bronkoh-Heavy', sans-serif",
-          fontSize: vs(22),
+          fontSize: vs(26),
           lineHeight: 1.3,
           color: NAVY,
         }}
@@ -491,19 +532,19 @@ function Benefits({ metrics }: { metrics: Metrics }) {
           listStyle: "none",
           display: "flex",
           flexDirection: "column",
-          gap: vy(20),
+          gap: vy(28),
         }}
       >
         {benefits.map((benefit) => (
-          <li key={benefit.title} style={{ display: "grid", gridTemplateColumns: `${vs(8)}px 1fr`, columnGap: vx(14), alignItems: "baseline" }}>
-            <span style={{ width: vs(8), height: vs(8), background: BLUE, display: "block", transform: `translateY(${vs(-1)}px)` }} />
+          <li key={benefit.title} style={{ display: "grid", gridTemplateColumns: `${vs(10)}px 1fr`, columnGap: vx(16), alignItems: "baseline" }}>
+            <span style={{ width: vs(10), height: vs(10), background: BLUE, display: "block", transform: `translateY(${vs(-1)}px)` }} />
             <p
               style={{
                 margin: 0,
                 fontFamily: "'Manrope', sans-serif",
                 fontWeight: 400,
-                fontSize: vs(16),
-                lineHeight: 1.45,
+                fontSize: vs(20),
+                lineHeight: 1.5,
                 color: NAVY,
               }}
             >
@@ -530,13 +571,13 @@ function PageOne({ metrics }: { metrics: Metrics }) {
         transition={{ duration: 0.46, delay: 0.28, ease: "easeOut" }}
         style={{
           position: "absolute",
-          left: vx(120),
-          top: vy(742),
-          width: vx(1110),
+          left: vx(130),
+          top: vy(813),
+          width: vx(829),
           margin: 0,
           fontFamily: "'Bronkoh-Heavy', sans-serif",
-          fontSize: vs(22),
-          lineHeight: 1.5,
+          fontSize: vs(26),
+          lineHeight: 1.3,
           color: NAVY,
         }}
       >
