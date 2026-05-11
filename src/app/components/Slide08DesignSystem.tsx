@@ -427,20 +427,21 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
         left: vx(1072),
         top: vy(244),
         width: vx(620),
-        minHeight: vy(420),
+        height: vy(314),
         borderRadius: vs(40),
         background: PALE_BLUE,
-        padding: `${vy(48)}px ${vx(56)}px`,
-        display: "flex",
-        flexDirection: "column",
-        gap: vy(28),
+        overflow: "hidden",
       }}
     >
       <p
         style={{
+          position: "absolute",
+          left: vx(56),
+          top: vy(34),
+          width: vx(500),
           margin: 0,
           fontFamily: "'Bronkoh-SemiBold', sans-serif",
-          fontSize: vs(14),
+          fontSize: vs(12),
           letterSpacing: vs(2),
           lineHeight: "normal",
           color: "#7fb3fb",
@@ -449,28 +450,44 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
       >
         Redução de custos e ROI (Design System + IA)
       </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(20) }}>
-        {metricsRows.map((row) => (
-          <div key={row.title} style={{ display: "grid", gridTemplateColumns: `${vx(156)}px 1fr`, columnGap: vx(24), alignItems: "start" }}>
+      {metricsRows.map((row, index) => {
+        const rowTop = [64, 145, 202, 254][index];
+
+        return (
+          <div key={row.title}>
             <p
               style={{
+                position: "absolute",
+                left: vx(56),
+                top: vy(rowTop),
+                width: vx(156),
                 margin: 0,
                 fontFamily: "'Bronkoh-Heavy', sans-serif",
-                fontSize: vs(56),
-                lineHeight: 0.9,
+                fontSize: vs(42),
+                lineHeight: 0.92,
                 color: BLUE,
                 whiteSpace: "pre-line",
               }}
             >
               {row.value}
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: vy(4) }}>
+            <div
+              style={{
+                position: "absolute",
+                left: vx(240),
+                top: vy(rowTop + 2),
+                width: vx(330),
+                display: "flex",
+                flexDirection: "column",
+                gap: vy(4),
+              }}
+            >
               <p
                 style={{
                   margin: 0,
                   fontFamily: "'Bronkoh-Heavy', sans-serif",
-                  fontSize: vs(18),
-                  lineHeight: 1.3,
+                  fontSize: vs(12.5),
+                  lineHeight: 1.25,
                   color: NAVY,
                 }}
               >
@@ -481,8 +498,8 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
                   margin: 0,
                   fontFamily: "'Manrope', sans-serif",
                   fontWeight: 400,
-                  fontSize: vs(14),
-                  lineHeight: 1.4,
+                  fontSize: vs(10.5),
+                  lineHeight: 1.35,
                   color: INK,
                 }}
               >
@@ -490,8 +507,8 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
               </p>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </motion.div>
   );
 }
