@@ -253,7 +253,15 @@ function TisLogo({ scale }: { scale: (n: number) => number }) {
   );
 }
 
-function Header({ metrics, showDescription = true }: { metrics: Metrics; showDescription?: boolean }) {
+function Header({
+  metrics,
+  showDescription = true,
+  reducedMotion,
+}: {
+  metrics: Metrics;
+  showDescription?: boolean;
+  reducedMotion: boolean;
+}) {
   const { vx, vy, vs } = metrics;
 
   return (
@@ -265,7 +273,7 @@ function Header({ metrics, showDescription = true }: { metrics: Metrics; showDes
         position: "absolute",
         left: vx(120),
         top: vy(96),
-        width: vx(showDescription ? 760 : 820),
+        width: vx(820),
         display: "flex",
         flexDirection: "column",
         gap: vy(24),
@@ -298,19 +306,27 @@ function Header({ metrics, showDescription = true }: { metrics: Metrics; showDes
           Design System TIS
         </p>
       </div>
-      {showDescription ? (
-        <p
-          style={{
-            margin: 0,
-            fontFamily: "'Bronkoh-Regular', sans-serif",
-            fontSize: vs(28),
-            lineHeight: 1.5,
-            color: INK,
-          }}
-        >
-          Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com engenharia.
-        </p>
-      ) : null}
+      <AnimatePresence initial={false}>
+        {showDescription ? (
+          <motion.p
+            key="slide-08-header-description"
+            initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
+            transition={{ duration: reducedMotion ? 0 : 0.24, ease: EASE }}
+            style={{
+              width: vx(760),
+              margin: 0,
+              fontFamily: "'Bronkoh-Regular', sans-serif",
+              fontSize: vs(28),
+              lineHeight: 1.5,
+              color: INK,
+            }}
+          >
+            Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com engenharia.
+          </motion.p>
+        ) : null}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -896,7 +912,6 @@ function PageOne({ metrics }: { metrics: Metrics }) {
 
   return (
     <>
-      <Header metrics={metrics} />
       <Benefits metrics={metrics} />
       <RoiCard metrics={metrics} />
       <motion.p
@@ -926,7 +941,6 @@ function PageTwo({ metrics }: { metrics: Metrics }) {
 
   return (
     <>
-      <Header metrics={metrics} showDescription={false} />
       <motion.div
         initial={{ opacity: 0, y: vy(24) }}
         animate={{ opacity: 1, y: 0 }}
@@ -1003,6 +1017,7 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
       onWheel={handleWheel}
     >
       <VerticalNav page={page} setPage={setPage} pageCount={pageCount} metrics={metrics} />
+      <Header metrics={metrics} showDescription={page === 0} reducedMotion={reducedMotion} />
       <AnimatePresence mode="wait" custom={pageDirection}>
         <motion.div
           key={page}
