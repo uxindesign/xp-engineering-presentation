@@ -67,6 +67,165 @@ const benefits = [
   },
 ];
 
+type TextPart = {
+  text: string;
+  bold?: boolean;
+};
+
+type BulletContent =
+  | { kind: "parts"; parts: TextPart[] }
+  | {
+      kind: "ordered";
+      title: string;
+      items: Array<{ label: string; body: string }>;
+    };
+
+type FeatureCardContent = {
+  title: string;
+  bullets: BulletContent[];
+};
+
+const designSystemFeatureCards: FeatureCardContent[] = [
+  {
+    title: "Arquitetura",
+    bullets: [
+      {
+        kind: "parts",
+        parts: [
+          { text: "Core agnóstico a stack", bold: true },
+          { text: ", preparado para múltiplos produtos, frameworks e contextos" },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "Tokens em JSON/DTCG", bold: true },
+          { text: " como contrato entre design, código, documentação e IA." },
+        ],
+      },
+      {
+        kind: "ordered",
+        title: "Arquitetura em 3 camadas:",
+        items: [
+          { label: "Foundation:", body: " valores primitivos do sistema." },
+          { label: "Semantic:", body: " intenções, estados, hierarquia e contexto." },
+          { label: "Component:", body: " tokens específicos de componentes." },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Governança e documentação",
+    bullets: [
+      {
+        kind: "parts",
+        parts: [
+          { text: "Documentação estruturada", bold: true },
+          { text: " em páginas publicadas e " },
+          { text: "arquivos .md", bold: true },
+          { text: "." },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "ADRs", bold: true },
+          { text: " registram decisões arquiteturais, trade-offs e mudanças de direção." },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "Brand Principles", bold: true },
+          { text: " orientam fundamentos de marca, tom, identidade e critérios de evolução." },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "Changelog", bold: true },
+          { text: ", " },
+          { text: "inventários", bold: true },
+          { text: ", " },
+          { text: "guias de processo", bold: true },
+          { text: " e " },
+          { text: "documentação técnica", bold: true },
+          { text: " garantem rastreabilidade." },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Integração com engenharia",
+    bullets: [
+      {
+        kind: "parts",
+        parts: [
+          { text: "Tokens sincronizados", bold: true },
+          { text: " entre Figma e código." },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "Handoff", bold: true },
+          { text: " com propriedades, estados, adaptação responsiva e critérios de aceite." },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "Changelog, inventários, guias de processo e documentação técnica garantem " },
+          { text: "rastreabilidade", bold: true },
+          { text: "." },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "Storybook", bold: true },
+          { text: " com " },
+          { text: "documentação viva", bold: true },
+          { text: " para consumo técnico." },
+        ],
+      },
+      {
+        kind: "parts",
+        parts: [
+          { text: "QA visual", bold: true },
+          { text: " e " },
+          { text: "acessibilidade", bold: true },
+          { text: " como parte do componente." },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Operação e métricas",
+    bullets: [
+      { kind: "parts", parts: [{ text: "% de projectos consumindo o DS." }] },
+      { kind: "parts", parts: [{ text: "% de reutilização de componentes." }] },
+      { kind: "parts", parts: [{ text: "Tempo design → dev." }] },
+      { kind: "parts", parts: [{ text: "Redução de retrabalho." }] },
+      { kind: "parts", parts: [{ text: "Cobertura de templates e playbooks." }] },
+      { kind: "parts", parts: [{ text: "Conformidade WCAG 2.2 AA." }] },
+      { kind: "parts", parts: [{ text: "Bugs de UI por release." }] },
+      { kind: "parts", parts: [{ text: "Componentes ativos, deprecated e backlog crítico." }] },
+    ],
+  },
+];
+
+const designSystemBottomCards = [
+  {
+    title: "Uso por agentes de IA",
+    body: "AGENTS.md define regras operacionais para agentes, enquanto documentação, inventários e APIs tornam o repositório legível para auditoria, manutenção e planejamento apoiados por IA.",
+  },
+  {
+    title: "Acessibilidade como premissa",
+    body: "WCAG 2.2 AA como referência de qualidade. Tokens, componentes e documentação consideram contraste, foco visível, estados, ARIA e padrões acessíveis de interação.",
+  },
+];
+
 function TisLogo({ scale }: { scale: (n: number) => number }) {
   return (
     <div style={{ width: scale(120), height: scale(54), position: "relative", opacity: 0.9, overflow: "hidden", flexShrink: 0 }}>
@@ -94,7 +253,7 @@ function TisLogo({ scale }: { scale: (n: number) => number }) {
   );
 }
 
-function Header({ metrics }: { metrics: Metrics }) {
+function Header({ metrics, showDescription = true }: { metrics: Metrics; showDescription?: boolean }) {
   const { vx, vy, vs } = metrics;
 
   return (
@@ -106,7 +265,7 @@ function Header({ metrics }: { metrics: Metrics }) {
         position: "absolute",
         left: vx(120),
         top: vy(96),
-        width: vx(760),
+        width: vx(showDescription ? 760 : 820),
         display: "flex",
         flexDirection: "column",
         gap: vy(24),
@@ -139,17 +298,19 @@ function Header({ metrics }: { metrics: Metrics }) {
           Design System TIS
         </p>
       </div>
-      <p
-        style={{
-          margin: 0,
-          fontFamily: "'Bronkoh-Regular', sans-serif",
-          fontSize: vs(28),
-          lineHeight: 1.5,
-          color: INK,
-        }}
-      >
-        Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com engenharia.
-      </p>
+      {showDescription ? (
+        <p
+          style={{
+            margin: 0,
+            fontFamily: "'Bronkoh-Regular', sans-serif",
+            fontSize: vs(28),
+            lineHeight: 1.5,
+            color: INK,
+          }}
+        >
+          Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com engenharia.
+        </p>
+      ) : null}
     </motion.div>
   );
 }
@@ -587,6 +748,149 @@ function Benefits({ metrics }: { metrics: Metrics }) {
   );
 }
 
+function FeatureBullet({ content, metrics }: { content: BulletContent; metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div style={{ display: "flex", gap: vx(12), alignItems: "flex-start", width: "100%" }}>
+      <span style={{ width: vs(10), height: vy(26), display: "flex", alignItems: "center", flexShrink: 0 }}>
+        <span style={{ width: vs(10), height: vs(10), background: BLUE, display: "block", flexShrink: 0 }} />
+      </span>
+      {content.kind === "ordered" ? (
+        <div
+          style={{
+            flex: "1 0 0",
+            minWidth: 0,
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 800,
+            fontSize: vs(18),
+            lineHeight: 1.4,
+            letterSpacing: vs(-0.018),
+            color: INK,
+          }}
+        >
+          <p style={{ margin: `0 0 ${vy(8)}px 0` }}>{content.title}</p>
+          <ol style={{ margin: 0, paddingLeft: vx(27), listStyleType: "decimal" }}>
+            {content.items.map((item) => (
+              <li key={item.label} style={{ margin: 0, padding: 0 }}>
+                <span>{item.label}</span>
+                <span style={{ fontWeight: 400 }}>{item.body}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : (
+        <p
+          style={{
+            flex: "1 0 0",
+            minWidth: 0,
+            margin: 0,
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 400,
+            fontSize: vs(18),
+            lineHeight: 1.4,
+            letterSpacing: vs(-0.018),
+            color: INK,
+          }}
+        >
+          {content.parts.map((part, index) => (
+            <span key={`${part.text}-${index}`} style={{ fontWeight: part.bold ? 800 : 400 }}>
+              {part.text}
+            </span>
+          ))}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function FeatureCard({ card, metrics }: { card: FeatureCardContent; metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div
+      style={{
+        width: vx(404),
+        height: vy(481),
+        boxSizing: "border-box",
+        border: `${vs(2)}px solid ${BLUE}`,
+        borderRadius: vs(24),
+        background: "#fff",
+        padding: `${vy(32)}px ${vx(32)}px`,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: vy(16) }}>
+        <p
+          style={{
+            width: "100%",
+            margin: 0,
+            fontFamily: "'Bronkoh-Heavy', sans-serif",
+            fontSize: vs(26),
+            lineHeight: 1.4,
+            color: NAVY,
+          }}
+        >
+          {card.title}
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: vy(16), width: "100%" }}>
+          {card.bullets.map((bullet, index) => (
+            <FeatureBullet key={`${card.title}-${index}`} content={bullet} metrics={metrics} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BottomInfoCard({ title, body, metrics }: { title: string; body: string; metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div
+      style={{
+        width: vx(824),
+        height: vy(138),
+        boxSizing: "border-box",
+        border: `${vs(2)}px solid ${BLUE}`,
+        borderRadius: vs(24),
+        background: PALE_BLUE,
+        padding: `${vy(24)}px ${vx(24)}px`,
+        display: "flex",
+        flexDirection: "column",
+        gap: vy(8),
+      }}
+    >
+      <p
+        style={{
+          margin: 0,
+          fontFamily: "'Bronkoh-Heavy', sans-serif",
+          fontSize: vs(24),
+          lineHeight: 1.4,
+          color: NAVY,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {title}
+      </p>
+      <p
+        style={{
+          width: vx(776),
+          margin: 0,
+          fontFamily: "'Inter', 'Manrope', sans-serif",
+          fontWeight: 400,
+          fontSize: vs(16),
+          lineHeight: `${vs(24)}px`,
+          color: "#14171a",
+        }}
+      >
+        {body}
+      </p>
+    </div>
+  );
+}
+
 function PageOne({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
 
@@ -613,6 +917,42 @@ function PageOne({ metrics }: { metrics: Metrics }) {
       >
         Nosso Design System já nasce preparado para o uso por agentes, fornecendo contexto e acelerando o processo.
       </motion.p>
+    </>
+  );
+}
+
+function PageTwo({ metrics }: { metrics: Metrics }) {
+  const { vx, vy } = metrics;
+
+  return (
+    <>
+      <Header metrics={metrics} showDescription={false} />
+      <motion.div
+        initial={{ opacity: 0, y: vy(24) }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.14, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          left: vx(120),
+          top: vy(267),
+          width: vx(1664),
+          height: vy(635),
+          display: "flex",
+          flexDirection: "column",
+          gap: vy(16),
+        }}
+      >
+        <div style={{ display: "flex", gap: vx(16), width: "100%", height: vy(481), alignItems: "stretch" }}>
+          {designSystemFeatureCards.map((card) => (
+            <FeatureCard key={card.title} card={card} metrics={metrics} />
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: vx(16), width: "100%", height: vy(138), alignItems: "stretch" }}>
+          {designSystemBottomCards.map((card) => (
+            <BottomInfoCard key={card.title} title={card.title} body={card.body} metrics={metrics} />
+          ))}
+        </div>
+      </motion.div>
     </>
   );
 }
@@ -672,7 +1012,7 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
           transition={{ duration: reducedMotion ? 0 : 0.42, ease: EASE }}
           style={{ position: "absolute", inset: 0 }}
         >
-          {page === 0 ? <PageOne metrics={metrics} /> : <PlaceholderPage />}
+          {page === 0 ? <PageOne metrics={metrics} /> : page === 1 ? <PageTwo metrics={metrics} /> : <PlaceholderPage />}
         </motion.div>
       </AnimatePresence>
       <Footer metrics={metrics} />
