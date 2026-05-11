@@ -106,8 +106,8 @@ function Header({ metrics }: { metrics: Metrics }) {
       style={{
         position: "absolute",
         left: vx(120),
-        top: vy(108),
-        width: vx(720),
+        top: vy(96),
+        width: vx(760),
         display: "flex",
         flexDirection: "column",
         gap: vy(24),
@@ -131,8 +131,8 @@ function Header({ metrics }: { metrics: Metrics }) {
           style={{
             margin: 0,
             fontFamily: "'Bronkoh-Heavy', sans-serif",
-            fontSize: vs(56),
-            letterSpacing: 0,
+            fontSize: vs(80),
+            letterSpacing: vs(-1.5),
             lineHeight: 1,
             color: NAVY,
           }}
@@ -144,7 +144,7 @@ function Header({ metrics }: { metrics: Metrics }) {
         style={{
           margin: 0,
           fontFamily: "'Bronkoh-Regular', sans-serif",
-          fontSize: vs(22),
+          fontSize: vs(28),
           lineHeight: 1.5,
           color: INK,
         }}
