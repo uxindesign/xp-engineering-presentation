@@ -416,6 +416,7 @@ function VerticalNav({
 
 function RoiCard({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
+  const rowHeights = [92, 78, 78, 72];
 
   return (
     <motion.div
@@ -424,53 +425,82 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
       transition={{ duration: 0.52, delay: 0.16, ease: "easeOut" }}
       style={{
         position: "absolute",
-        left: vx(1072),
-        top: vy(244),
+        left: vx(1148),
+        top: vy(220),
         width: vx(620),
-        minHeight: vy(420),
+        height: vy(547),
+        boxSizing: "border-box",
         borderRadius: vs(40),
         background: PALE_BLUE,
         padding: `${vy(48)}px ${vx(56)}px`,
         display: "flex",
         flexDirection: "column",
-        gap: vy(28),
+        gap: vy(40),
       }}
     >
       <p
         style={{
+          width: vx(508),
           margin: 0,
           fontFamily: "'Bronkoh-SemiBold', sans-serif",
-          fontSize: vs(14),
+          fontSize: vs(16),
           letterSpacing: vs(2),
           lineHeight: "normal",
-          color: "#7fb3fb",
+          color: BLUE,
           textTransform: "uppercase",
         }}
       >
-        Redução de custos e ROI (Design System + IA)
+        Redução de Custos e ROI (Design system + IA)
       </p>
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(20) }}>
-        {metricsRows.map((row) => (
-          <div key={row.title} style={{ display: "grid", gridTemplateColumns: `${vx(156)}px 1fr`, columnGap: vx(24), alignItems: "start" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: vy(24), width: vx(491) }}>
+        {metricsRows.map((row, index) => (
+          <div
+            key={row.title}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: vx(24),
+              width: "100%",
+              height: vy(rowHeights[index]),
+            }}
+          >
             <p
               style={{
                 margin: 0,
+                width: vx(120),
+                flexShrink: 0,
                 fontFamily: "'Bronkoh-Heavy', sans-serif",
-                fontSize: vs(56),
-                lineHeight: 0.9,
+                fontSize: 0,
+                lineHeight: 0,
+                letterSpacing: index === 3 ? vs(-2) : vs(-1),
                 color: BLUE,
-                whiteSpace: "pre-line",
               }}
             >
-              {row.value}
+              {index === 0 ? (
+                <>
+                  <span style={{ display: "block", fontFamily: "'Bronkoh-Regular', sans-serif", fontSize: vs(30), lineHeight: 0.9 }}>Até</span>
+                  <span style={{ fontSize: vs(64), lineHeight: 0.9 }}>70</span>
+                  <span style={{ fontSize: vs(48), lineHeight: 0.9 }}>%</span>
+                </>
+              ) : index === 3 ? (
+                <>
+                  <span style={{ fontSize: vs(56), lineHeight: "normal" }}>800</span>
+                  <span style={{ fontSize: vs(32), lineHeight: "normal" }}>%</span>
+                </>
+              ) : (
+                <>
+                  <span style={{ fontSize: vs(64), lineHeight: "normal" }}>{index === 1 ? "65" : "85"}</span>
+                  <span style={{ fontSize: vs(48), lineHeight: "normal" }}>%</span>
+                </>
+              )}
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: vy(4) }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: vy(4), width: vx(347), minWidth: 0 }}>
               <p
                 style={{
                   margin: 0,
-                  fontFamily: "'Bronkoh-Heavy', sans-serif",
-                  fontSize: vs(18),
-                  lineHeight: 1.3,
+                  fontFamily: "'Bronkoh-Bold', sans-serif",
+                  fontSize: vs(20),
+                  lineHeight: 1.2,
                   color: NAVY,
                 }}
               >
@@ -481,7 +511,7 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
                   margin: 0,
                   fontFamily: "'Manrope', sans-serif",
                   fontWeight: 400,
-                  fontSize: vs(14),
+                  fontSize: vs(16),
                   lineHeight: 1.4,
                   color: INK,
                 }}
