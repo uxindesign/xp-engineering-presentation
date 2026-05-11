@@ -433,7 +433,7 @@ function Header({ page, metrics }: { page: number; metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
   const subtitle =
     page === 0
-      ? "Modelo operacional para modular profundidade de UX conforme risco, incerteza e impacto do projecto."
+      ? "Da criação pontual de telas para um modelo operacional de experiência."
       : "Da criação pontual de telas para um modelo operacional de experiência.";
 
   return (
@@ -475,7 +475,7 @@ function Header({ page, metrics }: { page: number; metrics: Metrics }) {
             color: NAVY,
           }}
         >
-          {page === 0 ? "Modelo de atuação" : "Modelo de actuação"}
+          Modelo de actuação
         </p>
       </div>
       <p
