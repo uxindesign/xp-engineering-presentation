@@ -22,6 +22,7 @@ const PALE_BLUE = "rgba(3,110,242,0.06)";
 const STROKE_BLUE = "rgba(43,118,193,0.4)";
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
+const PAGE_CONTENT_TRANSITION_SECONDS = 0.42;
 const NAV_ARROW_UP_PATH = "M2 16L12 6L22 16L20.225 17.775L12 9.55L3.775 17.775L2 16Z";
 const NAV_ARROW_DOWN_PATH = "M2 8.025L3.775 6.25L12 14.475L20.225 6.25L22 8.025L12 18.025L2 8.025Z";
 
@@ -257,10 +258,12 @@ function Header({
   metrics,
   showDescription = true,
   reducedMotion,
+  descriptionEnterDelay = 0,
 }: {
   metrics: Metrics;
   showDescription?: boolean;
   reducedMotion: boolean;
+  descriptionEnterDelay?: number;
 }) {
   const { vx, vy, vs } = metrics;
 
@@ -313,7 +316,7 @@ function Header({
             initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
-            transition={{ duration: reducedMotion ? 0 : 0.24, ease: EASE }}
+            transition={{ duration: reducedMotion ? 0 : 0.34, delay: reducedMotion ? 0 : descriptionEnterDelay, ease: EASE }}
             style={{
               width: vx(760),
               margin: 0,
@@ -988,6 +991,7 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
     vs: (n: number) => n * s,
   };
   const { vy } = metrics;
+  const descriptionEnterDelay = page === 0 && pageDirection < 0 ? PAGE_CONTENT_TRANSITION_SECONDS : 0;
 
   const setPage = (next: number) => {
     const clamped = Math.max(0, Math.min(pageCount - 1, next));
@@ -1017,14 +1021,14 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
       onWheel={handleWheel}
     >
       <VerticalNav page={page} setPage={setPage} pageCount={pageCount} metrics={metrics} />
-      <Header metrics={metrics} showDescription={page === 0} reducedMotion={reducedMotion} />
+      <Header metrics={metrics} showDescription={page === 0} reducedMotion={reducedMotion} descriptionEnterDelay={descriptionEnterDelay} />
       <AnimatePresence mode="wait" custom={pageDirection}>
         <motion.div
           key={page}
           initial={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(40) }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(-34) }}
-          transition={{ duration: reducedMotion ? 0 : 0.42, ease: EASE }}
+          transition={{ duration: reducedMotion ? 0 : PAGE_CONTENT_TRANSITION_SECONDS, ease: EASE }}
           style={{ position: "absolute", inset: 0 }}
         >
           {page === 0 ? <PageOne metrics={metrics} /> : page === 1 ? <PageTwo metrics={metrics} /> : <PlaceholderPage />}
