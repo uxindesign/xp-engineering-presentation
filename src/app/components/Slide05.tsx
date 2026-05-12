@@ -293,23 +293,27 @@ export function Slide05({ scaleX, scaleY }: Props) {
         {/* TIS Logo */}
         <div
           style={{
-            width: vx(120),
-            height: vy(54),
+            width: vs(120),
+            height: vs(54),
             opacity: 0.9,
             overflow: "hidden",
             position: "relative",
+            flexShrink: 0,
           }}
         >
           {/* Mask group */}
           <div
             style={{
               position: "absolute",
-              inset: `0 ${0.06 * vx(120) / 100}px ${0.73 * vy(54) / 100}px 0`,
+              inset: "0 0.06% 0.73% 0",
               maskImage: `url('${imgGroup}')`,
               WebkitMaskImage: `url('${imgGroup}')`,
               maskRepeat: "no-repeat",
+              WebkitMaskRepeat: "no-repeat",
               maskPosition: "0px 0px",
-              maskSize: `${vx(120)}px ${vy(54) * (105.223 / 54)}px`,
+              WebkitMaskPosition: "0px 0px",
+              maskSize: `${vs(236)}px ${vs(105.223)}px`,
+              WebkitMaskSize: `${vs(236)}px ${vs(105.223)}px`,
             }}
           >
             <svg
