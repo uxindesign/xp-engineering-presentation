@@ -411,9 +411,24 @@ function Header({
           <motion.p
             key={content.description}
             initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
-            transition={{ duration: reducedMotion ? 0 : 0.34, delay: reducedMotion ? 0 : descriptionEnterDelay, ease: EASE }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: reducedMotion ? 0 : 0.34,
+                delay: reducedMotion ? 0 : descriptionEnterDelay,
+                ease: EASE,
+              },
+            }}
+            exit={{
+              opacity: 0,
+              y: reducedMotion ? 0 : vy(-8),
+              transition: {
+                duration: reducedMotion ? 0 : 0.18,
+                delay: 0,
+                ease: EASE,
+              },
+            }}
             style={{
               width: vx(content.descriptionWidth),
               margin: 0,
@@ -1367,7 +1382,7 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
   const showHeaderDescription = page !== 1;
   const descriptionEnterDelay =
     page === 2
-      ? 0.26
+      ? 0.36
       : page === 0 && pageDirection < 0
         ? PAGE_CONTENT_TRANSITION_SECONDS
         : 0;
