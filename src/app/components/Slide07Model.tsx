@@ -404,16 +404,22 @@ function NavDotButton({
 
 function TisLogo({ scale }: { scale: (n: number) => number }) {
   return (
-    <div style={{ width: scale(120), height: scale(54), position: "relative", opacity: 0.9, overflow: "hidden", flexShrink: 0 }}>
+    <div style={{ width: scale(120), height: scale(56), position: "relative", opacity: 0.9, overflow: "visible", flexShrink: 0 }}>
       <div
         style={{
           position: "absolute",
-          inset: "0 0.06% 0.73% 0",
+          left: 0,
+          bottom: 0,
+          width: scale(120),
+          height: scale(54),
           maskImage: `url('${imgGroup}')`,
           WebkitMaskImage: `url('${imgGroup}')`,
           maskSize: `${scale(236)}px ${scale(105.223)}px`,
+          WebkitMaskSize: `${scale(236)}px ${scale(105.223)}px`,
           maskRepeat: "no-repeat",
+          WebkitMaskRepeat: "no-repeat",
           maskPosition: "0px 0px",
+          WebkitMaskPosition: "0px 0px",
         }}
       >
         <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} fill="none" preserveAspectRatio="none" viewBox="0 0 119.929 53.6039">

@@ -270,16 +270,24 @@ export function Slide02({ scaleX, scaleY, onPrev, onNext, onModalChange }: Props
 
         {/* Logo */}
         <div
-          style={{ width: vs(120), height: vs(54), overflow: "hidden", position: "relative", flexShrink: 0 }}
+          style={{ width: vs(120), height: vs(56), overflow: "visible", position: "relative", flexShrink: 0 }}
           className="opacity-90"
         >
           <div
-            className="absolute inset-[0_0.06%_0.73%_0]"
             style={{
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              width: vs(120),
+              height: vs(54),
               maskImage: `url('${imgGroup}')`,
+              WebkitMaskImage: `url('${imgGroup}')`,
               maskSize: `${vs(236)}px ${vs(105.223)}px`,
+              WebkitMaskSize: `${vs(236)}px ${vs(105.223)}px`,
               maskRepeat: "no-repeat",
+              WebkitMaskRepeat: "no-repeat",
               maskPosition: "0px 0px",
+              WebkitMaskPosition: "0px 0px",
             }}
           >
             <svg

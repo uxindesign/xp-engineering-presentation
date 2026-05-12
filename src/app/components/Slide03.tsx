@@ -428,9 +428,9 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
         <div
           style={{
             width: vs(120),
-            height: vs(54),
+            height: vs(56),
             opacity: 0.9,
-            overflow: "hidden",
+            overflow: "visible",
             position: "relative",
             flexShrink: 0,
           }}
@@ -438,7 +438,10 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
           <div
             style={{
               position: "absolute",
-              inset: "0 0.06% 0.73% 0",
+              left: 0,
+              bottom: 0,
+              width: vs(120),
+              height: vs(54),
               maskImage: `url('${imgGroup}')`,
               WebkitMaskImage: `url('${imgGroup}')`,
               maskSize: `${vs(236)}px ${vs(105.223)}px`,
