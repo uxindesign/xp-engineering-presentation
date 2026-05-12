@@ -64,6 +64,7 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
   const [isDragAreaActive, setIsDragAreaActive] = useState(false);
+  const [isDragCursorIconLatched, setIsDragCursorIconLatched] = useState(false);
   const [isExpandHover, setIsExpandHover] = useState(false);
   const [isNearCustomCursorTarget, setIsNearCustomCursorTarget] = useState(false);
 
@@ -163,11 +164,35 @@ export default function App() {
   // doesn't fire on unmount, so the drag/expand cursors can get stuck otherwise.
   useEffect(() => {
     setIsDragAreaActive(false);
+    setIsDragCursorIconLatched(false);
     setIsExpandHover(false);
     setIsNearCustomCursorTarget(false);
   }, [currentSlide]);
 
-  const goToSlide = (n: number) => setCurrentSlide(Math.max(0, Math.min(TOTAL_SLIDES - 1, n)));
+  useEffect(() => {
+    if (isDragAreaActive) {
+      setIsDragCursorIconLatched(true);
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => setIsDragCursorIconLatched(false), 260);
+    return () => window.clearTimeout(timer);
+  }, [isDragAreaActive]);
+
+  const resetTransientCursorStates = () => {
+    setIsDragAreaActive(false);
+    setIsDragCursorIconLatched(false);
+    setIsExpandHover(false);
+    setIsNearCustomCursorTarget(false);
+    setIsNearInteractive(false);
+    setIsOnInteractive(false);
+  };
+
+  const goToSlide = (n: number) => {
+    const nextSlide = Math.max(0, Math.min(TOTAL_SLIDES - 1, n));
+    if (nextSlide !== currentSlide) resetTransientCursorStates();
+    setCurrentSlide(nextSlide);
+  };
   const goNext = () => goToSlide(currentSlide + 1);
   const goPrev = () => goToSlide(currentSlide - 1);
 
@@ -186,11 +211,18 @@ export default function App() {
 
   const PROXIMITY_BUFFER = 32; // px — custom cursor starts hiding before reaching element
 
+  const isPointerOverDragCursorArea = (x: number, y: number) => {
+    if (currentSlide !== 2) return false;
+    const target = document.elementFromPoint(x, y);
+    return Boolean(target?.closest('[data-drag-cursor-area="slide-3-carousel"]'));
+  };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     mouseX.set(e.clientX);
     mouseY.set(e.clientY);
     setIsLeftHalf(e.clientX < window.innerWidth / 2);
     if (!cursorVisible) setCursorVisible(true);
+    setIsDragAreaActive(isPointerOverDragCursorArea(e.clientX, e.clientY));
 
     // Calculate rotation regardless of current slide, though only slide 0 shows the logo
     const { clientX, clientY } = e;
@@ -239,20 +271,29 @@ export default function App() {
     setIsNearCustomCursorTarget(nearCustomCursorTarget);
   };
 
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isInfographicExpanded) return;
     if (isModalOpen) return;
-    if (isDragAreaActive) return;
+    const target = event.target instanceof Element ? event.target : null;
+    if (target?.closest('button, a, input, select, textarea, [role="button"]')) return;
+
+    const clickIsLeftHalf = event.clientX < window.innerWidth / 2;
+    setIsLeftHalf(clickIsLeftHalf);
+
+    if (isDragAreaActive) {
+      if (isPointerOverDragCursorArea(event.clientX, event.clientY)) return;
+      setIsDragAreaActive(false);
+    }
 
     setIsTapping(true);
     setTimeout(() => setIsTapping(false), 180);
 
-    if (currentSlide === TOTAL_SLIDES - 1 && !isLeftHalf) {
+    if (currentSlide === TOTAL_SLIDES - 1 && !clickIsLeftHalf) {
       goToSlide(0);
       return;
     }
 
-    if (currentSlide === 0 || !isLeftHalf) {
+    if (currentSlide === 0 || !clickIsLeftHalf) {
       goNext();
     } else {
       goPrev();
@@ -265,7 +306,8 @@ export default function App() {
   const showBackCursor = currentSlide > 0 && isLeftHalf;
   const showRepeatCursor = isClosingSlide && !isLeftHalf;
   const isInfographicActionCursor = isInfographicExpanded || isExpandHover;
-  const isInteractiveSuppressingCursor = isNearInteractive && !isNearCustomCursorTarget;
+  const isInteractiveSuppressingCursor = isOnInteractive && !isNearCustomCursorTarget;
+  const showDragCursorIcon = isDragAreaActive || isDragCursorIconLatched;
 
   useEffect(() => {
     if (isInfographicExpanded || currentSlide !== 5) return undefined;
@@ -287,6 +329,8 @@ export default function App() {
       onMouseMove={handleMouseMove}
       onMouseLeave={() => {
         setCursorVisible(false);
+        setIsDragAreaActive(false);
+        setIsDragCursorIconLatched(false);
         setIsNearInteractive(false);
         setIsOnInteractive(false);
         setIsNearCustomCursorTarget(false);
@@ -296,7 +340,7 @@ export default function App() {
         }
       }}
       onMouseEnter={() => setCursorVisible(true)}
-      onClick={handleClick}
+      onClickCapture={handleClick}
       style={{ backgroundColor: isDarkSlide ? "#04165d" : "#ffffff" }}
       className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isInfographicExpanded ? "cursor-none" : (isModalOpen ? "cursor-auto" : (isInteractiveSuppressingCursor ? "" : "cursor-none"))}`}
     >
@@ -598,7 +642,7 @@ export default function App() {
           </div>
         ) : (
           <AnimatePresence mode="wait">
-            {isDragAreaActive ? (
+            {showDragCursorIcon ? (
               <motion.div
                 key="drag"
                 initial={{ opacity: 0, scale: 0.6 }}

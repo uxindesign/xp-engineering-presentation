@@ -104,6 +104,7 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
 
       {/* ── Cards carousel ── */}
       <motion.div
+        data-drag-cursor-area="slide-3-carousel"
         animate={{ x: getTranslateX(currentCard) }}
         transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
         onPointerDown={(e) => {
