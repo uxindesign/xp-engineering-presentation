@@ -365,7 +365,7 @@ function Header({
         position: "absolute",
         left: vx(120),
         top: vy(96),
-        width: vx(content.width),
+        width: vx(1664),
         display: "flex",
         flexDirection: "column",
         gap: vy(24),
@@ -399,6 +399,7 @@ function Header({
               letterSpacing: vs(-1.5),
               lineHeight: 1,
               color: NAVY,
+              whiteSpace: "nowrap",
             }}
           >
             {content.title}
