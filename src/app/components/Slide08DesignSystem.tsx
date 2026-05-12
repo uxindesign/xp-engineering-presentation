@@ -406,7 +406,7 @@ function Header({
           </motion.p>
         </AnimatePresence>
       </div>
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={false} mode="wait">
         {showDescription ? (
           <motion.p
             key={content.description}
@@ -1365,7 +1365,12 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
   const { vy } = metrics;
   const headerContent = page === 2 ? SLIDE_08_FLOW_HEADER : SLIDE_08_DEFAULT_HEADER;
   const showHeaderDescription = page !== 1;
-  const descriptionEnterDelay = page === 0 && pageDirection < 0 ? PAGE_CONTENT_TRANSITION_SECONDS : 0;
+  const descriptionEnterDelay =
+    page === 2
+      ? 0.26
+      : page === 0 && pageDirection < 0
+        ? PAGE_CONTENT_TRANSITION_SECONDS
+        : 0;
 
   const setPage = (next: number) => {
     const clamped = Math.max(0, Math.min(pageCount - 1, next));
