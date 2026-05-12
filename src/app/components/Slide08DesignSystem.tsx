@@ -23,8 +23,24 @@ const STROKE_BLUE = "rgba(43,118,193,0.4)";
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const PAGE_CONTENT_TRANSITION_SECONDS = 0.42;
+const GOVERNANCE_BODY_TEXT_SIZE = 15;
 const NAV_ARROW_UP_PATH = "M2 16L12 6L22 16L20.225 17.775L12 9.55L3.775 17.775L2 16Z";
 const NAV_ARROW_DOWN_PATH = "M2 8.025L3.775 6.25L12 14.475L20.225 6.25L22 8.025L12 18.025L2 8.025Z";
+const SLIDE_08_DEFAULT_HEADER = {
+  eyebrow: "Em construção",
+  title: "Design System TIS",
+  description: "Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com engenharia.",
+  width: 820,
+  descriptionWidth: 760,
+};
+const SLIDE_08_FLOW_HEADER = {
+  eyebrow: "Design System TIS",
+  title: "Fluxo de governança do Design System",
+  description:
+    "A IA acelera análise, síntese e produção assistida. Decisão, qualidade, acessibilidade e aceite permanecem sob responsabilidade da equipa.",
+  width: 1664,
+  descriptionWidth: 1664,
+};
 
 const metricsRows = [
   {
@@ -84,6 +100,14 @@ type BulletContent =
 type FeatureCardContent = {
   title: string;
   bullets: BulletContent[];
+};
+
+type Slide08HeaderContent = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  width: number;
+  descriptionWidth: number;
 };
 
 const designSystemFeatureCards: FeatureCardContent[] = [
@@ -227,6 +251,62 @@ const designSystemBottomCards = [
   },
 ];
 
+const governanceStages = [
+  {
+    title: "Entrada e triagem",
+    color: BLUE,
+    tint: "rgba(3,110,242,0.05)",
+    bullets: [
+      "Necessidade vem de projecto real, incidente, dívida ou padrão recorrente.",
+      "Responsável, objectivo, impacto e urgência ficam registados na solicitação.",
+    ],
+    ai: "IA compara o pedido com o que já existe. A equipa valida necessidade e variações.",
+  },
+  {
+    title: "Descoberta e especificação",
+    color: "#6546be",
+    tint: "rgba(101,70,190,0.05)",
+    bullets: ["Mapear variantes, estados, conteúdo, acessibilidade, tokens e dependências.", "Verificar se um componente existente resolve o caso."],
+    ai: "IA identifica padrões e pontos de ajuste. A equipa decide o que muda.",
+  },
+  {
+    title: "Design e protótipo",
+    color: "#27975b",
+    tint: "rgba(39,151,91,0.05)",
+    bullets: ["Criar componente em Figma com propriedades, estados e adaptação responsiva.", "Aplicar tokens e nomenclatura do Design System."],
+    ai: "IA sugere estrutura e nomes. Designer valida anatomia e uso.",
+  },
+  {
+    title: "Aprovação e plano técnico",
+    color: "#be6627",
+    tint: "rgba(190,102,39,0.05)",
+    bullets: ["Revisão por responsável do Design System e engenharia.", "Definir versão, impacto e migração quando necessário."],
+    ai: "IA resume impacto. Responsável avalia e aprova avanço.",
+  },
+  {
+    title: "Implementação e QA",
+    color: BLUE,
+    tint: "rgba(3,110,242,0.05)",
+    bullets: ["Código, testes de estados, acessibilidade e exemplos.", "Verificar tokens, temas e comportamento responsivo."],
+    ai: "IA apoia implementação e documentação. Engenharia valida qualidade e testes.",
+  },
+  {
+    title: "Release e adopção",
+    color: "#27975b",
+    tint: "rgba(39,151,91,0.05)",
+    bullets: ["Publicar em Figma, código e documentação.", "Comunicar uso recomendado e substituições."],
+    ai: "IA identifica desvios de uso. A equipa ajusta documentação e adopção.",
+  },
+];
+
+const governanceChecks = [
+  { label: "Necessidade comprovada", color: BLUE, width: 260 },
+  { label: "Sem duplicação funcional", color: "#6546be", width: 260 },
+  { label: "Componente criado com tokens, estados e acessibilidade", color: "#27975b", width: 540 },
+  { label: "Documentação publicada", color: BLUE, width: 260 },
+  { label: "Adopção por projecto", color: "#27975b", width: 260 },
+];
+
 function TisLogo({ scale }: { scale: (n: number) => number }) {
   return (
     <div style={{ width: scale(120), height: scale(54), position: "relative", opacity: 0.9, overflow: "hidden", flexShrink: 0 }}>
@@ -256,11 +336,13 @@ function TisLogo({ scale }: { scale: (n: number) => number }) {
 
 function Header({
   metrics,
+  content,
   showDescription = true,
   reducedMotion,
   descriptionEnterDelay = 0,
 }: {
   metrics: Metrics;
+  content: Slide08HeaderContent;
   showDescription?: boolean;
   reducedMotion: boolean;
   descriptionEnterDelay?: number;
@@ -276,7 +358,7 @@ function Header({
         position: "absolute",
         left: vx(120),
         top: vy(96),
-        width: vx(820),
+        width: vx(content.width),
         display: "flex",
         flexDirection: "column",
         gap: vy(24),
@@ -294,31 +376,38 @@ function Header({
             textTransform: "uppercase",
           }}
         >
-          Em construção
+          {content.eyebrow}
         </p>
-        <p
-          style={{
-            margin: 0,
-            fontFamily: "'Bronkoh-Heavy', sans-serif",
-            fontSize: vs(80),
-            letterSpacing: vs(-1.5),
-            lineHeight: 1,
-            color: NAVY,
-          }}
-        >
-          Design System TIS
-        </p>
+        <AnimatePresence initial={false} mode="wait">
+          <motion.p
+            key={content.title}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : vy(8) }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
+            transition={{ duration: reducedMotion ? 0 : 0.28, ease: EASE }}
+            style={{
+              margin: 0,
+              fontFamily: "'Bronkoh-Heavy', sans-serif",
+              fontSize: vs(80),
+              letterSpacing: vs(-1.5),
+              lineHeight: 1,
+              color: NAVY,
+            }}
+          >
+            {content.title}
+          </motion.p>
+        </AnimatePresence>
       </div>
       <AnimatePresence initial={false}>
         {showDescription ? (
           <motion.p
-            key="slide-08-header-description"
+            key={content.description}
             initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
             transition={{ duration: reducedMotion ? 0 : 0.34, delay: reducedMotion ? 0 : descriptionEnterDelay, ease: EASE }}
             style={{
-              width: vx(760),
+              width: vx(content.descriptionWidth),
               margin: 0,
               fontFamily: "'Bronkoh-Regular', sans-serif",
               fontSize: vs(28),
@@ -326,7 +415,7 @@ function Header({
               color: INK,
             }}
           >
-            Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com engenharia.
+            {content.description}
           </motion.p>
         ) : null}
       </AnimatePresence>
@@ -910,6 +999,201 @@ function BottomInfoCard({ title, body, metrics }: { title: string; body: string;
   );
 }
 
+function StageBullet({ text, color, metrics }: { text: string; color: string; metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div style={{ display: "flex", gap: vx(10), alignItems: "flex-start", width: "100%" }}>
+      <span style={{ width: vs(12), height: vy(22), display: "flex", alignItems: "center", flexShrink: 0 }}>
+        <span
+          style={{
+            width: vs(12),
+            height: vs(12),
+            border: `${vs(2)}px solid ${color}`,
+            borderRadius: vs(2),
+            boxSizing: "border-box",
+            display: "block",
+            flexShrink: 0,
+          }}
+        />
+      </span>
+      <p
+        style={{
+          flex: "1 0 0",
+          minWidth: 0,
+          margin: 0,
+          fontFamily: "'Manrope', sans-serif",
+          fontWeight: 400,
+          fontSize: vs(GOVERNANCE_BODY_TEXT_SIZE),
+          lineHeight: 1.4,
+          letterSpacing: vs(-0.016),
+          color: INK,
+        }}
+      >
+        {text}
+      </p>
+    </div>
+  );
+}
+
+function StageAiNote({ text, color, tint, metrics }: { text: string; color: string; tint: string; metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: vy(106),
+        boxSizing: "border-box",
+        border: `${vs(1)}px solid ${color}`,
+        borderRadius: vs(16),
+        background: tint,
+        padding: `${vy(20)}px ${vx(16)}px`,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ display: "flex", gap: vx(8), alignItems: "flex-start", width: "100%" }}>
+        <span style={{ width: vs(10), height: vy(22), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <span
+            style={{
+              width: vs(8),
+              height: vs(8),
+              background: color,
+              transform: "rotate(45deg)",
+              display: "block",
+              flexShrink: 0,
+            }}
+          />
+        </span>
+        <p
+          style={{
+            flex: "1 0 0",
+            minWidth: 0,
+            margin: 0,
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 400,
+            fontSize: vs(GOVERNANCE_BODY_TEXT_SIZE),
+            lineHeight: 1.4,
+            letterSpacing: vs(-0.016),
+            color: INK,
+          }}
+        >
+          {text}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function GovernanceStageCard({ stage, metrics }: { stage: (typeof governanceStages)[number]; metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div style={{ width: vx(260.6667), height: vy(400), display: "flex", flexDirection: "column", gap: vy(16), flexShrink: 0 }}>
+      <div
+        style={{
+          width: "100%",
+          height: vy(74),
+          boxSizing: "border-box",
+          borderRadius: vs(16),
+          background: stage.color,
+          padding: `${vy(24)}px ${vx(24)}px`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            width: "100%",
+            fontFamily: "'Bronkoh-Heavy', sans-serif",
+            fontSize: vs(20),
+            lineHeight: 1.1,
+            textAlign: "center",
+            color: "#fff",
+          }}
+        >
+          {stage.title}
+        </p>
+      </div>
+      <div
+        style={{
+          width: "100%",
+          height: vy(188),
+          boxSizing: "border-box",
+          border: `${vs(1)}px solid rgba(110,117,135,0.4)`,
+          borderRadius: vs(16),
+          padding: `${vy(20)}px ${vx(16)}px`,
+          display: "flex",
+          flexDirection: "column",
+          gap: vy(16),
+        }}
+      >
+        {stage.bullets.map((bullet) => (
+          <StageBullet key={bullet} text={bullet} color={stage.color} metrics={metrics} />
+        ))}
+      </div>
+      <StageAiNote text={stage.ai} color={stage.color} tint={stage.tint} metrics={metrics} />
+    </div>
+  );
+}
+
+function GovernanceFlowArrow({ metrics }: { metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div style={{ width: vx(20), height: vy(400), paddingTop: vy(30), display: "flex", justifyContent: "center", boxSizing: "border-box", flexShrink: 0 }}>
+      <svg width={vs(14)} height={vs(14)} viewBox="0 0 14 14" fill="none" style={{ display: "block", overflow: "visible" }}>
+        <path d="M1.25 7H12.25M8.25 3L12.25 7L8.25 11" stroke={INK} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
+function GovernanceCheck({ item, metrics }: { item: (typeof governanceChecks)[number]; metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div
+      style={{
+        width: vx(item.width),
+        height: vy(62),
+        boxSizing: "border-box",
+        border: `${vs(1)}px solid rgba(110,117,135,0.4)`,
+        borderRadius: vs(16),
+        padding: `${vy(20)}px ${vx(20)}px`,
+        display: "flex",
+        alignItems: "center",
+        flexShrink: 0,
+      }}
+    >
+      <div style={{ display: "flex", gap: vx(8), alignItems: "center", width: "100%" }}>
+        <svg width={vs(20)} height={vs(20)} viewBox="0 0 20 20" fill="none" style={{ display: "block", flexShrink: 0 }}>
+          <path d="M5.5 10.3L8.35 13.1L14.5 6.9" stroke={item.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <p
+          style={{
+            flex: "1 0 0",
+            minWidth: 0,
+            margin: 0,
+            fontFamily: "'Manrope', sans-serif",
+            fontWeight: 800,
+            fontSize: vs(16),
+            lineHeight: 1.4,
+            letterSpacing: vs(-0.5),
+            color: INK,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {item.label}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function PageOne({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
 
@@ -974,6 +1258,67 @@ function PageTwo({ metrics }: { metrics: Metrics }) {
   );
 }
 
+function PageThree({ metrics }: { metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: vy(24) }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.14, ease: "easeOut" }}
+      style={{
+        position: "absolute",
+        left: vx(120),
+        top: vy(341),
+        width: vx(1664),
+        height: vy(561),
+        display: "flex",
+        flexDirection: "column",
+        gap: vy(32),
+      }}
+    >
+      <div style={{ width: "100%", height: vy(400), display: "flex", alignItems: "flex-start" }}>
+        {governanceStages.map((stage, index) => (
+          <div key={stage.title} style={{ display: "flex", alignItems: "flex-start", flexShrink: 0 }}>
+            <GovernanceStageCard stage={stage} metrics={metrics} />
+            {index < governanceStages.length - 1 ? <GovernanceFlowArrow metrics={metrics} /> : null}
+          </div>
+        ))}
+      </div>
+      <div
+        style={{
+          width: "100%",
+          height: vy(129),
+          boxSizing: "border-box",
+          borderTop: `${vs(1)}px solid rgba(110,117,135,0.5)`,
+          paddingTop: vy(24),
+          display: "flex",
+          flexDirection: "column",
+          gap: vy(12),
+        }}
+      >
+        <p
+          style={{
+            width: "100%",
+            margin: 0,
+            fontFamily: "'Bronkoh-Heavy', sans-serif",
+            fontSize: vs(22),
+            lineHeight: 1.4,
+            color: NAVY,
+          }}
+        >
+          Camada de validação
+        </p>
+        <div style={{ display: "flex", gap: vx(20), width: "100%", height: vy(62), alignItems: "flex-start" }}>
+          {governanceChecks.map((item) => (
+            <GovernanceCheck key={item.label} item={item} metrics={metrics} />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function PlaceholderPage() {
   return null;
 }
@@ -991,6 +1336,8 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
     vs: (n: number) => n * s,
   };
   const { vy } = metrics;
+  const headerContent = page === 2 ? SLIDE_08_FLOW_HEADER : SLIDE_08_DEFAULT_HEADER;
+  const showHeaderDescription = page !== 1;
   const descriptionEnterDelay = page === 0 && pageDirection < 0 ? PAGE_CONTENT_TRANSITION_SECONDS : 0;
 
   const setPage = (next: number) => {
@@ -1021,7 +1368,7 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
       onWheel={handleWheel}
     >
       <VerticalNav page={page} setPage={setPage} pageCount={pageCount} metrics={metrics} />
-      <Header metrics={metrics} showDescription={page === 0} reducedMotion={reducedMotion} descriptionEnterDelay={descriptionEnterDelay} />
+      <Header metrics={metrics} content={headerContent} showDescription={showHeaderDescription} reducedMotion={reducedMotion} descriptionEnterDelay={descriptionEnterDelay} />
       <AnimatePresence mode="wait" custom={pageDirection}>
         <motion.div
           key={page}
@@ -1031,7 +1378,7 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
           transition={{ duration: reducedMotion ? 0 : PAGE_CONTENT_TRANSITION_SECONDS, ease: EASE }}
           style={{ position: "absolute", inset: 0 }}
         >
-          {page === 0 ? <PageOne metrics={metrics} /> : page === 1 ? <PageTwo metrics={metrics} /> : <PlaceholderPage />}
+          {page === 0 ? <PageOne metrics={metrics} /> : page === 1 ? <PageTwo metrics={metrics} /> : page === 2 ? <PageThree metrics={metrics} /> : <PlaceholderPage />}
         </motion.div>
       </AnimatePresence>
       <Footer metrics={metrics} />
