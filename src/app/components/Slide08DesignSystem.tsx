@@ -12,6 +12,7 @@ type Metrics = {
   vx: (n: number) => number;
   vy: (n: number) => number;
   vs: (n: number) => number;
+  vg: (n: number) => number;
 };
 
 const BLUE = "#036ef2";
@@ -1030,7 +1031,7 @@ function StageBullet({ text, color, metrics }: { text: string; color: string; me
           margin: 0,
           fontFamily: "'Manrope', sans-serif",
           fontWeight: 400,
-          fontSize: vs(GOVERNANCE_BODY_TEXT_SIZE),
+          fontSize: metrics.vg(GOVERNANCE_BODY_TEXT_SIZE),
           lineHeight: 1.4,
           letterSpacing: vs(-0.016),
           color: INK,
@@ -1079,7 +1080,7 @@ function StageAiNote({ text, color, tint, metrics }: { text: string; color: stri
             margin: 0,
             fontFamily: "'Manrope', sans-serif",
             fontWeight: 400,
-            fontSize: vs(GOVERNANCE_BODY_TEXT_SIZE),
+            fontSize: metrics.vg(GOVERNANCE_BODY_TEXT_SIZE),
             lineHeight: 1.4,
             letterSpacing: vs(-0.016),
             color: INK,
@@ -1186,7 +1187,7 @@ function GovernanceCheck({ item, metrics }: { item: (typeof governanceChecks)[nu
             margin: 0,
             fontFamily: "'Manrope', sans-serif",
             fontWeight: 800,
-            fontSize: vs(16),
+            fontSize: metrics.vg(16),
             lineHeight: 1.4,
             letterSpacing: vs(-0.5),
             color: INK,
@@ -1336,10 +1337,12 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
   const lastWheelRef = useRef(0);
   const pageCount = 3;
   const s = Math.min(scaleX, scaleY);
+  const governanceTextScale = Math.min(scaleX, scaleY * 1.16);
   const metrics = {
     vx: (n: number) => n * scaleX,
     vy: (n: number) => n * scaleY,
     vs: (n: number) => n * s,
+    vg: (n: number) => n * governanceTextScale,
   };
   const { vy } = metrics;
   const headerContent = page === 2 ? SLIDE_08_FLOW_HEADER : SLIDE_08_DEFAULT_HEADER;
