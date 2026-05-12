@@ -1008,23 +1008,40 @@ function BottomInfoCard({ title, body, metrics }: { title: string; body: string;
 }
 
 function StageBullet({ text, color, metrics }: { text: string; color: string; metrics: Metrics }) {
-  const { vx, vy, vs } = metrics;
+  const { vx, vs } = metrics;
+  const markerSize = metrics.vg(12);
 
   return (
     <div style={{ display: "flex", gap: vx(10), alignItems: "flex-start", width: "100%" }}>
-      <span style={{ width: vs(12), height: vy(22), display: "flex", alignItems: "center", flexShrink: 0 }}>
-        <span
-          style={{
-            width: vs(12),
-            height: vs(12),
-            border: `${vs(2)}px solid ${color}`,
-            borderRadius: vs(2),
-            boxSizing: "border-box",
-            display: "block",
-            flexShrink: 0,
-          }}
+      <svg
+        data-governance-bullet-marker
+        width={markerSize}
+        height={markerSize}
+        viewBox="0 0 12 12"
+        aria-hidden="true"
+        focusable="false"
+        style={{
+          width: markerSize,
+          height: markerSize,
+          marginTop: metrics.vg(4.5),
+          display: "block",
+          flex: "0 0 auto",
+          overflow: "visible",
+        }}
+      >
+        <rect
+          x="1"
+          y="1"
+          width="10"
+          height="10"
+          rx="1.5"
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          vectorEffect="non-scaling-stroke"
+          shapeRendering="geometricPrecision"
         />
-      </span>
+      </svg>
       <p
         style={{
           flex: "1 0 0",
