@@ -107,6 +107,36 @@ const tooltipByLabel: Record<string, TooltipData> = {
     tools: ["Dovetail", "Lookback", "UserTesting", "Google Meet", "Teams", "Office"],
     ai: "Apoio na construção de roteiro, perguntas de aprofundamento, transcrição e síntese.",
   },
+  "Análise SWOT": {
+    title: "Análise SWOT",
+    body: "Avaliar forças, fraquezas, oportunidades e ameaças relacionadas ao produto, serviço ou contexto.",
+    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    ai: "Apoio para estruturar a matriz SWOT, cruzar evidências e identificar implicações estratégicas.",
+  },
+  "Mapa de empatia": {
+    title: "Mapa de empatia",
+    body: "Consolidar o que o utilizador pensa, sente, vê, ouve, fala e faz.",
+    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    ai: "Auxílio para transformar entrevistas e inquéritos em padrões comportamentais.",
+  },
+  "User Stories": {
+    title: "User Stories",
+    body: "Traduzir necessidades em histórias para backlog e desenvolvimento.",
+    tools: ["Jira", "Jira Product Discovery", "Office"],
+    ai: "Apoio para escrever user stories, critérios de aceite, regras de negócio e exceções.",
+  },
+  "Jobs to be done": {
+    title: "Jobs to be done",
+    body: "Definir o progresso que o utilizador quer alcançar em determinado contexto.",
+    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    ai: "Ajuda na formulação de jobs, forças de progresso, dores e resultados esperados.",
+  },
+  Personas: {
+    title: "Personas",
+    body: "Representar perfis comportamentais com base em evidências, não em achismos.",
+    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    ai: "Criar proto personas e consolidar perfis, motivações, necessidades, dores e cenários de uso.",
+  },
 };
 
 const columns: StackColumn[] = [
@@ -125,11 +155,11 @@ const columns: StackColumn[] = [
     stage: "Definir",
     icon: assignmentIcon,
     items: [
-      { label: "Análise SWOT", icon: gridViewIcon },
-      { label: "Mapa de empatia", icon: mapIcon },
-      { label: "User Stories", icon: clinicalNotesIcon },
-      { label: "Jobs to be done", icon: checkbookIcon },
-      { label: "Personas", icon: accountCircleIcon },
+      { label: "Análise SWOT", icon: gridViewIcon, tooltip: tooltipByLabel["Análise SWOT"] },
+      { label: "Mapa de empatia", icon: mapIcon, tooltip: tooltipByLabel["Mapa de empatia"] },
+      { label: "User Stories", icon: clinicalNotesIcon, tooltip: tooltipByLabel["User Stories"] },
+      { label: "Jobs to be done", icon: checkbookIcon, tooltip: tooltipByLabel["Jobs to be done"] },
+      { label: "Personas", icon: accountCircleIcon, tooltip: tooltipByLabel.Personas },
     ],
   },
   {
