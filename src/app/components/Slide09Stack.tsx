@@ -316,8 +316,11 @@ function ItemTag({
         padding: `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
         borderRadius: vs(16),
         background: TAG_BG,
+        width: "100%",
+        boxSizing: "border-box",
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
         gap: vx(12),
         cursor: "pointer",
         color: NAVY,
@@ -499,7 +502,7 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
               }}
             >
               <StageTag column={column} vx={vx} vy={vy} vs={vs} />
-              <div style={{ display: "flex", flexDirection: "column", gap: vy(8), alignItems: "flex-start", flexShrink: 0 }}>
+              <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: vy(8), alignItems: "stretch", flexShrink: 0 }}>
                 {column.items.map((item) => (
                   <ItemTag key={item.label} item={item} vx={vx} vy={vy} vs={vs} onTooltipChange={updateTooltip} />
                 ))}
