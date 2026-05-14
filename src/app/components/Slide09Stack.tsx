@@ -137,6 +137,36 @@ const tooltipByLabel: Record<string, TooltipData> = {
     tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
     ai: "Criar proto personas e consolidar perfis, motivações, necessidades, dores e cenários de uso.",
   },
+  Protótipos: {
+    title: "Protótipos",
+    body: "Simular navegação, interação, comportamento e proposta de valor.",
+    tools: ["Figma", "Figma Make", "Lovable", "UX Pilot", "Framer", "Google Stitch"],
+    ai: "Criação de protótipos funcionais para validação rápida, geração de conteúdo como imagens e textos.",
+  },
+  Wireframes: {
+    title: "Wireframes",
+    body: "Explorar estrutura, hierarquia, conteúdo e navegação antes da UI final.",
+    tools: ["Figma", "Balsamiq", "Miro", "UX Pilot", "Whimsical"],
+    ai: "Esboços rápidos, sugestão de layouts, blocos de conteúdo, estados e variações.",
+  },
+  "Card Sorting": {
+    title: "Card Sorting",
+    body: "Validar agrupamentos, nomenclaturas e arquitetura da informação.",
+    tools: ["Jira", "Jira Product Discovery", "Office"],
+    ai: "Apoio para criar categorias, interpretar agrupamentos e sugerir taxonomias.",
+  },
+  Workshops: {
+    title: "Workshops",
+    body: "Alinhar equipas, gerar soluções, tomar decisões e resolver problemas em grupo.",
+    tools: ["FigJam", "Office", "Teams", "Microsoft Whiteboard", "Miro", "Google Meet", "Zoom"],
+    ai: "Ajuda no para desenho das dinâmicas, agenda, perguntas, outputs e síntese final.",
+  },
+  Ideação: {
+    title: "Ideação",
+    body: "Gerar alternativas de solução, conceitos, jornadas e abordagens de produto.",
+    tools: ["FigJam", "Miro", "Whimsical", "Office", "Microsoft Whiteboard", "Teams"],
+    ai: "Gerar alternativas, provocar caminhos e expandir possibilidades.",
+  },
 };
 
 const columns: StackColumn[] = [
@@ -166,11 +196,11 @@ const columns: StackColumn[] = [
     stage: "Explorar",
     icon: categorySearchIcon,
     items: [
-      { label: "Protótipos", icon: viewQuiltIcon },
-      { label: "Wireframes", icon: tableIcon },
-      { label: "Card Sorting", icon: cardsStackIcon },
-      { label: "Workshops", icon: workspacesIcon },
-      { label: "Ideação", icon: cognitionIcon },
+      { label: "Protótipos", icon: viewQuiltIcon, tooltip: tooltipByLabel.Protótipos },
+      { label: "Wireframes", icon: tableIcon, tooltip: tooltipByLabel.Wireframes },
+      { label: "Card Sorting", icon: cardsStackIcon, tooltip: tooltipByLabel["Card Sorting"] },
+      { label: "Workshops", icon: workspacesIcon, tooltip: tooltipByLabel.Workshops },
+      { label: "Ideação", icon: cognitionIcon, tooltip: tooltipByLabel.Ideação },
     ],
   },
   {
