@@ -97,14 +97,14 @@ const tooltipByLabel: Record<string, TooltipData> = {
   },
   Inquéritos: {
     title: "Inquéritos",
-    body: "Coletar respostas quantitativas ou qualitativas de usuários e stakeholders.",
+    body: "Coletar opiniões, percepções, satisfação, necessidades e dados quantitativos.",
     tools: ["Typeform", "Maze", "Google Forms", "Microsoft Forms", "Office"],
     ai: "Ajuda a criar questionários, limpar respostas abertas e agrupar padrões.",
   },
   Entrevistas: {
     title: "Entrevistas",
-    body: "Capturar dores, motivações, objeções, contexto de uso e linguagem do utilizador.",
-    tools: ["Typeform", "Maze", "Google Forms", "Microsoft Forms", "Office"],
+    body: "Entender contexto, motivações, dores, objeções, linguagem e comportamento.",
+    tools: ["Dovetail", "Lookback", "UserTesting", "Google Meet", "Teams", "Office"],
     ai: "Apoio na construção de roteiro, perguntas de aprofundamento, transcrição e síntese.",
   },
 };
