@@ -382,9 +382,10 @@ function Tooltip({
   vs: (n: number) => number;
 }) {
   const width = vs(360);
-  const offset = vs(18);
-  const left = Math.min(window.innerWidth - width - vs(16), x + offset);
-  const top = Math.min(window.innerHeight - vs(300), y + offset);
+  const estimatedHeight = vs(300);
+  const margin = vs(16);
+  const left = Math.min(window.innerWidth - width - margin, Math.max(margin, x - width / 2));
+  const top = Math.min(window.innerHeight - estimatedHeight - margin, Math.max(margin, y - estimatedHeight / 2));
 
   return (
     <AnimatePresence>
@@ -397,8 +398,8 @@ function Tooltip({
           transition={{ duration: 0.16, ease: "easeOut" }}
           style={{
             position: "fixed",
-            left: Math.max(vs(16), left),
-            top: Math.max(vs(16), top),
+            left,
+            top,
             width,
             zIndex: 5000,
             pointerEvents: "none",
