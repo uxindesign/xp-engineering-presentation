@@ -480,10 +480,10 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
           width: vx(1680),
           display: "flex",
           flexDirection: "column",
-          gap: vy(16),
+          gap: vy(24),
         }}
       >
-        <div style={{ width: "100%", display: "flex", gap: vx(16), alignItems: "flex-end", justifyContent: "center" }}>
+        <div style={{ width: "100%", display: "flex", gap: vx(24), alignItems: "flex-end", justifyContent: "center" }}>
           {columns.map((column) => (
             <div
               key={column.stage}
