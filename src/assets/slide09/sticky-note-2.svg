@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="sticky_note_2">
+<mask id="mask0_0_122" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+<rect id="Bounding box" width="32" height="32" fill="var(--fill-0, #D9D9D9)"/>
+</mask>
+<g mask="url(#mask0_0_122)">
+<path id="sticky_note_2_2" d="M6.41067 25.5893H18.9227V18.9227H25.5893V6.41067H6.41067V25.5893ZM6.41067 28.5277C5.60267 28.5277 4.911 28.2399 4.33567 27.6643C3.76011 27.089 3.47233 26.3973 3.47233 25.5893V6.41067C3.47233 5.59911 3.76011 4.90444 4.33567 4.32667C4.911 3.74889 5.60267 3.46 6.41067 3.46H25.5893C26.4009 3.46 27.0956 3.74889 27.6733 4.32667C28.2511 4.90444 28.54 5.59911 28.54 6.41067V20.0817L20.0817 28.5277H6.41067ZM9.96633 18.4107V15.956H15.8217V18.4107H9.96633ZM9.96633 12.845V10.3777H22.0337V12.845H9.96633Z" fill="var(--fill-0, #04165D)"/>
+</g>
+</g>
+</svg>

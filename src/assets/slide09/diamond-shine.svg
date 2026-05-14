@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="diamond_shine">
+<mask id="mask0_0_49" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
+<rect id="Bounding box" width="32" height="32" fill="var(--fill-0, #D9D9D9)"/>
+</mask>
+<g mask="url(#mask0_0_49)">
+<path id="diamond_shine_2" d="M16.082 29.861L3.602 17.4957L10.5223 8.94867H21.5883L28.5437 17.4957L16.082 29.861ZM5.58267 8.91067L2.53567 5.90833L4.627 3.80567L7.633 6.85267L5.58267 8.91067ZM14.6003 5.70433V1.41067H17.5323V5.70433H14.6003ZM26.474 8.91067L24.411 6.86033L27.458 3.79467L29.5207 5.90833L26.474 8.91067ZM16.082 25.7637L23.047 18.8287H9.09867L16.082 25.7637ZM11.903 11.8807L8.67933 15.8967H23.4537L20.23 11.8807H11.903Z" fill="var(--fill-0, #04165D)"/>
+</g>
+</g>
+</svg>

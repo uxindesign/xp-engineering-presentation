@@ -11,6 +11,7 @@ import { Slide05 } from "./components/Slide05";
 import { Slide06 } from "./components/Slide06";
 import { Slide07Model } from "./components/Slide07Model";
 import { Slide08DesignSystem } from "./components/Slide08DesignSystem";
+import { Slide09Stack } from "./components/Slide09Stack";
 import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
 
@@ -26,7 +27,6 @@ const LOGO_IDLE_Y_RANGE = 0.36;
 const LOGO_MOUSE_TILT_MULTIPLIER = 1.32;
 const LOGO_MOUSE_IDLE_DELAY_MS = 560;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
-  { number: "09", eyebrow: "AAAA", title: "Stack e IA no processo", body: "AAA" },
   {
     number: "10",
     eyebrow: "Dimensionamento de Time",
@@ -549,13 +549,22 @@ export default function App() {
           />
         )}
 
-        {/* ─────────────── SLIDES 9–16 ─────────────── */}
-        {currentSlide >= 8 && currentSlide <= 15 && (
+        {/* ─────────────── SLIDE 9 ─────────────── */}
+        {currentSlide === 8 && (
+          <Slide09Stack
+            key="slide-9"
+            scaleX={scaleX}
+            scaleY={scaleY}
+          />
+        )}
+
+        {/* ─────────────── SLIDES 10–16 ─────────────── */}
+        {currentSlide >= 9 && currentSlide <= 15 && (
           <StandardPlanSlide
             key={`slide-${currentSlide + 1}`}
             scaleX={scaleX}
             scaleY={scaleY}
-            {...STANDARD_PLAN_SLIDES[currentSlide - 8]}
+            {...STANDARD_PLAN_SLIDES[currentSlide - 9]}
           />
         )}
 
