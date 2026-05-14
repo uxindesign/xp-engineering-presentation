@@ -414,7 +414,10 @@ function Tooltip({
   const width = vs(360);
   const estimatedHeight = vs(300);
   const margin = vs(16);
-  const left = Math.min(window.innerWidth - width - margin, Math.max(margin, x - width / 2));
+  const offset = vs(18);
+  const preferredLeft = x + offset;
+  const fallbackLeft = x - width - offset;
+  const left = preferredLeft + width + margin <= window.innerWidth ? preferredLeft : Math.max(margin, fallbackLeft);
   const top = Math.min(window.innerHeight - estimatedHeight - margin, Math.max(margin, y - estimatedHeight / 2));
 
   return (
