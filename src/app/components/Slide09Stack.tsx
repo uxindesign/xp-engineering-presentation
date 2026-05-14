@@ -330,8 +330,8 @@ function ItemTag({
         style={{
           margin: 0,
           fontFamily: "'Bronkoh-Bold', sans-serif",
-          fontSize: vs(24),
-          lineHeight: `${vs(24)}px`,
+          fontSize: vs(22),
+          lineHeight: `${vs(22)}px`,
           color: NAVY,
           whiteSpace: item.compact ? "normal" : "nowrap",
           width: item.compact ? vx(item.label === "Testes de acessibilidade" ? 142 : 118) : undefined,
@@ -359,8 +359,8 @@ function StageTag({ column, vx, vy, vs }: { column: StackColumn; vx: (n: number)
         gap: vx(16),
       }}
     >
-      <img src={column.icon} alt="" style={{ width: vs(40), height: vs(40), display: "block", flexShrink: 0 }} />
-      <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(32), lineHeight: `${vs(32)}px`, color: "#fff", whiteSpace: "nowrap" }}>
+      <img src={column.icon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flexShrink: 0 }} />
+      <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(28), lineHeight: `${vs(32)}px`, color: "#fff", whiteSpace: "nowrap" }}>
         {column.stage}
       </p>
     </div>
@@ -520,8 +520,8 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
             gap: vx(16),
           }}
         >
-          <img src={statIcon} alt="" style={{ width: vs(40), height: vs(40), display: "block", flexShrink: 0 }} />
-          <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(32), lineHeight: `${vs(32)}px`, color: "#fff", whiteSpace: "nowrap" }}>
+          <img src={statIcon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flexShrink: 0 }} />
+          <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(28), lineHeight: `${vs(32)}px`, color: "#fff", whiteSpace: "nowrap" }}>
             Aceleração com IA
           </p>
         </div>
