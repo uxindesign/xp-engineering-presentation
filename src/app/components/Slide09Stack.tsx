@@ -476,14 +476,14 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
         style={{
           position: "absolute",
           left: vx(120),
-          top: vy(414),
+          top: vy(399),
           width: vx(1680),
           display: "flex",
           flexDirection: "column",
           gap: vy(24),
         }}
       >
-        <div style={{ width: "100%", display: "flex", gap: vx(24), alignItems: "flex-end", justifyContent: "center" }}>
+        <div style={{ width: "100%", display: "flex", gap: vx(24), alignItems: "flex-start", justifyContent: "center" }}>
           {columns.map((column) => (
             <div
               key={column.stage}
@@ -495,15 +495,15 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
                 flexDirection: "column",
                 gap: vy(16),
                 alignItems: "flex-start",
-                justifyContent: "flex-end",
+                justifyContent: "flex-start",
               }}
             >
+              <StageTag column={column} vx={vx} vy={vy} vs={vs} />
               <div style={{ display: "flex", flexDirection: "column", gap: vy(8), alignItems: "flex-start", flexShrink: 0 }}>
                 {column.items.map((item) => (
                   <ItemTag key={item.label} item={item} vx={vx} vy={vy} vs={vs} onTooltipChange={updateTooltip} />
                 ))}
               </div>
-              <StageTag column={column} vx={vx} vy={vy} vs={vs} />
             </div>
           ))}
         </div>
