@@ -469,6 +469,7 @@ function ItemTag({
   const labelFontSize = vs(22);
   const labelLineHeight = vs(22);
   const labelGap = item.compact ? vx(4) : vx(12);
+  const compactTextWidth = vs(150);
   const preferredBreak = item.compact ? preferredLabelBreaks[item.label] : undefined;
 
   useLayoutEffect(() => {
@@ -483,7 +484,7 @@ function ItemTag({
       const paddingX = Number.parseFloat(styles.paddingLeft) + Number.parseFloat(styles.paddingRight);
       const availableWidth = button.clientWidth - paddingX;
       const requiredInlineWidth = vs(32) + labelGap + measure.scrollWidth;
-      setCompactShouldWrap(requiredInlineWidth > availableWidth);
+      setCompactShouldWrap(requiredInlineWidth + vs(8) > availableWidth);
     };
 
     updateWrapState();
@@ -555,8 +556,8 @@ function ItemTag({
             lineHeight: `${labelLineHeight}px`,
             color: NAVY,
             whiteSpace: item.compact && compactShouldWrap ? "normal" : "nowrap",
-            minWidth: item.compact && compactShouldWrap ? vs(132) : 0,
-            maxWidth: item.compact && compactShouldWrap ? vs(150) : undefined,
+            minWidth: item.compact && compactShouldWrap ? compactTextWidth : 0,
+            maxWidth: item.compact && compactShouldWrap ? compactTextWidth : `calc(100% - ${vs(32) + labelGap}px)`,
             textAlign: "left",
           }}
         >
