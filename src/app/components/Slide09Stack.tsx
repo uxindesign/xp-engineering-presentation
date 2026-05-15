@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from "react";
+import { useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
@@ -450,7 +450,35 @@ function ItemTag({
   vs: (n: number) => number;
   onTooltipChange: (tooltip: TooltipData | null, position?: { x: number; y: number }, placement?: TooltipPlacement) => void;
 }) {
-  const compactLabelParts = item.compact && item.label.startsWith("Testes de ") ? ["Testes de", item.label.replace("Testes de ", "")] : null;
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+  const [compactShouldWrap, setCompactShouldWrap] = useState(false);
+  const compactFontSize = item.compact ? vs(20) : vs(22);
+  const compactLineHeight = item.compact ? vs(20) : vs(22);
+
+  useLayoutEffect(() => {
+    if (!item.compact) return;
+
+    const updateWrapState = () => {
+      const button = buttonRef.current;
+      const measure = measureRef.current;
+      if (!button || !measure) return;
+
+      const availableTextWidth = button.clientWidth - vs(32) - vx(6) - vx(12);
+      setCompactShouldWrap(measure.scrollWidth > availableTextWidth);
+    };
+
+    updateWrapState();
+    const resizeObserver = new ResizeObserver(updateWrapState);
+    if (buttonRef.current) resizeObserver.observe(buttonRef.current);
+    window.addEventListener("resize", updateWrapState);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateWrapState);
+    };
+  }, [item.compact, item.label, vx, vs]);
+
   const handleEnter = (event: MouseEvent<HTMLButtonElement>) => {
     if (item.tooltip) onTooltipChange(item.tooltip, { x: event.clientX, y: event.clientY }, "side");
   };
@@ -463,6 +491,7 @@ function ItemTag({
 
   return (
     <button
+      ref={buttonRef}
       type="button"
       aria-label={item.tooltip ? `Ver detalhes de ${item.label}` : item.label}
       onMouseEnter={handleEnter}
@@ -476,7 +505,7 @@ function ItemTag({
       onBlur={handleLeave}
       style={{
         border: 0,
-        padding: `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
+        padding: item.compact ? `${vy(10)}px ${vx(6)}px` : `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
         borderRadius: vs(16),
         background: TAG_BG,
         width: "100%",
@@ -484,7 +513,7 @@ function ItemTag({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: vx(12),
+        gap: item.compact ? vx(6) : vx(12),
         cursor: "pointer",
         color: NAVY,
         flexShrink: 0,
@@ -496,21 +525,34 @@ function ItemTag({
         style={{
           margin: 0,
           fontFamily: "'Bronkoh-Bold', sans-serif",
-          fontSize: vs(22),
-          lineHeight: `${vs(22)}px`,
+          fontSize: compactFontSize,
+          lineHeight: `${compactLineHeight}px`,
           color: NAVY,
-          whiteSpace: "nowrap",
-          display: compactLabelParts ? "inline-flex" : undefined,
-          flexDirection: compactLabelParts ? "column" : undefined,
-          alignItems: compactLabelParts ? "flex-start" : undefined,
+          whiteSpace: item.compact && compactShouldWrap ? "normal" : "nowrap",
+          maxWidth: item.compact ? `calc(100% - ${vs(38)}px)` : undefined,
           minWidth: 0,
           textAlign: "left",
         }}
       >
-        {compactLabelParts
-          ? compactLabelParts.map((part) => <span key={part}>{part}</span>)
-          : item.label}
+        {item.label}
       </span>
+      {item.compact ? (
+        <span
+          ref={measureRef}
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            visibility: "hidden",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+            fontFamily: "'Bronkoh-Bold', sans-serif",
+            fontSize: compactFontSize,
+            lineHeight: `${compactLineHeight}px`,
+          }}
+        >
+          {item.label}
+        </span>
+      ) : null}
     </button>
   );
 }
