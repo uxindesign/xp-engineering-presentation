@@ -167,6 +167,36 @@ const tooltipByLabel: Record<string, TooltipData> = {
     tools: ["FigJam", "Miro", "Whimsical", "Office", "Microsoft Whiteboard", "Teams"],
     ai: "Gerar alternativas, provocar caminhos e expandir possibilidades.",
   },
+  "Análise heurística": {
+    title: "Análise heurística",
+    body: "Avaliar a interface contra princípios de usabilidade, consistência, feedback e prevenção de erro.",
+    tools: ["FigJam", "Figma", "Miro", "Notion", "Airtable", "Office"],
+    ai: "Apoio para elaborar checklist, avaliar severidade, recomendações de ajustes e gerar relatório.",
+  },
+  "Testes de acessibilidade": {
+    title: "Testes de acessibilidade",
+    body: "Verificar contraste, navegação por teclado, leitores de tela, focus, semântica e conformidade.",
+    tools: ["Stark", "Accessible Web", "Axe DevTools", "BrowserStack", "WCAG"],
+    ai: "Apoio para elaborar checklist, análise, consulta rápida, priorização de problemas e documentação de correções.",
+  },
+  Refinamento: {
+    title: "Refinamento",
+    body: "Ajustar solução com base em feedback, dados, restrições técnicas e critérios de negócio.",
+    tools: ["Figma", "FigJam", "Jira", "Teams", "Miro", "Office", "Notion"],
+    ai: "Consolidar feedbacks, propor melhorias e reescrever especificações.",
+  },
+  "Teste A/B": {
+    title: "Teste A/B",
+    body: "Comparar versões para medir impacto em conversão, engajamento ou comportamento.",
+    tools: ["Google Analytics", "VWO", "Optimizely", "LaunchDarkly", "Amplitude"],
+    ai: "Apoio para formular hipótese, definir métrica, interpretar resultado e sugerir próximos testes.",
+  },
+  "Testes de usabilidade": {
+    title: "Testes de usabilidade",
+    body: "Avaliar se utilizadores conseguem entender e completar tarefas com eficiência.",
+    tools: ["Maze", "Lookback", "UserTesting", "Useberry", "Teams", "Google Meet"],
+    ai: "Apoio na criação de roteiro, análise dos achados, severidade e plano de ação.",
+  },
 };
 
 const columns: StackColumn[] = [
@@ -207,11 +237,11 @@ const columns: StackColumn[] = [
     stage: "Validar",
     icon: syncSavedLocallyIcon,
     items: [
-      { label: "Análise heurística", icon: listAltCheckIcon },
-      { label: "Testes de acessibilidade", icon: accessibleIcon, compact: true },
-      { label: "Refinamento", icon: diamondShineIcon },
-      { label: "Teste A/B", icon: compareIcon },
-      { label: "Testes de usabilidade", icon: mobileHandIcon, compact: true },
+      { label: "Análise heurística", icon: listAltCheckIcon, tooltip: tooltipByLabel["Análise heurística"] },
+      { label: "Testes de acessibilidade", icon: accessibleIcon, compact: true, tooltip: tooltipByLabel["Testes de acessibilidade"] },
+      { label: "Refinamento", icon: diamondShineIcon, tooltip: tooltipByLabel.Refinamento },
+      { label: "Teste A/B", icon: compareIcon, tooltip: tooltipByLabel["Teste A/B"] },
+      { label: "Testes de usabilidade", icon: mobileHandIcon, compact: true, tooltip: tooltipByLabel["Testes de usabilidade"] },
     ],
   },
   {
