@@ -227,6 +227,36 @@ const tooltipByLabel: Record<string, TooltipData> = {
     tools: ["Figma", "Storybook", "Zeroheight", "Confluence", "GitHub", "GitBook"],
     ai: "Estruturar documentação, revisar clareza, gerar resumos e relatórios.",
   },
+  Suporte: {
+    title: "Suporte",
+    body: "Monitorar dúvidas, bugs, reclamações, chamados e problemas recorrentes.",
+    tools: ["Zendesk", "Intercom", "Jira Service", "Sharepoint", "Notion"],
+    ai: "Ajuda para classificar chamados, resumir incidentes e identificar padrões.",
+  },
+  "Coleta de feedbacks": {
+    title: "Coleta de feedbacks",
+    body: "Capturar percepções contínuas de utilizadores, clientes e áreas internas.",
+    tools: ["Hotjar", "Typeform", "Dovetail", "Google Forms", "Microsoft Forms"],
+    ai: "Agrupar feedbacks, identificar temas e gerar oportunidades.",
+  },
+  "Observar utilizadores": {
+    title: "Observar utilizadores",
+    body: "Ver sessões reais, comportamentos, fricções, erros e pontos de abandono.",
+    tools: ["Hotjar", "FullStory", "Microsoft Clarity", "Teams", "Google Meet", "UXCam"],
+    ai: "Apoio para transformar observações em hipóteses e recomendações.",
+  },
+  "Análise de heatmaps": {
+    title: "Análise de heatmaps",
+    body: "Identificar cliques, scroll, atenção, áreas ignoradas e fricção visual.",
+    tools: ["Hotjar", "FullStory", "Microsoft Clarity", "Teams", "Google Meet", "UXCam"],
+    ai: "Interpretar padrões e sugerir melhorias de layout.",
+  },
+  "Coleta de dados": {
+    title: "Coleta de dados",
+    body: "Medir adoção, retenção, conversão, eventos, funis e impacto da solução.",
+    tools: ["Amplitude", "Mixpanel", "Looker Studio", "Google Analytics", "Power BI"],
+    ai: "Gerar leitura executiva, identificar anomalias e propor próximos ciclos.",
+  },
 };
 
 const columns: StackColumn[] = [
@@ -290,11 +320,11 @@ const columns: StackColumn[] = [
     icon: searchInsightsIcon,
     width: 300,
     items: [
-      { label: "Suporte", icon: helpIcon },
-      { label: "Coleta de feedbacks", icon: feedbackIcon },
-      { label: "Observar utilizadores", icon: multimodalHandEyeIcon },
-      { label: "Análise de heatmaps", icon: lineStyleIcon },
-      { label: "Coleta de dados", icon: bidLandscapeIcon },
+      { label: "Suporte", icon: helpIcon, tooltip: tooltipByLabel.Suporte },
+      { label: "Coleta de feedbacks", icon: feedbackIcon, tooltip: tooltipByLabel["Coleta de feedbacks"] },
+      { label: "Observar utilizadores", icon: multimodalHandEyeIcon, tooltip: tooltipByLabel["Observar utilizadores"] },
+      { label: "Análise de heatmaps", icon: lineStyleIcon, tooltip: tooltipByLabel["Análise de heatmaps"] },
+      { label: "Coleta de dados", icon: bidLandscapeIcon, tooltip: tooltipByLabel["Coleta de dados"] },
     ],
   },
 ];
