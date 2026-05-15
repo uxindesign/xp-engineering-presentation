@@ -524,7 +524,7 @@ function ItemTag({
       onBlur={handleLeave}
       style={{
         border: 0,
-        padding: item.compact ? `${vy(10)}px ${vx(12)}px` : `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
+        padding: `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
         borderRadius: vs(16),
         background: TAG_BG,
         width: "100%",
