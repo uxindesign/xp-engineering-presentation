@@ -45,10 +45,16 @@ interface Props {
   scaleY: number;
 }
 
+type ToolChip = {
+  label: string;
+  background: string;
+  color: string;
+};
+
 type TooltipData = {
   title: string;
   body: string;
-  tools: string[];
+  tools: ToolChip[];
   ai?: string;
   width?: number;
   height?: number;
@@ -79,186 +85,189 @@ const AI_PURPLE = "#3126b4";
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const ease = "easeOut" as const;
 const fade = (delay: number) => ({ duration: 0.55, delay, ease });
+const primaryTool = (label: string): ToolChip => ({ label, background: "#113e75", color: "#7bdcff" });
+const secondaryTool = (label: string): ToolChip => ({ label, background: "#334153", color: "#adc4cd" });
+const aiTool = (label: string): ToolChip => ({ label, background: "#5f330f", color: "#fff07b" });
 
 const tooltipByLabel: Record<string, TooltipData> = {
   Mapeamento: {
     title: "Mapeamento",
     body: "Organizar informações, stakeholders, problemas, oportunidades e hipóteses.",
-    tools: ["FigJam", "Miro", "Notion", "Office", "Microsoft Whiteboard"],
+    tools: [primaryTool("FigJam"), primaryTool("Microsoft Whiteboard"), primaryTool("Office"), secondaryTool("Miro"), secondaryTool("Notion")],
     ai: "Ajuda para estruturar e organizar informação, CSD, formular hipótese e identificar oportunidades.",
   },
   Benchmarks: {
     title: "Benchmarks",
     body: "Analisar concorrentes, referências de mercado, padrões de UX e oportunidades.",
-    tools: ["Semrush", "G2", "Mobbin", "FigJam", "Google search"],
+    tools: [primaryTool("FigJam"), primaryTool("Google search"), secondaryTool("Semrush"), secondaryTool("G2"), secondaryTool("Mobbin")],
     ai: "Acelera síntese comparativa, matriz de concorrentes e identificação de padrões.",
   },
   Analytics: {
     title: "Analytics",
     body: "Entender comportamento atual, funis, abandono, retenção e pontos de fricção.",
-    tools: ["Google Analytics", "Hotjar", "Amplitude", "Power BI", "Dados de suporte"],
+    tools: [primaryTool("Dados de suporte"), primaryTool("Google Analytics"), secondaryTool("Hotjar"), secondaryTool("Amplitude"), secondaryTool("Power BI")],
     ai: "Interpretação de dados, levantamento de hipóteses e geração de perguntas para investigação.",
   },
   Inquéritos: {
     title: "Inquéritos",
     body: "Coletar opiniões, percepções, satisfação, necessidades e dados quantitativos.",
-    tools: ["Typeform", "Maze", "Google Forms", "Microsoft Forms", "Office"],
+    tools: [primaryTool("Microsoft Forms"), primaryTool("Google Forms"), primaryTool("Office"), secondaryTool("Typeform"), secondaryTool("Maze")],
     ai: "Ajuda a criar questionários, limpar respostas abertas e agrupar padrões.",
   },
   Entrevistas: {
     title: "Entrevistas",
     body: "Entender contexto, motivações, dores, objeções, linguagem e comportamento.",
-    tools: ["Dovetail", "Lookback", "UserTesting", "Google Meet", "Teams", "Office"],
+    tools: [primaryTool("Teams"), primaryTool("Google Meet"), primaryTool("Office"), secondaryTool("Dovetail"), secondaryTool("Lookback"), secondaryTool("UserTesting")],
     ai: "Apoio na construção de roteiro, perguntas de aprofundamento, transcrição e síntese.",
   },
   "Análise SWOT": {
     title: "Análise SWOT",
     body: "Avaliar forças, fraquezas, oportunidades e ameaças relacionadas ao produto, serviço ou contexto.",
-    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    tools: [primaryTool("FigJam"), primaryTool("Microsoft Whiteboard"), primaryTool("Office"), secondaryTool("Miro")],
     ai: "Apoio para estruturar a matriz SWOT, cruzar evidências e identificar implicações estratégicas.",
   },
   "Mapa de empatia": {
     title: "Mapa de empatia",
     body: "Consolidar o que o utilizador pensa, sente, vê, ouve, fala e faz.",
-    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    tools: [primaryTool("FigJam"), primaryTool("Microsoft Whiteboard"), primaryTool("Office"), secondaryTool("Miro")],
     ai: "Auxílio para transformar entrevistas e inquéritos em padrões comportamentais.",
   },
   "User Stories": {
     title: "User Stories",
     body: "Traduzir necessidades em histórias para backlog e desenvolvimento.",
-    tools: ["Jira", "Jira Product Discovery", "Office"],
+    tools: [primaryTool("Jira"), primaryTool("Office"), secondaryTool("Jira Product Discovery")],
     ai: "Apoio para escrever user stories, critérios de aceite, regras de negócio e exceções.",
   },
   "Jobs to be done": {
     title: "Jobs to be done",
     body: "Definir o progresso que o utilizador quer alcançar em determinado contexto.",
-    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    tools: [primaryTool("FigJam"), primaryTool("Microsoft Whiteboard"), primaryTool("Office"), secondaryTool("Miro")],
     ai: "Ajuda na formulação de jobs, forças de progresso, dores e resultados esperados.",
   },
   Personas: {
     title: "Personas",
     body: "Representar perfis comportamentais com base em evidências, não em achismos.",
-    tools: ["FigJam", "Miro", "Office", "Microsoft Whiteboard"],
+    tools: [primaryTool("FigJam"), primaryTool("Microsoft Whiteboard"), primaryTool("Office"), secondaryTool("Miro")],
     ai: "Criar proto personas e consolidar perfis, motivações, necessidades, dores e cenários de uso.",
   },
   Protótipos: {
     title: "Protótipos",
     body: "Simular navegação, interação, comportamento e proposta de valor.",
-    tools: ["Figma", "Figma Make", "Lovable", "UX Pilot", "Framer", "Google Stitch"],
+    tools: [primaryTool("Figma"), primaryTool("Figma Make"), primaryTool("Google Stitch"), secondaryTool("Lovable"), secondaryTool("UX Pilot"), secondaryTool("Framer")],
     ai: "Criação de protótipos funcionais para validação rápida, geração de conteúdo como imagens e textos.",
   },
   Wireframes: {
     title: "Wireframes",
     body: "Explorar estrutura, hierarquia, conteúdo e navegação antes da UI final.",
-    tools: ["Figma", "Balsamiq", "Miro", "UX Pilot", "Whimsical"],
+    tools: [primaryTool("Figma"), secondaryTool("Balsamiq"), secondaryTool("Miro"), secondaryTool("UX Pilot"), secondaryTool("Whimsical")],
     ai: "Esboços rápidos, sugestão de layouts, blocos de conteúdo, estados e variações.",
   },
   "Card Sorting": {
     title: "Card Sorting",
     body: "Validar agrupamentos, nomenclaturas e arquitetura da informação.",
-    tools: ["Jira", "Jira Product Discovery", "Office"],
+    tools: [primaryTool("Jira"), primaryTool("Office"), secondaryTool("Jira Product Discovery")],
     ai: "Apoio para criar categorias, interpretar agrupamentos e sugerir taxonomias.",
   },
   Workshops: {
     title: "Workshops",
     body: "Alinhar equipas, gerar soluções, tomar decisões e resolver problemas em grupo.",
-    tools: ["FigJam", "Office", "Teams", "Microsoft Whiteboard", "Miro", "Google Meet", "Zoom"],
+    tools: [primaryTool("FigJam"), primaryTool("Microsoft Whiteboard"), primaryTool("Office"), primaryTool("Teams"), primaryTool("Google Meet"), secondaryTool("Zoom"), secondaryTool("Miro")],
     ai: "Ajuda no para desenho das dinâmicas, agenda, perguntas, outputs e síntese final.",
   },
   Ideação: {
     title: "Ideação",
     body: "Gerar alternativas de solução, conceitos, jornadas e abordagens de produto.",
-    tools: ["FigJam", "Miro", "Whimsical", "Office", "Microsoft Whiteboard", "Teams"],
+    tools: [primaryTool("FigJam"), primaryTool("Microsoft Whiteboard"), primaryTool("Office"), primaryTool("Teams"), secondaryTool("Miro"), secondaryTool("Whimsical")],
     ai: "Gerar alternativas, provocar caminhos e expandir possibilidades.",
   },
   "Análise heurística": {
     title: "Análise heurística",
     body: "Avaliar a interface contra princípios de usabilidade, consistência, feedback e prevenção de erro.",
-    tools: ["FigJam", "Figma", "Miro", "Notion", "Airtable", "Office"],
+    tools: [primaryTool("FigJam"), primaryTool("Figma"), primaryTool("Office"), secondaryTool("Miro"), secondaryTool("Notion"), secondaryTool("Airtable")],
     ai: "Apoio para elaborar checklist, avaliar severidade, recomendações de ajustes e gerar relatório.",
   },
   "Testes de acessibilidade": {
     title: "Testes de acessibilidade",
     body: "Verificar contraste, navegação por teclado, leitores de tela, focus, semântica e conformidade.",
-    tools: ["Stark", "Accessible Web", "Axe DevTools", "BrowserStack", "WCAG"],
+    tools: [primaryTool("WCAG"), primaryTool("Stark"), primaryTool("Accessible Web"), secondaryTool("Axe DevTools"), secondaryTool("BrowserStack")],
     ai: "Apoio para elaborar checklist, análise, consulta rápida, priorização de problemas e documentação de correções.",
   },
   Refinamento: {
     title: "Refinamento",
     body: "Ajustar solução com base em feedback, dados, restrições técnicas e critérios de negócio.",
-    tools: ["Figma", "FigJam", "Jira", "Teams", "Miro", "Office", "Notion"],
+    tools: [primaryTool("Figma"), primaryTool("FigJam"), primaryTool("Jira"), primaryTool("Teams"), primaryTool("Office"), secondaryTool("Notion"), secondaryTool("Miro")],
     ai: "Consolidar feedbacks, propor melhorias e reescrever especificações.",
   },
   "Teste A/B": {
     title: "Teste A/B",
     body: "Comparar versões para medir impacto em conversão, engajamento ou comportamento.",
-    tools: ["Google Analytics", "VWO", "Optimizely", "LaunchDarkly", "Amplitude"],
+    tools: [primaryTool("Google Analytics"), secondaryTool("Crazyegg"), secondaryTool("VWO"), secondaryTool("Optimizely"), secondaryTool("LaunchDarkly")],
     ai: "Apoio para formular hipótese, definir métrica, interpretar resultado e sugerir próximos testes.",
   },
   "Testes de usabilidade": {
     title: "Testes de usabilidade",
     body: "Avaliar se utilizadores conseguem entender e completar tarefas com eficiência.",
-    tools: ["Maze", "Lookback", "UserTesting", "Useberry", "Teams", "Google Meet"],
+    tools: [primaryTool("Teams"), primaryTool("Google Meet"), secondaryTool("Maze"), secondaryTool("Lookback"), secondaryTool("UserTesting"), secondaryTool("Useberry")],
     ai: "Apoio na criação de roteiro, análise dos achados, severidade e plano de ação.",
   },
   Implementação: {
     title: "Implementação",
     body: "Construir interface, lógica, integrações, testes e ajustes técnicos.",
-    tools: ["Cursor", "Claude Code", "Codex", "GitHub", "Figma DEV Mode"],
+    tools: [primaryTool("GitHub"), aiTool("Figma DEV Mode"), aiTool("Cursor"), aiTool("Codex"), aiTool("Claude Code")],
     ai: "Apoio na implementação de front-end, design system, testes e PRs.",
   },
   Backlog: {
     title: "Backlog",
     body: "Quebrar a solução em épicos, histórias, tarefas, bugs e critérios de aceite.",
-    tools: ["Jira", "Notion", "Office", "Planner", "FigJam", "Miro"],
+    tools: [primaryTool("FigJam"), primaryTool("Jira"), primaryTool("Office"), secondaryTool("Planner"), secondaryTool("Notion"), secondaryTool("Miro")],
     ai: "Apoio na análise para fatiar entregas, escrever histórias e mapear dependências.",
   },
   "Design System": {
     title: "Design System",
     body: "Garantir consistência, componentes, tokens, padrões e documentação reutilizável.",
-    tools: ["Figma", "Storybook", "Zeroheight", "Chromatic", "Confluence", "Supernova"],
+    tools: [primaryTool("Figma"), primaryTool("Storybook"), primaryTool("Confluence"), secondaryTool("Chromatic"), secondaryTool("Zeroheight"), secondaryTool("Supernova")],
     ai: "Apoio na construção, implementação, documentação, guidelines e exemplos de uso.",
   },
   Handoff: {
     title: "Handoff",
     body: "Transferir especificações para desenvolvimento com comportamento, estados e assets.",
-    tools: ["Figma DEV Mode", "Storybook", "Jira", "Confluence", "GitHub", "Design System"],
+    tools: [aiTool("Figma DEV Mode"), primaryTool("Storybook"), primaryTool("Jira"), primaryTool("Confluence"), primaryTool("GitHub"), primaryTool("Design System")],
     ai: "Gerar especificação funcional, estados, regras e critérios de aceite.",
   },
   Documentação: {
     title: "Documentação",
     body: "Registrar decisões, padrões, fluxos, regras, componentes e instruções de uso.",
-    tools: ["Figma", "Storybook", "Zeroheight", "Confluence", "GitHub", "GitBook"],
+    tools: [primaryTool("Figma"), primaryTool("GitHub"), primaryTool("Storybook"), primaryTool("Confluence"), secondaryTool("GitBook"), secondaryTool("Zeroheight")],
     ai: "Estruturar documentação, revisar clareza, gerar resumos e relatórios.",
   },
   Suporte: {
     title: "Suporte",
     body: "Monitorar dúvidas, bugs, reclamações, chamados e problemas recorrentes.",
-    tools: ["Zendesk", "Intercom", "Jira Service", "Sharepoint", "Notion"],
+    tools: [primaryTool("Sharepoint"), primaryTool("Jira Service"), secondaryTool("Zendesk"), secondaryTool("Intercom"), secondaryTool("Notion")],
     ai: "Ajuda para classificar chamados, resumir incidentes e identificar padrões.",
   },
   "Coleta de feedbacks": {
     title: "Coleta de feedbacks",
     body: "Capturar percepções contínuas de utilizadores, clientes e áreas internas.",
-    tools: ["Hotjar", "Typeform", "Dovetail", "Google Forms", "Microsoft Forms"],
+    tools: [primaryTool("Microsoft Forms"), primaryTool("Google Forms"), secondaryTool("Typeform"), secondaryTool("Hotjar"), secondaryTool("Dovetail")],
     ai: "Agrupar feedbacks, identificar temas e gerar oportunidades.",
   },
   "Observar utilizadores": {
     title: "Observar utilizadores",
     body: "Ver sessões reais, comportamentos, fricções, erros e pontos de abandono.",
-    tools: ["Hotjar", "FullStory", "Microsoft Clarity", "Teams", "Google Meet", "UXCam"],
+    tools: [primaryTool("Microsoft Clarity"), primaryTool("Teams"), primaryTool("Google Meet"), secondaryTool("Hotjar"), secondaryTool("FullStory"), secondaryTool("UXCam")],
     ai: "Apoio para transformar observações em hipóteses e recomendações.",
   },
   "Análise de heatmaps": {
     title: "Análise de heatmaps",
     body: "Identificar cliques, scroll, atenção, áreas ignoradas e fricção visual.",
-    tools: ["Hotjar", "FullStory", "Microsoft Clarity", "Teams", "Google Meet", "UXCam"],
+    tools: [primaryTool("Microsoft Clarity"), secondaryTool("Hotjar"), secondaryTool("FullStory"), secondaryTool("Crazyegg"), secondaryTool("UXCam"), secondaryTool("Mouseflow")],
     ai: "Interpretar padrões e sugerir melhorias de layout.",
   },
   "Coleta de dados": {
     title: "Coleta de dados",
     body: "Medir adoção, retenção, conversão, eventos, funis e impacto da solução.",
-    tools: ["Amplitude", "Mixpanel", "Looker Studio", "Google Analytics", "Power BI"],
+    tools: [primaryTool("Google Analytics"), primaryTool("Data Studio"), primaryTool("Power BI"), secondaryTool("Amplitude"), secondaryTool("Mixpanel")],
     ai: "Gerar leitura executiva, identificar anomalias e propor próximos ciclos.",
   },
 };
@@ -266,9 +275,9 @@ const tooltipByLabel: Record<string, TooltipData> = {
 const aiAccelerationTooltip: TooltipData = {
   title: "Aceleração com IA",
   body: "A IA acelera o processo de UX ao apoiar pesquisa, análise, ideação, prototipação, validação e documentação, tornando decisões mais rápidas, consistentes e baseadas em evidências.",
-  tools: ["ChatGPT", "Codex", "Claude", "Claude Code", "Cursor", "Figma Make", "Lovable", "Gemini", "Google AI Studio", "Google Stitch", "UX Pilot"],
-  width: 459,
-  height: 290,
+  tools: [primaryTool("Figma Make"), primaryTool("Google Stitch"), primaryTool("Google AI Studio"), aiTool("ChatGPT"), aiTool("Claude"), secondaryTool("Cursor"), secondaryTool("Lovable"), secondaryTool("Gemini"), secondaryTool("UX Pilot")],
+  width: 520,
+  height: 220,
 };
 
 const columns: StackColumn[] = [
@@ -642,19 +651,19 @@ function Tooltip({
           <div style={{ display: "flex", flexWrap: "wrap", gap: vs(4), paddingTop: vs(8), paddingBottom: vs(4), width: "100%" }}>
             {tooltip.tools.map((tool) => (
               <span
-                key={tool}
+                key={tool.label}
                 style={{
                   borderRadius: vs(8),
-                  background: "#113e75",
+                  background: tool.background,
                   padding: `${vs(8)}px ${vs(12)}px`,
                   fontFamily: "'Bronkoh-Heavy', sans-serif",
                   fontSize: vs(16),
                   lineHeight: `${vs(16)}px`,
-                  color: "#7bdcff",
+                  color: tool.color,
                   whiteSpace: "nowrap",
                 }}
               >
-                {tool}
+                {tool.label}
               </span>
             ))}
           </div>
