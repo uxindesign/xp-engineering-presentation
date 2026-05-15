@@ -469,7 +469,6 @@ function ItemTag({
   const labelFontSize = vs(22);
   const labelLineHeight = vs(22);
   const labelGap = item.compact ? vx(4) : vx(12);
-  const compactTextWidth = vs(150);
   const preferredBreak = item.compact ? preferredLabelBreaks[item.label] : undefined;
 
   useLayoutEffect(() => {
@@ -556,8 +555,7 @@ function ItemTag({
             lineHeight: `${labelLineHeight}px`,
             color: NAVY,
             whiteSpace: item.compact && compactShouldWrap ? "normal" : "nowrap",
-            minWidth: item.compact && compactShouldWrap ? compactTextWidth : 0,
-            maxWidth: item.compact && compactShouldWrap ? compactTextWidth : `calc(100% - ${vs(32) + labelGap}px)`,
+            width: "fit-content",
             textAlign: "left",
           }}
         >
