@@ -88,6 +88,10 @@ const fade = (delay: number) => ({ duration: 0.55, delay, ease });
 const primaryTool = (label: string): ToolChip => ({ label, background: "#113e75", color: "#7bdcff" });
 const secondaryTool = (label: string): ToolChip => ({ label, background: "#334153", color: "#adc4cd" });
 const aiTool = (label: string): ToolChip => ({ label, background: "#5f330f", color: "#fff07b" });
+const preferredLabelBreaks: Record<string, [string, string]> = {
+  "Testes de acessibilidade": ["Testes de", "acessibilidade"],
+  "Testes de usabilidade": ["Testes de", "usabilidade"],
+};
 
 const tooltipByLabel: Record<string, TooltipData> = {
   Mapeamento: {
@@ -462,8 +466,10 @@ function ItemTag({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
   const [compactShouldWrap, setCompactShouldWrap] = useState(false);
-  const compactFontSize = item.compact ? vs(20) : vs(22);
-  const compactLineHeight = item.compact ? vs(20) : vs(22);
+  const labelFontSize = vs(22);
+  const labelLineHeight = vs(22);
+  const labelGap = item.compact ? vx(4) : vx(12);
+  const preferredBreak = item.compact ? preferredLabelBreaks[item.label] : undefined;
 
   useLayoutEffect(() => {
     if (!item.compact) return;
@@ -473,8 +479,11 @@ function ItemTag({
       const measure = measureRef.current;
       if (!button || !measure) return;
 
-      const availableTextWidth = button.clientWidth - vs(32) - vx(6) - vx(12);
-      setCompactShouldWrap(measure.scrollWidth > availableTextWidth);
+      const styles = window.getComputedStyle(button);
+      const paddingX = Number.parseFloat(styles.paddingLeft) + Number.parseFloat(styles.paddingRight);
+      const availableWidth = button.clientWidth - paddingX;
+      const requiredInlineWidth = vs(32) + labelGap + measure.scrollWidth;
+      setCompactShouldWrap(requiredInlineWidth > availableWidth);
     };
 
     updateWrapState();
@@ -514,36 +523,52 @@ function ItemTag({
       onBlur={handleLeave}
       style={{
         border: 0,
-        padding: item.compact ? `${vy(10)}px ${vx(6)}px` : `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
+        padding: item.compact ? `${vy(10)}px 0` : `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
         borderRadius: vs(16),
         background: TAG_BG,
         width: "100%",
         boxSizing: "border-box",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: item.compact ? vx(6) : vx(12),
+        display: "block",
         cursor: "pointer",
         color: NAVY,
         flexShrink: 0,
         outline: "none",
       }}
     >
-      <img src={item.icon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flex: "0 0 auto" }} />
       <span
         style={{
-          margin: 0,
-          fontFamily: "'Bronkoh-Bold', sans-serif",
-          fontSize: compactFontSize,
-          lineHeight: `${compactLineHeight}px`,
-          color: NAVY,
-          whiteSpace: item.compact && compactShouldWrap ? "normal" : "nowrap",
-          maxWidth: item.compact ? `calc(100% - ${vs(38)}px)` : undefined,
-          minWidth: 0,
-          textAlign: "left",
+          width: "max-content",
+          maxWidth: "100%",
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: labelGap,
         }}
       >
-        {item.label}
+        <img src={item.icon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flex: "0 0 auto" }} />
+        <span
+          style={{
+            margin: 0,
+            fontFamily: "'Bronkoh-Bold', sans-serif",
+            fontSize: labelFontSize,
+            lineHeight: `${labelLineHeight}px`,
+            color: NAVY,
+            whiteSpace: item.compact && compactShouldWrap ? "normal" : "nowrap",
+            minWidth: item.compact && compactShouldWrap ? vs(132) : 0,
+            maxWidth: item.compact && compactShouldWrap ? vs(150) : undefined,
+            textAlign: "left",
+          }}
+        >
+          {item.compact && compactShouldWrap && preferredBreak ? (
+            <>
+              <span style={{ display: "block" }}>{preferredBreak[0]}</span>
+              <span style={{ display: "block" }}>{preferredBreak[1]}</span>
+            </>
+          ) : (
+            item.label
+          )}
+        </span>
       </span>
       {item.compact ? (
         <span
@@ -555,8 +580,8 @@ function ItemTag({
             pointerEvents: "none",
             whiteSpace: "nowrap",
             fontFamily: "'Bronkoh-Bold', sans-serif",
-            fontSize: compactFontSize,
-            lineHeight: `${compactLineHeight}px`,
+            fontSize: labelFontSize,
+            lineHeight: `${labelLineHeight}px`,
           }}
         >
           {item.label}
