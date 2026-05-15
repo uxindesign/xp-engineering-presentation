@@ -197,6 +197,36 @@ const tooltipByLabel: Record<string, TooltipData> = {
     tools: ["Maze", "Lookback", "UserTesting", "Useberry", "Teams", "Google Meet"],
     ai: "Apoio na criação de roteiro, análise dos achados, severidade e plano de ação.",
   },
+  Implementação: {
+    title: "Implementação",
+    body: "Construir interface, lógica, integrações, testes e ajustes técnicos.",
+    tools: ["Cursor", "Claude Code", "Codex", "GitHub", "Figma DEV Mode"],
+    ai: "Apoio na implementação de front-end, design system, testes e PRs.",
+  },
+  Backlog: {
+    title: "Backlog",
+    body: "Quebrar a solução em épicos, histórias, tarefas, bugs e critérios de aceite.",
+    tools: ["Jira", "Notion", "Office", "Planner", "FigJam", "Miro"],
+    ai: "Apoio na análise para fatiar entregas, escrever histórias e mapear dependências.",
+  },
+  "Design System": {
+    title: "Design System",
+    body: "Garantir consistência, componentes, tokens, padrões e documentação reutilizável.",
+    tools: ["Figma", "Storybook", "Zeroheight", "Chromatic", "Confluence", "Supernova"],
+    ai: "Apoio na construção, implementação, documentação, guidelines e exemplos de uso.",
+  },
+  Handoff: {
+    title: "Handoff",
+    body: "Transferir especificações para desenvolvimento com comportamento, estados e assets.",
+    tools: ["Figma DEV Mode", "Storybook", "Jira", "Confluence", "GitHub", "Design System"],
+    ai: "Gerar especificação funcional, estados, regras e critérios de aceite.",
+  },
+  Documentação: {
+    title: "Documentação",
+    body: "Registrar decisões, padrões, fluxos, regras, componentes e instruções de uso.",
+    tools: ["Figma", "Storybook", "Zeroheight", "Confluence", "GitHub", "GitBook"],
+    ai: "Estruturar documentação, revisar clareza, gerar resumos e relatórios.",
+  },
 };
 
 const columns: StackColumn[] = [
@@ -248,11 +278,11 @@ const columns: StackColumn[] = [
     stage: "Entregar",
     icon: packageIcon,
     items: [
-      { label: "Implementação", icon: codeXmlIcon },
-      { label: "Backlog", icon: viewKanbanIcon },
-      { label: "Design System", icon: gestureSelectIcon },
-      { label: "Handoff", icon: handshakeIcon },
-      { label: "Documentação", icon: docsIcon },
+      { label: "Implementação", icon: codeXmlIcon, tooltip: tooltipByLabel.Implementação },
+      { label: "Backlog", icon: viewKanbanIcon, tooltip: tooltipByLabel.Backlog },
+      { label: "Design System", icon: gestureSelectIcon, tooltip: tooltipByLabel["Design System"] },
+      { label: "Handoff", icon: handshakeIcon, tooltip: tooltipByLabel.Handoff },
+      { label: "Documentação", icon: docsIcon, tooltip: tooltipByLabel.Documentação },
     ],
   },
   {
