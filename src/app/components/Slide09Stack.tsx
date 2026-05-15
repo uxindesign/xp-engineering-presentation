@@ -484,7 +484,7 @@ function ItemTag({
       const paddingX = Number.parseFloat(styles.paddingLeft) + Number.parseFloat(styles.paddingRight);
       const availableWidth = button.clientWidth - paddingX;
       const requiredInlineWidth = vs(32) + labelGap + measure.scrollWidth;
-      setCompactShouldWrap(requiredInlineWidth + vs(8) > availableWidth);
+      setCompactShouldWrap(requiredInlineWidth + vs(12) > availableWidth);
     };
 
     updateWrapState();
@@ -496,7 +496,7 @@ function ItemTag({
       resizeObserver.disconnect();
       window.removeEventListener("resize", updateWrapState);
     };
-  }, [item.compact, item.label, vx, vs]);
+  }, [item.compact, item.label, labelGap, vx, vs]);
 
   const handleEnter = (event: MouseEvent<HTMLButtonElement>) => {
     if (item.tooltip) onTooltipChange(item.tooltip, { x: event.clientX, y: event.clientY }, "side");
@@ -524,7 +524,7 @@ function ItemTag({
       onBlur={handleLeave}
       style={{
         border: 0,
-        padding: item.compact ? `${vy(10)}px 0` : `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
+        padding: item.compact ? `${vy(10)}px ${vx(12)}px` : `${vy(10)}px ${vx(20)}px ${vy(10)}px ${vx(12)}px`,
         borderRadius: vs(16),
         background: TAG_BG,
         width: "100%",
