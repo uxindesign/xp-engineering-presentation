@@ -49,8 +49,12 @@ type TooltipData = {
   title: string;
   body: string;
   tools: string[];
-  ai: string;
+  ai?: string;
+  width?: number;
+  height?: number;
 };
+
+type TooltipPlacement = "side" | "top";
 
 type StackItem = {
   label: string;
@@ -259,6 +263,14 @@ const tooltipByLabel: Record<string, TooltipData> = {
   },
 };
 
+const aiAccelerationTooltip: TooltipData = {
+  title: "Aceleração com IA",
+  body: "A IA acelera o processo de UX ao apoiar pesquisa, análise, ideação, prototipação, validação e documentação, tornando decisões mais rápidas, consistentes e baseadas em evidências.",
+  tools: ["ChatGPT", "Codex", "Claude", "Claude Code", "Cursor", "Figma Make", "Lovable", "Gemini", "Google AI Studio", "Google Stitch", "UX Pilot"],
+  width: 459,
+  height: 290,
+};
+
 const columns: StackColumn[] = [
   {
     stage: "Descobrir",
@@ -436,15 +448,15 @@ function ItemTag({
   vx: (n: number) => number;
   vy: (n: number) => number;
   vs: (n: number) => number;
-  onTooltipChange: (tooltip: TooltipData | null, position?: { x: number; y: number }) => void;
+  onTooltipChange: (tooltip: TooltipData | null, position?: { x: number; y: number }, placement?: TooltipPlacement) => void;
 }) {
   const compactLabelParts = item.compact && item.label.startsWith("Testes de ") ? ["Testes de", item.label.replace("Testes de ", "")] : null;
   const handleEnter = (event: MouseEvent<HTMLButtonElement>) => {
-    if (item.tooltip) onTooltipChange(item.tooltip, { x: event.clientX, y: event.clientY });
+    if (item.tooltip) onTooltipChange(item.tooltip, { x: event.clientX, y: event.clientY }, "side");
   };
 
   const handleMove = (event: MouseEvent<HTMLButtonElement>) => {
-    if (item.tooltip) onTooltipChange(item.tooltip, { x: event.clientX, y: event.clientY });
+    if (item.tooltip) onTooltipChange(item.tooltip, { x: event.clientX, y: event.clientY }, "side");
   };
 
   const handleLeave = () => onTooltipChange(null);
@@ -459,7 +471,7 @@ function ItemTag({
       onFocus={(event) => {
         if (!item.tooltip) return;
         const rect = event.currentTarget.getBoundingClientRect();
-        onTooltipChange(item.tooltip, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+        onTooltipChange(item.tooltip, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }, "side");
       }}
       onBlur={handleLeave}
       style={{
@@ -531,20 +543,26 @@ function Tooltip({
   x,
   y,
   vs,
+  placement,
 }: {
   tooltip: TooltipData | null;
   x: number;
   y: number;
   vs: (n: number) => number;
+  placement: TooltipPlacement;
 }) {
-  const width = vs(360);
-  const estimatedHeight = vs(300);
+  const width = vs(tooltip?.width ?? 360);
+  const estimatedHeight = vs(tooltip?.height ?? 300);
   const margin = vs(16);
   const offset = vs(18);
   const preferredLeft = x + offset;
   const fallbackLeft = x - width - offset;
-  const left = preferredLeft + width + margin <= window.innerWidth ? preferredLeft : Math.max(margin, fallbackLeft);
-  const top = Math.min(window.innerHeight - estimatedHeight - margin, Math.max(margin, y - estimatedHeight / 2));
+  const sideLeft = preferredLeft + width + margin <= window.innerWidth ? preferredLeft : Math.max(margin, fallbackLeft);
+  const centeredLeft = Math.min(window.innerWidth - width - margin, Math.max(margin, x - width / 2));
+  const left = placement === "top" ? centeredLeft : sideLeft;
+  const sideTop = Math.min(window.innerHeight - estimatedHeight - margin, Math.max(margin, y - estimatedHeight / 2));
+  const topTop = Math.max(margin, y - estimatedHeight - offset);
+  const top = placement === "top" ? topTop : sideTop;
 
   return (
     <AnimatePresence>
@@ -598,11 +616,13 @@ function Tooltip({
               </span>
             ))}
           </div>
-          <div style={{ width: "100%", boxSizing: "border-box", borderRadius: vs(8), padding: vs(16), background: BLUE }}>
-            <p style={{ margin: 0, fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(15), lineHeight: 1.3, color: "#fff" }}>
-              <strong style={{ fontWeight: 800 }}>✦ IA:</strong> {tooltip.ai}
-            </p>
-          </div>
+          {tooltip.ai ? (
+            <div style={{ width: "100%", boxSizing: "border-box", borderRadius: vs(8), padding: vs(16), background: BLUE }}>
+              <p style={{ margin: 0, fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(15), lineHeight: 1.3, color: "#fff" }}>
+                <strong style={{ fontWeight: 800 }}>✦ IA:</strong> {tooltip.ai}
+              </p>
+            </div>
+          ) : null}
         </motion.div>
       ) : null}
     </AnimatePresence>
@@ -616,10 +636,25 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
   const vs = (n: number) => n * s;
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const [tooltipPlacement, setTooltipPlacement] = useState<TooltipPlacement>("side");
 
-  const updateTooltip = (next: TooltipData | null, position?: { x: number; y: number }) => {
+  const updateTooltip = (next: TooltipData | null, position?: { x: number; y: number }, placement: TooltipPlacement = "side") => {
     setTooltip(next);
+    setTooltipPlacement(placement);
     if (position) setTooltipPos(position);
+  };
+
+  const handleAiTooltipEnter = (event: MouseEvent<HTMLButtonElement>) => {
+    updateTooltip(aiAccelerationTooltip, { x: event.clientX, y: event.clientY }, "top");
+  };
+
+  const handleAiTooltipMove = (event: MouseEvent<HTMLButtonElement>) => {
+    updateTooltip(aiAccelerationTooltip, { x: event.clientX, y: event.clientY }, "top");
+  };
+
+  const handleAiTooltipFocus = (event: MouseEvent<HTMLButtonElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    updateTooltip(aiAccelerationTooltip, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }, "top");
   };
 
   return (
@@ -670,8 +705,16 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
             </div>
           ))}
         </div>
-        <div
+        <button
+          type="button"
+          aria-label="Ver detalhes de Aceleração com IA"
+          onMouseEnter={handleAiTooltipEnter}
+          onMouseMove={handleAiTooltipMove}
+          onMouseLeave={() => updateTooltip(null)}
+          onFocus={handleAiTooltipFocus}
+          onBlur={() => updateTooltip(null)}
           style={{
+            border: 0,
             width: "100%",
             borderRadius: vs(16),
             background: AI_PURPLE,
@@ -681,16 +724,18 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
             alignItems: "center",
             justifyContent: "center",
             gap: vx(16),
+            cursor: "pointer",
+            outline: "none",
           }}
         >
           <img src={statIcon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flexShrink: 0 }} />
           <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(28), lineHeight: `${vs(32)}px`, color: "#fff", whiteSpace: "nowrap" }}>
             Aceleração com IA
           </p>
-        </div>
+        </button>
       </motion.div>
       <Footer vx={vx} vy={vy} vs={vs} />
-      <Tooltip tooltip={tooltip} x={tooltipPos.x} y={tooltipPos.y} vs={vs} />
+      <Tooltip tooltip={tooltip} x={tooltipPos.x} y={tooltipPos.y} vs={vs} placement={tooltipPlacement} />
     </motion.div>
   );
 }
