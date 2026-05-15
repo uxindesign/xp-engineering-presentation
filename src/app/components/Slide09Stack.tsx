@@ -438,6 +438,7 @@ function ItemTag({
   vs: (n: number) => number;
   onTooltipChange: (tooltip: TooltipData | null, position?: { x: number; y: number }) => void;
 }) {
+  const compactLabelParts = item.compact && item.label.startsWith("Testes de ") ? ["Testes de", item.label.replace("Testes de ", "")] : null;
   const handleEnter = (event: MouseEvent<HTMLButtonElement>) => {
     if (item.tooltip) onTooltipChange(item.tooltip, { x: event.clientX, y: event.clientY });
   };
@@ -486,13 +487,17 @@ function ItemTag({
           fontSize: vs(22),
           lineHeight: `${vs(22)}px`,
           color: NAVY,
-          whiteSpace: item.compact ? "normal" : "nowrap",
-          maxWidth: item.compact ? `min(${vx(168)}px, calc(100% - ${vs(44)}px))` : undefined,
+          whiteSpace: "nowrap",
+          display: compactLabelParts ? "inline-flex" : undefined,
+          flexDirection: compactLabelParts ? "column" : undefined,
+          alignItems: compactLabelParts ? "flex-start" : undefined,
           minWidth: 0,
-          textAlign: item.compact ? "center" : "left",
+          textAlign: "left",
         }}
       >
-        {item.label}
+        {compactLabelParts
+          ? compactLabelParts.map((part) => <span key={part}>{part}</span>)
+          : item.label}
       </span>
     </button>
   );
