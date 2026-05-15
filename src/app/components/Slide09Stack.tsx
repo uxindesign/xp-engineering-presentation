@@ -427,7 +427,8 @@ function ItemTag({
           lineHeight: `${vs(22)}px`,
           color: NAVY,
           whiteSpace: item.compact ? "normal" : "nowrap",
-          width: item.compact ? vx(item.label === "Testes de acessibilidade" ? 142 : 118) : undefined,
+          maxWidth: item.compact ? vx(168) : undefined,
+          minWidth: 0,
           textAlign: "left",
         }}
       >
