@@ -297,21 +297,21 @@ const columns: StackColumn[] = [
     icon: assignmentIcon,
     items: [
       { label: "Análise SWOT", icon: gridViewIcon, tooltip: tooltipByLabel["Análise SWOT"] },
+      { label: "Personas", icon: accountCircleIcon, tooltip: tooltipByLabel.Personas },
       { label: "Mapa de empatia", icon: mapIcon, tooltip: tooltipByLabel["Mapa de empatia"] },
       { label: "User Stories", icon: clinicalNotesIcon, tooltip: tooltipByLabel["User Stories"] },
       { label: "Jobs to be done", icon: checkbookIcon, tooltip: tooltipByLabel["Jobs to be done"] },
-      { label: "Personas", icon: accountCircleIcon, tooltip: tooltipByLabel.Personas },
     ],
   },
   {
     stage: "Explorar",
     icon: categorySearchIcon,
     items: [
-      { label: "Protótipos", icon: viewQuiltIcon, tooltip: tooltipByLabel.Protótipos },
-      { label: "Wireframes", icon: tableIcon, tooltip: tooltipByLabel.Wireframes },
-      { label: "Card Sorting", icon: cardsStackIcon, tooltip: tooltipByLabel["Card Sorting"] },
-      { label: "Workshops", icon: workspacesIcon, tooltip: tooltipByLabel.Workshops },
       { label: "Ideação", icon: cognitionIcon, tooltip: tooltipByLabel.Ideação },
+      { label: "Workshops", icon: workspacesIcon, tooltip: tooltipByLabel.Workshops },
+      { label: "Card Sorting", icon: cardsStackIcon, tooltip: tooltipByLabel["Card Sorting"] },
+      { label: "Wireframes", icon: tableIcon, tooltip: tooltipByLabel.Wireframes },
+      { label: "Protótipos", icon: viewQuiltIcon, tooltip: tooltipByLabel.Protótipos },
     ],
   },
   {
@@ -319,21 +319,21 @@ const columns: StackColumn[] = [
     icon: syncSavedLocallyIcon,
     items: [
       { label: "Análise heurística", icon: listAltCheckIcon, tooltip: tooltipByLabel["Análise heurística"] },
-      { label: "Testes de acessibilidade", icon: accessibleIcon, compact: true, tooltip: tooltipByLabel["Testes de acessibilidade"] },
-      { label: "Refinamento", icon: diamondShineIcon, tooltip: tooltipByLabel.Refinamento },
-      { label: "Teste A/B", icon: compareIcon, tooltip: tooltipByLabel["Teste A/B"] },
       { label: "Testes de usabilidade", icon: mobileHandIcon, compact: true, tooltip: tooltipByLabel["Testes de usabilidade"] },
+      { label: "Testes de acessibilidade", icon: accessibleIcon, compact: true, tooltip: tooltipByLabel["Testes de acessibilidade"] },
+      { label: "Teste A/B", icon: compareIcon, tooltip: tooltipByLabel["Teste A/B"] },
+      { label: "Refinamento", icon: diamondShineIcon, tooltip: tooltipByLabel.Refinamento },
     ],
   },
   {
     stage: "Entregar",
     icon: packageIcon,
     items: [
-      { label: "Implementação", icon: codeXmlIcon, tooltip: tooltipByLabel.Implementação },
-      { label: "Backlog", icon: viewKanbanIcon, tooltip: tooltipByLabel.Backlog },
       { label: "Design System", icon: gestureSelectIcon, tooltip: tooltipByLabel["Design System"] },
-      { label: "Handoff", icon: handshakeIcon, tooltip: tooltipByLabel.Handoff },
       { label: "Documentação", icon: docsIcon, tooltip: tooltipByLabel.Documentação },
+      { label: "Backlog", icon: viewKanbanIcon, tooltip: tooltipByLabel.Backlog },
+      { label: "Handoff", icon: handshakeIcon, tooltip: tooltipByLabel.Handoff },
+      { label: "Implementação", icon: codeXmlIcon, tooltip: tooltipByLabel.Implementação },
     ],
   },
   {
@@ -343,9 +343,9 @@ const columns: StackColumn[] = [
     items: [
       { label: "Suporte", icon: helpIcon, tooltip: tooltipByLabel.Suporte },
       { label: "Coleta de feedbacks", icon: feedbackIcon, tooltip: tooltipByLabel["Coleta de feedbacks"] },
+      { label: "Coleta de dados", icon: bidLandscapeIcon, tooltip: tooltipByLabel["Coleta de dados"] },
       { label: "Observar utilizadores", icon: multimodalHandEyeIcon, tooltip: tooltipByLabel["Observar utilizadores"] },
       { label: "Análise de heatmaps", icon: lineStyleIcon, tooltip: tooltipByLabel["Análise de heatmaps"] },
-      { label: "Coleta de dados", icon: bidLandscapeIcon, tooltip: tooltipByLabel["Coleta de dados"] },
     ],
   },
 ];
