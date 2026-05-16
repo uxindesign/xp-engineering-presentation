@@ -770,7 +770,7 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
             >
               {index === 0 ? (
                 <>
-                  <span style={{ display: "block", fontFamily: "'Bronkoh-Regular', sans-serif", fontSize: vs(30), lineHeight: 0.9 }}>Até</span>
+                  <span style={{ display: "block", fontFamily: "'Bronkoh-Regular', sans-serif", fontSize: vs(30), lineHeight: 0.9, paddingBottom: 8 }}>Até</span>
                   <span style={{ fontSize: vs(64), lineHeight: 0.9 }}>70</span>
                   <span style={{ fontSize: vs(48), lineHeight: 0.9 }}>%</span>
                 </>
