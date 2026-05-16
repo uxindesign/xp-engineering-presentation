@@ -275,6 +275,8 @@ export default function App() {
     if (isInfographicExpanded) return;
     if (isModalOpen) return;
     const target = event.target instanceof Element ? event.target : null;
+    // Ignora cliques na modal mesmo após fechar no mouseUp (antes do click disparar).
+    if (target?.closest("[data-nng-modal]")) return;
     if (target?.closest('button, a, input, select, textarea, [role="button"]')) return;
 
     const clickIsLeftHalf = event.clientX < window.innerWidth / 2;
